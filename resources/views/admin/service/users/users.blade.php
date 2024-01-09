@@ -27,9 +27,6 @@
                 render: function(data) {
                     return `
                             <div class="d-flex align-items-center position-relative">
-                                <div class="avatar me-2 d-none d-lg-block">
-                                    <img src="{{ asset('assets/admin/img/profile-1.png') }}" alt="user-image" class="avatar-img img-fluid" />
-                                </div>
                                 ${data}
                             </div>
                         `;

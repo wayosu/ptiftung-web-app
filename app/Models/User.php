@@ -46,4 +46,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // relasi dengan tabel mahasiswa
+    public function mahasiswa()
+    {
+        return $this->hasOne(Mahasiswa::class, 'user_id', 'id');
+    }
+
+    // relasi dengan tabel dosen
+    public function dosen()
+    {
+        return $this->hasOne(Dosen::class, 'user_id', 'id');
+    }
 }

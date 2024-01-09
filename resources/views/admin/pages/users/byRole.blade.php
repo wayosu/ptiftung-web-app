@@ -42,7 +42,15 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>User</th>
+                            @if ($role === 'mahasiswa')
+                                <th>NIM</th>
+                            @endif
+                            <th>Nama</th>
+                            @if ($role === 'admin')
+                                <th>Email</th>
+                            @elseif ($role === 'dosen')
+                                <th>NIP</th>
+                            @endif
                             <th>Role</th>
                             <th>Tanggal Dibuat</th>
                             <th>Aksi</th>

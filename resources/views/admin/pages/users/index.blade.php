@@ -38,7 +38,7 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>User</th>
+                            <th>Nama</th>
                             <th>Role</th>
                             <th>Tanggal Dibuat</th>
                             <th>Aksi</th>

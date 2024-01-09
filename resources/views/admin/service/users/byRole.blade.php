@@ -8,33 +8,26 @@
 
 <script>
     $(document).ready(function() {
-        // Menampilkan data dengan DataTable AJAX
         let role = '{{ $role }}';
         role = role.toLowerCase();
-        const urlData = "{{ route('users.byRoleAjax', ':role') }}";
-        const newUrlData = urlData.replace(':role', role);
 
-        $('#myDataTables').DataTable({
-            responsive: true,
-            order: [
-                [2, 'desc']
-            ],
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: newUrlData,
-                type: 'GET',
-                csrf: '{{ csrf_token() }}',
-            },
-            columns: [{
+        const dataColumn = [];
+        const dataOrder = [];
+
+        if (role === 'mahasiswa') {
+            dataOrder.push([
+                0,
+                'asc'
+            ]);
+            dataColumn.push({
+                data: 'nim',
+                defaultContent: '',
+            }, {
                 data: 'name',
                 defaultContent: '',
                 render: function(data) {
                     return `
                             <div class="d-flex align-items-center position-relative">
-                                <div class="avatar me-2 d-none d-lg-block">
-                                    <img src="{{ asset('assets/admin/img/profile-1.png') }}" alt="user-image" class="avatar-img img-fluid" />
-                                </div>
                                 ${data}
                             </div>
                         `;
@@ -83,7 +76,149 @@
                 defaultContent: '',
                 orderable: false,
                 searchable: false
-            }]
+            });
+        } else if (role === 'dosen') {
+            dataOrder.push([
+                0,
+                'asc'
+            ]);
+            dataColumn.push({
+                data: 'name',
+                defaultContent: '',
+                render: function(data) {
+                    return `
+                            <div class="d-flex align-items-center position-relative">
+                                ${data}
+                            </div>
+                        `;
+                }
+            }, {
+                data: 'nip',
+                defaultContent: '',
+            }, {
+                data: 'role_names',
+                defaultContent: '',
+                render: function(data) {
+                    let badgeClass = '';
+                    let badgeText = '';
+
+                    switch (data) {
+                        case 'Admin':
+                            badgeClass = 'bg-dark';
+                            badgeText = 'Administrator';
+                            break;
+                        case 'Dosen':
+                            badgeClass = 'bg-secondary';
+                            badgeText = 'Dosen';
+                            break;
+                        case 'Mahasiswa':
+                            badgeClass = 'bg-info';
+                            badgeText = 'Mahasiswa';
+                            break;
+                        default:
+                            badgeClass = 'bg-light';
+                            badgeText = 'Unknown Role';
+                            break;
+                    }
+
+                    return `
+                        <div class="badge ${badgeClass} text-white">
+                            ${badgeText}
+                        </div>
+                    `;
+                }
+            }, {
+                data: 'created_at',
+                defaultContent: '',
+                render: function(data) {
+                    return moment(data).format(
+                        'DD-MM-YYYY HH:mm:ss');
+                }
+            }, {
+                data: 'aksi',
+                defaultContent: '',
+                orderable: false,
+                searchable: false
+            });
+        } else {
+            dataOrder.push([
+                0,
+                'asc'
+            ]);
+            dataColumn.push({
+                data: 'name',
+                defaultContent: '',
+                render: function(data) {
+                    return `
+                            <div class="d-flex align-items-center position-relative">
+                                ${data}
+                            </div>
+                        `;
+                }
+            }, {
+                data: 'email',
+                defaultContent: '',
+            }, {
+                data: 'role_names',
+                defaultContent: '',
+                render: function(data) {
+                    let badgeClass = '';
+                    let badgeText = '';
+
+                    switch (data) {
+                        case 'Admin':
+                            badgeClass = 'bg-dark';
+                            badgeText = 'Administrator';
+                            break;
+                        case 'Dosen':
+                            badgeClass = 'bg-secondary';
+                            badgeText = 'Dosen';
+                            break;
+                        case 'Mahasiswa':
+                            badgeClass = 'bg-info';
+                            badgeText = 'Mahasiswa';
+                            break;
+                        default:
+                            badgeClass = 'bg-light';
+                            badgeText = 'Unknown Role';
+                            break;
+                    }
+
+                    return `
+                        <div class="badge ${badgeClass} text-white">
+                            ${badgeText}
+                        </div>
+                    `;
+                }
+            }, {
+                data: 'created_at',
+                defaultContent: '',
+                render: function(data) {
+                    return moment(data).format(
+                        'DD-MM-YYYY HH:mm:ss');
+                }
+            }, {
+                data: 'aksi',
+                defaultContent: '',
+                orderable: false,
+                searchable: false
+            });
+        }
+
+        // Menampilkan data dengan DataTable AJAX
+        const urlData = "{{ route('users.byRoleAjax', ':role') }}";
+        const newUrlData = urlData.replace(':role', role);
+        $('#myDataTables').DataTable({
+            responsive: true,
+            order: dataOrder,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: newUrlData,
+                type: 'GET',
+                csrf: '{{ csrf_token() }}',
+            },
+            columns: dataColumn
         });
 
         // Pemilihan role
