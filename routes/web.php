@@ -34,5 +34,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
     // By Role
     Route::get('/users/{role}', [App\Http\Controllers\UserController::class, 'byRole'])->name('users.byRole');
     Route::get('/byRoleAjax/{role}', [App\Http\Controllers\UserController::class, 'byRoleAjax'])->name('users.byRoleAjax');
+
+    // By Role Admin
+    Route::get('/users/{id}/admin', [App\Http\Controllers\UserController::class, 'byRoleAdminShow'])->name('users.byRoleAdminShow');
+    Route::put('/users/{id}/admin', [App\Http\Controllers\UserController::class, 'byRoleAdminUpdate'])->name('users.byRoleAdminUpdate');
     // End Users //
 });

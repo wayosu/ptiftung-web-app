@@ -20,6 +20,12 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
+                        @if (isset($role))
+                            <a class="btn btn-sm btn-light text-primary" href="{{ route('users.index') }}">
+                                <i class="fa-solid fa-users me-1"></i>
+                                All Users
+                            </a>
+                        @endif
                         @include('admin.components.users.tombolByRole')
                         <a class="btn btn-sm btn-primary text-light tambah-user" href="javascript:void(0)" type="button">
                             <i class="me-1" data-feather="user-plus"></i>
@@ -38,7 +44,15 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
+                            @if (isset($role) && $role === 'mahasiswa')
+                                <th>NIM</th>
+                            @endif
                             <th>Nama</th>
+                            @if (isset($role) && $role === 'admin')
+                                <th>Email</th>
+                            @elseif (isset($role) && $role === 'dosen')
+                                <th>NIP</th>
+                            @endif
                             <th>Role</th>
                             <th>Tanggal Dibuat</th>
                             <th>Aksi</th>
@@ -53,5 +67,5 @@
 @endsection
 
 @push('js')
-    @include('admin.service.users.users')
+    @include('admin.service.users')
 @endpush

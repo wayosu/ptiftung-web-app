@@ -10,13 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
     public function index()
     {
         // tampilkan view
-        return view('admin.pages.users.index', [
+        return view('admin.pages.users', [
             'icon' => 'users',
             'title' => 'All Users',
             'subtitle' => 'Daftar seluruh pengguna aplikasi.',
@@ -45,51 +46,33 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data
+        // Validasi data
         $validasi = Validator::make($request->all(), [
             'name' => 'required|min:3|max:50',
-            'role' => 'required',
+            'role' => 'required|in:admin,dosen,mahasiswa',
             'password' => 'required|min:6|max:50',
+            'email' => ($request->role == 'admin') ? 'required|email|unique:users' : '',
+            'nip' => ($request->role == 'dosen') ? 'required|unique:users' : '',
+            'nim' => ($request->role == 'mahasiswa') ? 'required|unique:users' : '',
         ], [
             'name.required' => 'Nama harus diisi!',
             'name.min' => 'Nama minimal 3 karakter!',
             'name.max' => 'Nama maksimal 50 karakter!',
             'role.required' => 'Role harus dipilih!',
+            'role.in' => 'Role tidak valid',
             'password.required' => 'Password harus diisi!',
             'password.min' => 'Password minimal 6 karakter!',
             'password.max' => 'Password maksimal 50 karakter!',
+            'email.required' => 'Email harus diisi!',
+            'email.email' => 'Email tidak valid!',
+            'email.unique' => 'Email sudah terdaftar!',
+            'nip.required' => 'NIP harus diisi!',
+            'nip.unique' => 'NIP sudah terdaftar!',
+            'nim.required' => 'NIM harus diisi!',
+            'nim.unique' => 'NIM sudah terdaftar!',
         ]);
 
-        // cek role yang dipilih dan validasi berdasarkan role
-        if ($request->role == 'admin') {
-            $validasi = Validator::make($request->all(), [
-                'email' => 'required|email|unique:users',
-            ], [
-                'email.required' => 'Email harus diisi!',
-                'email.email' => 'Email tidak valid!',
-                'email.unique' => 'Email sudah terdaftar!',
-            ]);
-        }
-
-        if ($request->role == 'dosen') {
-            $validasi = Validator::make($request->all(), [
-                'nip' => 'required|unique:users',
-            ], [
-                'nip.required' => 'NIP harus diisi!',
-                'nip.unique' => 'NIP sudah terdaftar!',
-            ]);
-        }
-
-        if ($request->role == 'mahasiswa') {
-            $validasi = Validator::make($request->all(), [
-                'nim' => 'required|unique:users',
-            ], [
-                'nim.required' => 'NIM harus diisi!',
-                'nim.unique' => 'NIM sudah terdaftar!',
-            ]);
-        }
-
-        // cek validasi
+        // Cek validasi
         if ($validasi->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -98,7 +81,7 @@ class UserController extends Controller
                 'message' => 'Data gagal disimpan!',
             ]);
         } else {
-            // simpan data ke database
+            // Simpan data ke database
             $data = [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -108,9 +91,9 @@ class UserController extends Controller
             ];
             $user = User::create($data);
 
-            // cek role yang dipilih dan simpan ke database berdasarkan role yang dipilih
-            // jika role dosen, tambahkan data dosen 
-            // jika role mahasiswa, tambahkan data mahasiswa
+            // Cek role yang dipilih dan simpan ke database berdasarkan role yang dipilih
+            // Jika role dosen, tambahkan data dosen
+            // Jika role mahasiswa, tambahkan data mahasiswa
             if ($request->role == 'dosen') {
                 Dosen::create([
                     'user_id' => $user->id,
@@ -121,10 +104,10 @@ class UserController extends Controller
                 ]);
             }
 
-            // tambahkan role ke user
+            // Tambahkan role ke user
             $user->assignRole($request->role);
 
-            // kembalikan response
+            // Kembalikan response
             return response()->json([
                 'status' => 'success',
                 'code' => '200',
@@ -158,57 +141,32 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data
+        // Validasi data
         $validasi = Validator::make($request->all(), [
             'name' => 'required|min:3|max:50',
-            'role' => 'required',
+            'role' => 'required|in:admin,dosen,mahasiswa',
+            'password' => ($request->password) ? 'min:6|max:50' : '',
+            'email' => ($request->role == 'admin') ? 'required|email|unique:users,email,' . $id : '',
+            'nip' => ($request->role == 'dosen') ? 'required|unique:users,nip,' . $id : '',
+            'nim' => ($request->role == 'mahasiswa') ? 'required|unique:users,nim,' . $id : '',
         ], [
             'name.required' => 'Nama harus diisi!',
             'name.min' => 'Nama minimal 3 karakter!',
             'name.max' => 'Nama maksimal 50 karakter!',
             'role.required' => 'Role harus dipilih!',
+            'role.in' => 'Role tidak valid',
+            'password.min' => 'Password minimal 6 karakter!',
+            'password.max' => 'Password maksimal 50 karakter!',
+            'email.required' => 'Email harus diisi!',
+            'email.email' => 'Email tidak valid!',
+            'email.unique' => 'Email sudah terdaftar!',
+            'nip.required' => 'NIP harus diisi!',
+            'nip.unique' => 'NIP sudah terdaftar!',
+            'nim.required' => 'NIM harus diisi!',
+            'nim.unique' => 'NIM sudah terdaftar!',
         ]);
 
-        // cek role yang dipilih dan validasi berdasarkan role
-        if ($request->role == 'admin') {
-            $validasi = Validator::make($request->all(), [
-                'email' => 'required|email|unique:users,email,' . $id,
-            ], [
-                'email.required' => 'Email harus diisi!',
-                'email.email' => 'Email tidak valid!',
-                'email.unique' => 'Email sudah terdaftar!',
-            ]);
-        }
-
-        if ($request->role == 'dosen') {
-            $validasi = Validator::make($request->all(), [
-                'nip' => 'required|unique:users,nip,' . $id,
-            ], [
-                'nip.required' => 'NIP harus diisi!',
-                'nip.unique' => 'NIP sudah terdaftar!',
-            ]);
-        }
-
-        if ($request->role == 'mahasiswa') {
-            $validasi = Validator::make($request->all(), [
-                'nim' => 'required|unique:users,nim,' . $id,
-            ], [
-                'nim.required' => 'NIM harus diisi!',
-                'nim.unique' => 'NIM sudah terdaftar!',
-            ]);
-        }
-
-        // cek apakah password diisi dan validasi password
-        if ($request->password) {
-            $validasi = Validator::make($request->all(), [
-                'password' => 'min:6|max:50',
-            ], [
-                'password.min' => 'Password minimal 6 karakter!',
-                'password.max' => 'Password maksimal 50 karakter!',
-            ]);
-        }
-
-        // cek validasi
+        // Cek validasi
         if ($validasi->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -217,7 +175,7 @@ class UserController extends Controller
                 'message' => 'Data gagal disimpan!',
             ]);
         } else {
-            // simpan data ke database
+            // Data yang akan diupdate
             $data = [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -286,7 +244,7 @@ class UserController extends Controller
         }
 
         // tampilkan view
-        return view('admin.pages.users.byRole', [
+        return view('admin.pages.users', [
             'icon' => 'users',
             'title' => $roleCapitalize,
             'subtitle' => 'Daftar ' . $roleCapitalize . ' yang terdaftar.',
@@ -331,5 +289,85 @@ class UserController extends Controller
                 return view('admin.components.users.tombolAksi', compact('data'));
             })
             ->make(true);
+    }
+
+    public function byRoleCreate(Request $request)
+    {
+    }
+
+    public function byRoleAdminShow($id)
+    {
+        // ambil beberapa data berdasarkan id
+        $data = User::with('roles')->select('id', 'name', 'email')->findOrFail($id);
+
+        // ambil nama role dari $data
+        $data->role_names = Str::ucfirst($data->roles->pluck('name')->implode(', '));
+
+        // tabel roles tidak perlu di tampilkan
+        unset($data->roles);
+
+        return response()->json([
+            'status' => 'success',
+            'code' => '200',
+            'result' => $data,
+        ]);
+    }
+
+    public function byRoleAdminEdit($id)
+    {
+    }
+
+    public function byRoleAdminUpdate(Request $request, $id)
+    {
+        // Penanganan Request only()
+        $dataReq = $request->only(['name', 'email', 'password']);
+
+        // Validasi data
+        $validasi = Validator::make($dataReq, [
+            'name' => 'required|min:3|max:50',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => ($dataReq['password']) ? 'min:6|max:50' : '',
+        ], [
+            'name.required' => 'Nama harus diisi!',
+            'name.min' => 'Nama minimal 3 karakter!',
+            'name.max' => 'Nama maksimal 50 karakter!',
+            'email.required' => 'Email harus diisi!',
+            'email.email' => 'Email tidak valid!',
+            'email.unique' => 'Email sudah terdaftar!',
+            'password.required' => 'Password harus diisi!',
+            'password.min' => 'Password minimal 6 karakter!',
+            'password.max' => 'Password maksimal 50 karakter!',
+        ]);
+
+        // Cek validasi
+        if ($validasi->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => '400',
+                'errors' => $validasi->errors()->all(),
+                'message' => 'Data gagal disimpan!',
+            ]);
+        } else {
+            $data = [
+                'name' => $dataReq['name'],
+                'email' => $dataReq['email'],
+            ];
+
+            // cek apakah password diisi
+            if ($dataReq['password']) {
+                $data['password'] = bcrypt($dataReq['password']);
+            }
+
+            // Update data
+            $user = User::find($id);
+            $user->update($data);
+
+            // kembalikan response
+            return response()->json([
+                'status' => 'success',
+                'code' => '200',
+                'message' => 'Data berhasil disimpan!',
+            ]);
+        }
     }
 }
