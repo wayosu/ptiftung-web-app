@@ -581,7 +581,304 @@
             });
 
             if (role === 'mahasiswa') {
+                // Tambah User
+                $('.tambah-user').click(function(e) {
+                    e.preventDefault();
+                    $('#modalFormUser').modal('show');
 
+                    $('.tombol-simpan').html('Simpan');
+
+                    // Bersihkan input
+                    $('#name').val('');
+                    $('#nimField').val('');
+                    $('#prodiField').val('');
+                    $('#angkatanField').val('');
+                    $('#passField').val('');
+
+                    $('#nimField').on('input', function() {
+                        const nimValue = $(this).val();
+                        $('#passField').val(nimValue);
+                    });
+
+                    // Sembunyikan alert
+                    $('#myAlertDanger').addClass('d-none');
+
+                    // fungsi off adalah untuk menghilangkan fungsi tombol simpan sebelumnya
+                    // fungsi on adalah untuk menambahkan fungsi tombol simpan yang baru
+                    $('.tombol-simpan').off('click').on('click', function() {
+                        const name = $('#name').val();
+                        const roleUser = 'mahasiswa';
+                        const nim = $('#nimField').val();
+                        const prodi = $('#prodiField').val();
+                        const angkatan = $('#angkatanField').val();
+                        const password = $('#passField').val();
+
+                        let dataSend = {
+                            name: name,
+                            role: roleUser,
+                            nim: nim,
+                            prodi: prodi,
+                            angkatan: angkatan,
+                            password: password,
+                            _token: '{{ csrf_token() }}',
+                        }
+
+                        const url = "{{ route('users.byRoleStore', ':role') }}";
+                        const newUrl = url.replace(':role', roleUser);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            }
+                        });
+
+                        $.ajax({
+                            url: newUrl,
+                            type: 'POST',
+                            data: dataSend,
+                            beforeSend: function() {
+                                $('.tombol-simpan').attr('disabled', 'disabled');
+                                $('.tombol-simpan').html(
+                                    '<i class="fa fa-spinner fa-spin"></i>');
+                            },
+                            success: function(response) {
+                                $('#listValidation').html('');
+
+                                // Jika ada error validasi
+                                if (response.errors) {
+                                    $('#myAlertDanger').removeClass('d-none');
+                                    $('#listValidation').append(
+                                        '<ul class="mb-2">');
+                                    $.each(response.errors, function(key, value) {
+                                        $('#listValidation').find('ul')
+                                            .append(`
+                                            <li>${value}</li>
+                                        `);
+                                    })
+                                    $('#listValidation').append('</ul>');
+
+                                    $('#modalFormUser').modal('show');
+                                } else {
+                                    $('#name').val('');
+                                    $('#nimField').val('');
+                                    $('#prodiField').val('');
+                                    $('#angkatanField').val('');
+                                    $('#passField').val('');
+
+                                    $('#modalFormUser').modal('hide');
+                                    $('#myDataTables').DataTable().ajax.reload();
+
+                                    // Toast notifikasi
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 4000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener(
+                                                'mouseenter',
+                                                Swal.stopTimer)
+                                            toast.addEventListener(
+                                                'mouseleave',
+                                                Swal.resumeTimer)
+                                        }
+                                    })
+
+                                    Toast.fire({
+                                        icon: 'success',
+                                        title: 'Data berhasil ditambahkan!'
+                                    })
+
+                                }
+                            },
+                            complete: function() {
+                                $('.tombol-simpan').removeAttr('disabled');
+                                $('.tombol-simpan').html('Simpan');
+                            },
+                        });
+                    });
+                });
+
+                // Edit User
+                $('body').on('click', '.tombol-edit', function(e) {
+                    e.preventDefault();
+
+                    const id = $(this).data('id');
+
+                    $('.tombol-simpan').html('Update');
+
+                    $('#myAlertDanger').addClass('d-none');
+
+                    $.ajax({
+                        url: "/dashboard/users/" + id + "/mahasiswa" + "/edit",
+                        type: 'GET',
+                        success: function(response) {
+                            $('#modalFormUser').modal('show');
+
+                            $('#name').val(response.result.name);
+                            $('#nimField').val(response.result.nim);
+                            const prodi = response.result.prodi;
+                            const prodiOptions = $('#prodiField option');
+                            for (let i = 0; i < prodiOptions.length; i++) {
+                                if (prodiOptions[i].value === prodi) {
+                                    prodiOptions[i].selected = true;
+                                    break;
+                                } else {
+                                    prodiOptions[i].selected = false;
+                                }
+                            }
+                            $('#angkatanField').val(response.result.angkatan);
+                            $('#passInput label').html('Password');
+                            $('#passField').removeAttr('readOnly');
+                            $('#passField').val('');
+
+                            $('.tombol-simpan').off('click').on('click', function() {
+                                const name = $('#name').val();
+                                const nim = $('#nimField').val();
+                                const prodi = $('#prodiField').val();
+                                const angkatan = $('#angkatanField').val();
+                                const password = $('#passField').val();
+
+                                const url =
+                                    "{{ route('users.byRoleUpdate', [':id', ':role']) }}";
+                                const newUrl = url.replace(':id', id).replace(
+                                    ':role', 'mahasiswa');
+
+                                $.ajax({
+                                    url: newUrl,
+                                    type: 'PUT',
+                                    data: {
+                                        name: name,
+                                        nim: nim,
+                                        prodi: prodi,
+                                        angkatan: angkatan,
+                                        password: password,
+                                        _token: '{{ csrf_token() }}',
+                                    },
+                                    beforeSend: function() {
+                                        $('.tombol-simpan').prop(
+                                            'disabled',
+                                            true);
+                                        $('.tombol-simpan').html(
+                                            '<i class="fa fa-spinner fa-spin"></i>'
+                                        );
+                                    },
+                                    success: function(response) {
+                                        $('#listValidation').html('');
+
+                                        // Jika ada error validasi
+                                        if (response.errors) {
+                                            $('#myAlertDanger')
+                                                .removeClass(
+                                                    'd-none');
+                                            $('#listValidation').append(
+                                                '<ul class="mb-2">');
+                                            $.each(response.errors,
+                                                function(
+                                                    key, value) {
+                                                    $('#listValidation')
+                                                        .find('ul')
+                                                        .append(`
+                                                    <li>${value}</li>
+                                                `);
+                                                })
+                                            $('#listValidation').append(
+                                                '</ul>');
+
+                                            $('#modalFormUser').modal(
+                                                'show');
+                                        } else {
+                                            $('#name').val('');
+                                            $('#nimField').val('');
+                                            $('#prodiField').val('');
+                                            $('#angkatanField').val('');
+                                            $('#passField').val('');
+
+                                            $('#modalFormUser').modal(
+                                                'hide');
+                                            $('#myDataTables')
+                                                .DataTable()
+                                                .ajax
+                                                .reload();
+
+                                            // Toast notifikasi
+                                            const Toast = Swal.mixin({
+                                                toast: true,
+                                                position: 'top-end',
+                                                showConfirmButton: false,
+                                                timer: 4000,
+                                                timerProgressBar: true,
+                                                didOpen: (
+                                                    toast
+                                                ) => {
+                                                    toast
+                                                        .addEventListener(
+                                                            'mouseenter',
+                                                            Swal
+                                                            .stopTimer
+                                                        )
+                                                    toast
+                                                        .addEventListener(
+                                                            'mouseleave',
+                                                            Swal
+                                                            .resumeTimer
+                                                        )
+                                                }
+                                            })
+
+                                            Toast.fire({
+                                                icon: 'success',
+                                                title: 'Data berhasil diupdate!'
+                                            })
+
+                                        }
+                                    },
+                                    complete: function() {
+                                        // Mengaktifkan kembali tombol update
+                                        $('.tombol-simpan').prop(
+                                            'disabled',
+                                            false);
+                                        $('.tombol-simpan').html(
+                                            'Update');
+                                    },
+                                });
+                            });
+                        }
+                    });
+                });
+
+                // Detail User
+                $('body').on('click', '.tombol-detail', function(e) {
+                    e.preventDefault();
+
+                    const id = $(this).data('id');
+
+                    const url = "{{ route('users.byRoleShow', [':id', ':role']) }}";
+                    const newUrl = url.replace(':id', id).replace(
+                        ':role', 'mahasiswa');
+
+                    $.ajax({
+                        url: newUrl,
+                        type: 'GET',
+                        success: function(response) {
+                            $('#modalDetailUser').modal('show');
+
+                            $('#nimDetail').html(response.result.nim);
+                            $('#nameDetail').html(response.result.name);
+                            if (response.result.prodi === 'si') {
+                                $('#prodiDetail').html('Sistem Informasi (SI)');
+                            } else if (response.result.prodi === 'pti') {
+                                $('#prodiDetail').html(
+                                    'Pendidikan Teknologi Informasi (PTI)');
+                            }
+                            $('#angkatanDetail').html(response.result.angkatan);
+                            if (response.result.role_names === 'Mahasiswa') {
+                                $('#roleDetail').html('Mahasiswa');
+                            }
+                        }
+                    });
+                });
             } else if (role === 'dosen') {
 
             } else {
@@ -595,8 +892,6 @@
                     // Bersihkan input
                     $('#name').val('');
                     $('#emailField').val('');
-                    $('#passField').val('');
-
                     $('#passField').val('admin123');
 
                     // Sembunyikan alert
@@ -646,7 +941,6 @@
                                     $('#modalFormUser').modal('show');
                                 } else {
                                     $('#name').val('');
-                                    $('#roleSelect').val('');
                                     $('#emailField').val('');
                                     $('#passField').val('');
 
@@ -713,11 +1007,12 @@
                                 const password = $('#passField').val();
 
                                 const url =
-                                    "{{ route('users.byRoleAdminUpdate', ':id') }}";
-                                const urlEdit = url.replace(':id', id);
+                                    "{{ route('users.byRoleUpdate', [':id', ':role']) }}";
+                                const newUrl = url.replace(':id', id).replace(
+                                    ':role', 'admin');
 
                                 $.ajax({
-                                    url: urlEdit,
+                                    url: newUrl,
                                     type: 'PUT',
                                     data: {
                                         name: name,
