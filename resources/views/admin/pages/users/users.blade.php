@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @push('css')
-    @include('admin.components.users.style')
+    @include('admin.components.style')
 @endpush
 
 @section('content')
@@ -27,9 +27,15 @@
                             </a>
                         @endif
                         @include('admin.components.users.tombolByRole')
+                        @if (isset($role) && $role === 'dosen')
+                            <a class="btn btn-sm btn-light text-primary" href="{{ route('bidangKepakaran.index') }}">
+                                <i class="fa-solid fa-list me-1"></i>
+                                Bidang Kepakaran
+                            </a>
+                        @endif
                         <a class="btn btn-sm btn-primary text-light tambah-user" href="javascript:void(0)" type="button">
                             <i class="me-1" data-feather="user-plus"></i>
-                            Tambah User
+                            Tambah Data
                         </a>
                     </div>
                 </div>
@@ -67,5 +73,5 @@
 @endsection
 
 @push('js')
-    @include('admin.service.users')
+    @include('admin.service.users.users')
 @endpush

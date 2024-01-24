@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index()
     {
         // tampilkan view
-        return view('admin.pages.users', [
+        return view('admin.pages.users.users', [
             'icon' => 'users',
             'title' => 'All Users',
             'subtitle' => 'Daftar seluruh pengguna aplikasi.',
@@ -240,7 +240,7 @@ class UserController extends Controller
         }
 
         // tampilkan view
-        return view('admin.pages.users', [
+        return view('admin.pages.users.users', [
             'icon' => 'users',
             'title' => $roleCapitalize,
             'subtitle' => 'Daftar ' . $roleCapitalize . ' yang terdaftar.',

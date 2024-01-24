@@ -11,6 +11,13 @@
         let role = '{{ $role ?? '' }}';
         role = role.toLowerCase();
 
+        // Setup AJAX
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         // cek jika role kosong
         if (!role) {
             // Menampilkan data dengan DataTable AJAX
@@ -21,11 +28,7 @@
                 ],
                 processing: true,
                 serverSide: true,
-                ajax: {
-                    url: "{{ route('users.indexAjax') }}",
-                    type: 'GET',
-                    csrf: '{{ csrf_token() }}',
-                },
+                ajax: "{{ route('users.indexAjax') }}",
                 columns: [{
                     data: 'name',
                     defaultContent: '',
@@ -156,7 +159,6 @@
                             nip: nip,
                             nim: nim,
                             password: password,
-                            _token: '{{ csrf_token() }}',
                         },
                         beforeSend: function() {
                             $('.tombol-simpan').attr('disabled', 'disabled');
@@ -280,7 +282,6 @@
                                     nip: nip,
                                     nim: nim,
                                     password: password,
-                                    _token: '{{ csrf_token() }}',
                                 },
                                 beforeSend: function() {
                                     $('.tombol-simpan').prop('disabled',
@@ -572,11 +573,7 @@
                 order: dataOrder,
                 processing: true,
                 serverSide: true,
-                ajax: {
-                    url: newUrlData,
-                    type: 'GET',
-                    csrf: '{{ csrf_token() }}',
-                },
+                ajax: newUrlData,
                 columns: dataColumn
             });
 
@@ -620,17 +617,10 @@
                             prodi: prodi,
                             angkatan: angkatan,
                             password: password,
-                            _token: '{{ csrf_token() }}',
                         }
 
                         const url = "{{ route('users.byRoleStore', ':role') }}";
                         const newUrl = url.replace(':role', roleUser);
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                    'content')
-                            }
-                        });
 
                         $.ajax({
                             url: newUrl,
@@ -753,8 +743,7 @@
                                         nim: nim,
                                         prodi: prodi,
                                         angkatan: angkatan,
-                                        password: password,
-                                        _token: '{{ csrf_token() }}',
+                                        password: password
                                     },
                                     beforeSend: function() {
                                         $('.tombol-simpan').prop(
@@ -880,7 +869,117 @@
                     });
                 });
             } else if (role === 'dosen') {
+                // Tambah User
+                $('.tambah-user').click(function(e) {
+                    e.preventDefault();
+                    $('#modalFormUser').modal('show');
 
+                    $('.tombol-simpan').html('Simpan');
+
+                    // Bersihkan input
+                    $('#name').val('');
+                    $('#nimField').val('');
+                    $('#prodiField').val('');
+                    $('#angkatanField').val('');
+                    $('#passField').val('');
+
+                    $('#nimField').on('input', function() {
+                        const nimValue = $(this).val();
+                        $('#passField').val(nimValue);
+                    });
+
+                    // Sembunyikan alert
+                    $('#myAlertDanger').addClass('d-none');
+
+                    // fungsi off adalah untuk menghilangkan fungsi tombol simpan sebelumnya
+                    // fungsi on adalah untuk menambahkan fungsi tombol simpan yang baru
+                    $('.tombol-simpan').off('click').on('click', function() {
+                        const name = $('#name').val();
+                        const roleUser = 'mahasiswa';
+                        const nim = $('#nimField').val();
+                        const prodi = $('#prodiField').val();
+                        const angkatan = $('#angkatanField').val();
+                        const password = $('#passField').val();
+
+                        let dataSend = {
+                            name: name,
+                            role: roleUser,
+                            nim: nim,
+                            prodi: prodi,
+                            angkatan: angkatan,
+                            password: password
+                        }
+
+                        const url = "{{ route('users.byRoleStore', ':role') }}";
+                        const newUrl = url.replace(':role', roleUser);
+
+                        $.ajax({
+                            url: newUrl,
+                            type: 'POST',
+                            data: dataSend,
+                            beforeSend: function() {
+                                $('.tombol-simpan').attr('disabled', 'disabled');
+                                $('.tombol-simpan').html(
+                                    '<i class="fa fa-spinner fa-spin"></i>');
+                            },
+                            success: function(response) {
+                                $('#listValidation').html('');
+
+                                // Jika ada error validasi
+                                if (response.errors) {
+                                    $('#myAlertDanger').removeClass('d-none');
+                                    $('#listValidation').append(
+                                        '<ul class="mb-2">');
+                                    $.each(response.errors, function(key, value) {
+                                        $('#listValidation').find('ul')
+                                            .append(`
+                                            <li>${value}</li>
+                                        `);
+                                    })
+                                    $('#listValidation').append('</ul>');
+
+                                    $('#modalFormUser').modal('show');
+                                } else {
+                                    $('#name').val('');
+                                    $('#nimField').val('');
+                                    $('#prodiField').val('');
+                                    $('#angkatanField').val('');
+                                    $('#passField').val('');
+
+                                    $('#modalFormUser').modal('hide');
+                                    $('#myDataTables').DataTable().ajax.reload();
+
+                                    // Toast notifikasi
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 4000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener(
+                                                'mouseenter',
+                                                Swal.stopTimer)
+                                            toast.addEventListener(
+                                                'mouseleave',
+                                                Swal.resumeTimer)
+                                        }
+                                    })
+
+                                    Toast.fire({
+                                        icon: 'success',
+                                        title: 'Data berhasil ditambahkan!'
+                                    })
+
+                                }
+                            },
+                            complete: function() {
+                                $('.tombol-simpan').removeAttr('disabled');
+                                $('.tombol-simpan').html('Simpan');
+                            },
+                        });
+                    });
+                });
             } else {
                 // Tambah User
                 $('.tambah-user').click(function(e) {
@@ -909,8 +1008,7 @@
                             name: name,
                             role: roleUser,
                             email: email,
-                            password: password,
-                            _token: '{{ csrf_token() }}',
+                            password: password
                         }
 
                         $.ajax({
@@ -1017,8 +1115,7 @@
                                     data: {
                                         name: name,
                                         email: email,
-                                        password: password,
-                                        _token: '{{ csrf_token() }}',
+                                        password: password
                                     },
                                     beforeSend: function() {
                                         $('.tombol-simpan').prop(

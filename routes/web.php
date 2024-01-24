@@ -20,9 +20,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
-
-    // Start Users CRUD //
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
+    // Start Users //
     Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
     Route::get('/usersAjax', [App\Http\Controllers\UserController::class, 'indexAjax'])->name('users.indexAjax');
     Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
@@ -38,5 +38,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
     Route::get('/users/{id}/{role}/edit', [App\Http\Controllers\UserController::class, 'byRoleEdit'])->name('users.byRoleEdit');
     Route::put('/users/{id}/{role}', [App\Http\Controllers\UserController::class, 'byRoleUpdate'])->name('users.byRoleUpdate');
 
-    // End Users CRUD //
+    // End Users //
+
+    // Start Bidang Kepakaran //
+    Route::get('/bidang-kepakaran', [App\Http\Controllers\BidangKepakaranController::class, 'index'])->name('bidangKepakaran.index');
+    Route::get('/bidangKepakaranAjax', [App\Http\Controllers\BidangKepakaranController::class, 'indexAjax'])->name('bidangKepakaran.indexAjax');
+    // End Bidang Kepakaran //
 });

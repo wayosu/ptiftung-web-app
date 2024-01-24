@@ -1,9 +1,3 @@
-@if (Route::current()->getName() !== 'users.indexAjax')
-    <a data-id="{{ $data->id }}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 tombol-detail"
-        href="javascript:void(0)" title="Detail">
-        <i class="fas fa-eye"></i>
-    </a>
-@endif
 <a data-id="{{ $data->id }}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 tombol-edit"
     href="javascript:void(0)" title="Edit">
     <i class="fas fa-edit"></i>

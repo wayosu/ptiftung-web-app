@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('jk')->nullable();
             $table->string('umur')->nullable();
             $table->string('gelar')->nullable();
-            $table->string('bidang')->nullable();
             $table->string('link_gscholar')->nullable();
             $table->string('link_sinta')->nullable();
             $table->string('link_scopus')->nullable();

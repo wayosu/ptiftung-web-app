@@ -17,7 +17,6 @@ class Dosen extends Model
         'jk',
         'umur',
         'gelar',
-        'bidang',
         'link_gscholar',
         'link_sinta',
         'link_scopus',
@@ -29,5 +28,10 @@ class Dosen extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function bidangKepakaran()
+    {
+        return $this->belongsToMany(BidangKepakaran::class);
     }
 }
