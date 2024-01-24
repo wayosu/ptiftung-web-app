@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
@@ -198,7 +197,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'code' => '200',
-                'message' => 'Data berhasil disimpan!',
+                'message' => 'Data berhasil diubah!',
             ]);
         }
     }

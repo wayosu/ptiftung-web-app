@@ -34,6 +34,22 @@
         </div>
     </header>
 
+    <!-- Main page content-->
+    <div class="container-fluid px-4">
+        <div class="card">
+            <div class="card-body overflow-hidden">
+                <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Bidang Kepakaran</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
     @include('admin.components.bidang-kepakaran.modal')
 @endsection
 

@@ -43,5 +43,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
     // Start Bidang Kepakaran //
     Route::get('/bidang-kepakaran', [App\Http\Controllers\BidangKepakaranController::class, 'index'])->name('bidangKepakaran.index');
     Route::get('/bidangKepakaranAjax', [App\Http\Controllers\BidangKepakaranController::class, 'indexAjax'])->name('bidangKepakaran.indexAjax');
+    Route::post('/bidang-kepakaran', [App\Http\Controllers\BidangKepakaranController::class, 'store'])->name('bidangKepakaran.store');
+    Route::get('/bidang-kepakaran/{id}/edit', [App\Http\Controllers\BidangKepakaranController::class, 'edit'])->name('bidangKepakaran.edit');
+    Route::put('/bidang-kepakaran/{id}', [App\Http\Controllers\BidangKepakaranController::class, 'update'])->name('bidangKepakaran.update');
+    Route::delete('/bidang-kepakaran/{id}', [App\Http\Controllers\BidangKepakaranController::class, 'destroy'])->name('bidangKepakaran.destroy');
     // End Bidang Kepakaran //
 });

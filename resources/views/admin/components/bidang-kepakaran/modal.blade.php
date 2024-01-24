@@ -18,8 +18,10 @@
                 </div>
                 <form>
                     <div class="mb-2">
-                        <label class="small mb-1" for="name">Nama<span class="text-danger">*</span></label>
-                        <input class="form-control" id="name" type="text" placeholder="Masukkan Nama" />
+                        <label class="small mb-1" for="bidangKepakaran">Bidang Kepakaran<span
+                                class="text-danger">*</span></label>
+                        <input class="form-control" id="bidangKepakaran" type="text"
+                            placeholder="Masukkan Bidang Kepakaran" />
                     </div>
                 </form>
             </div>
