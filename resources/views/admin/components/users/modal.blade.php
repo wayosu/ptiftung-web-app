@@ -124,21 +124,6 @@
                             <label class="small mb-1" for="nipField">NIP<span class="text-danger">*</span></label>
                             <input type="text" id="nipField" class="form-control" placeholder="Masukkan NIP">
                         </div>
-                        <div class="mb-2">
-                            <label class="small mb-1" for="prodiField">Program Studi<span
-                                    class="text-danger">*</span></label>
-                            <select id="prodiField" class="form-select" aria-label="Default select example">
-                                <option value="" selected hidden>Pilih Program Studi</option>
-                                <option value="pti">Pendidikan Teknologi Informasi (PTI)</option>
-                                <option value="si">Sistem Informasi (SI)</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label class="small mb-1" for="angkatanField">Angkatan<span
-                                    class="text-danger">*</span></label>
-                            <input type="text" id="angkatanField" class="form-control"
-                                placeholder="Masukkan Angkatan">
-                        </div>
                         <div class="mb-2" id="passInput">
                             <label class="small mb-1" for="passField">Password (default)<span
                                     class="text-danger">*</span></label>
