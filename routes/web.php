@@ -24,7 +24,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
 
     // Start Users //
     Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+    Route::delete('/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
 
+    // Start Admin //
+    Route::get('/users/admin', [App\Http\Controllers\UserController::class, 'byAdmin'])->name('users.byAdmin');
+    Route::get('/users/admin/create', [App\Http\Controllers\UserController::class, 'createAdmin'])->name('users.createAdmin');
+    Route::post('/users/admin', [App\Http\Controllers\UserController::class, 'storeAdmin'])->name('users.storeAdmin');
 
     // End Users //
 

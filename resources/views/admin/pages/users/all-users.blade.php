@@ -87,7 +87,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-start py-0 me-sm-n15 me-lg-0 o-hidden animated--fade-in-up"
                             aria-labelledby="navbarDropdownDocs">
-                            <a class="dropdown-item small py-2" href="#">
+                            <a class="dropdown-item small py-2" href="{{ route('users.createAdmin') }}">
                                 Admin
                             </a>
                             <div class="dropdown-divider m-0"></div>
@@ -119,13 +119,52 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($users as $user)
+                        @if (count($users) == 0)
                             <tr>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->roles->name }}</td>
-                                <td>{{ $user->created_at }}</td>
+                                <td colspan="4" class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center align-items-center small">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        Data tidak ditemukan.
+                                    </div>
+                                </td>
                             </tr>
-                        @endforeach
+                        @else
+                            @foreach ($users as $user)
+                                <tr>
+                                    <td>{{ $user->name }}</td>
+                                    <td>
+                                        @if ($user->role_name == 'Admin')
+                                            <span class="badge bg-blue-soft text-blue">Admin</span>
+                                        @elseif ($user->role_name == 'Dosen')
+                                            <span class="badge bg-red-soft text-red">Dosen</span>
+                                        @elseif ($user->role_name == 'Mahasiswa')
+                                            <span class="badge bg-green-soft text-green">Mahasiswa</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $user->created_at }}</td>
+                                    <td>
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="#"
+                                            title="Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="#"
+                                            title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <form id="deleteForm" class="d-none" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
+                                            href="javascript:void(0)" title="Hapus" data-user-id="{{ $user->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -141,4 +180,77 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // initialize datatables
+            $('#myDataTables').DataTable({
+                responsive: true,
+                order: [
+                    [2, 'desc']
+                ],
+            });
+
+            // toast config
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener(
+                        'mouseenter',
+                        Swal.stopTimer)
+                    toast.addEventListener(
+                        'mouseleave',
+                        Swal.resumeTimer)
+                }
+            });
+
+            // toast notification
+            @if (Session::has('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ Session::get('success') }}'
+                })
+            @endif
+
+            // confirm delete with swal
+            $('.tombol-hapus').on('click', function(e) {
+                e.preventDefault();
+
+                // Extracting the delete URL from the form
+                const userId = $(this).data('user-id');
+                const deleteUrl = "{{ route('users.destroy', ':id') }}";
+                const newDeleteUrl = deleteUrl.replace(':id', userId);
+
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    html: `Jika anda yakin, silahkan ketik "<b>Hapus Data</b>" di bawah ini. Jika tidak, klik tombol <b>Batal</b>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Hapus Data',
+                    cancelButtonText: 'Batal',
+                    input: 'text',
+                    inputAttributes: {
+                        autocomplete: 'off', // Disable autocomplete
+                    },
+                    inputValidator: (value) => {
+                        const trimmedValue = value.trim();
+
+                        if (!trimmedValue) {
+                            return 'Mohon diisi dengan benar!'
+                        } else if (trimmedValue.toLowerCase() === 'hapus data') {
+                            $('#deleteForm').attr('action', newDeleteUrl).submit();
+                        } else {
+                            return 'Mohon diisi dengan benar!';
+                        }
+                    },
+                });
+            });
+        });
+    </script>
 @endpush
