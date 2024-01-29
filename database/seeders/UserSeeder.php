@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -14,12 +14,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
-        ])->assignRole('admin');
+        // Create an admin user
+        User::factory()->create()->assignRole('admin');
+
+        // Create 10 users with 'dosen' role
+        User::factory()->count(10)->dosen()->create()->each(function ($user) {
+            $user->assignRole('dosen');
+        });
+
+        // Create 10 users with 'mahasiswa' role
+        User::factory()->count(10)->mahasiswa()->create()->each(function ($user) {
+            $user->assignRole('mahasiswa');
+        });
     }
 }

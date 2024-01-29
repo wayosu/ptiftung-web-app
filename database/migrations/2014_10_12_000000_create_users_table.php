@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('nim')->nullable()->unique();
             $table->string('nip')->nullable()->unique();
             $table->string('hak_akses_khusus')->nullable();
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }
