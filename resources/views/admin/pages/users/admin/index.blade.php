@@ -37,6 +37,13 @@
             display: flex;
             align-items: center;
         }
+
+        .rounded-circle-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
     </style>
 @endpush
 
@@ -101,10 +108,12 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ date('d F Y H:i', strtotime($user->created_at)) }}</td>
                                     <td>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="#"
-                                            title="Detail">
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+                                            href="javascript:void(0)" role="button" title="Detail" data-bs-toggle="modal"
+                                            data-bs-target="#detailModal{{ $user->id }}">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @include('admin.pages.users.admin.detail')
 
                                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
                                             href="{{ route('users.editAdmin', $user->id) }}" title="Edit">

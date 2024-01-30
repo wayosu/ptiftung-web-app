@@ -139,5 +139,56 @@ class UserController extends Controller
 
     public function updateAdmin(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|min:3',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'foto' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.min' => 'Minimal 3 karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+        ]);
+
+        if ($request->password) {
+            $request->validate([
+                'password' => 'min:6'
+            ], [
+                'password.min' => 'Password minimal 6 karakter.',
+            ]);
+        }
+
+        $user = User::findOrFail($id);
+
+        if ($request->hasFile('foto')) {
+            if (Storage::exists('public/usersProfile/' . $user->foto)) {
+                Storage::delete('public/usersProfile/' . $user->foto);
+            }
+
+            $extractEmail = explode('@', $request->email);
+            $nameFile = $extractEmail[0] . '-' .  $request->file('foto')->hashName();
+
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+
+            $dataUser = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'foto' => $nameFile
+            ];
+        } else {
+            $dataUser = [
+                'name' => $request->name,
+                'email' => $request->email
+            ];
+        }
+
+        if ($request->password) {
+            $dataUser['password'] = bcrypt($request->password);
+        }
+
+        $user->update($dataUser);
+
+        return redirect()->route('users.byAdmin')->with('success', 'Data admin berhasil diubah.');
     }
 }

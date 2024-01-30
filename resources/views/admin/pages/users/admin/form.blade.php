@@ -56,6 +56,9 @@
             action="@if (isset($user)) {{ route('users.updateAdmin', $user->id) }} @else {{ route('users.storeAdmin') }} @endif"
             method="POST" class="row" enctype="multipart/form-data">
             @csrf
+            @if (isset($user))
+                @method('PUT')
+            @endif
 
             <div class="col-xl-4">
                 <div class="card mb-4 mb-xl-0">
