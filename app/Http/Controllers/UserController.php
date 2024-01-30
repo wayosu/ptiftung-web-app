@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Dosen;
-use App\Models\Mahasiswa;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -49,6 +46,11 @@ class UserController extends Controller
             $user->dosen()->delete();
         }
 
+        // hapus foto storage
+        if (Storage::exists('public/usersProfile/' . $user->foto)) {
+            Storage::delete('public/usersProfile/' . $user->foto);
+        }
+
         // hapus data user
         $user->delete();
 
@@ -57,11 +59,18 @@ class UserController extends Controller
 
     public function byAdmin()
     {
+        // ambil data
+        $users = User::whereHas('roles', function ($q) {
+            $q->where('name', 'admin');
+        })->orderBy("created_at", "desc")->get();
+
+        // tampilkan view
         return view('admin.pages.users.admin.index', [
             'icon' => 'users',
             'title' => 'Daftar Admin',
             'subtitle' => 'Daftar seluruh admin.',
-            'active' => 'users'
+            'active' => 'users',
+            'users' => $users
         ]);
     }
 
@@ -74,8 +83,61 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeAdmin()
+    public function storeAdmin(Request $request)
     {
-        dd(request()->all());
+        $request->validate([
+            'name' => 'required|min:3',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+            'foto' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.min' => 'Minimal 3 karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $extractEmail = explode('@', $request->email);
+            $nameFile = $extractEmail[0] . '-' .  $request->file('foto')->hashName();
+
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'foto' => $nameFile
+            ]);
+        } else {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password)
+            ]);
+        }
+
+        $user->assignRole('admin');
+
+        return redirect()->route('users.byAdmin')->with('success', 'Data admin berhasil ditambahkan.');
+    }
+
+    public function editAdmin($id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('admin.pages.users.admin.form', [
+            'icon' => 'file-text',
+            'title' => 'Formulir Edit Admin',
+            'active' => 'users',
+            'user' => $user
+        ]);
+    }
+
+    public function updateAdmin(Request $request, $id)
+    {
     }
 }

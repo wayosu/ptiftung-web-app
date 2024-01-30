@@ -3,8 +3,19 @@
 @push('css')
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
     <style>
+        .rounded-circle-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
         #togglePassword {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
+            background: white;
+            right: -3px !important;
         }
 
         #defaultPassword {
@@ -41,22 +52,32 @@
     </header>
 
     <div class="container-xl px-4 mt-4">
-        <form action="{{ route('users.storeAdmin') }}" method="POST" class="row">
+        <form
+            action="@if (isset($user)) {{ route('users.updateAdmin', $user->id) }} @else {{ route('users.storeAdmin') }} @endif"
+            method="POST" class="row" enctype="multipart/form-data">
             @csrf
 
             <div class="col-xl-4">
                 <div class="card mb-4 mb-xl-0">
                     <div class="card-header">Foto Profil</div>
                     <div class="card-body text-center">
-                        <img class="img-account-profile rounded-circle mb-2" id="previewImage"
-                            src="{{ asset('assets/admin/img/user-placeholder.svg') }}" alt="" />
-                        <div class="small font-italic text-muted mb-4">JPG atau PNG tidak lebih besar dari 5 MB</div>
+                        <img class="rounded-circle-image mb-2" id="previewImage"
+                            src="{{ isset($user)
+                                ? ($user->foto
+                                    ? asset('storage/usersProfile/' . $user->foto)
+                                    : asset('assets/admin/img/user-placeholder.svg'))
+                                : asset('assets/admin/img/user-placeholder.svg') }}"
+                            alt="" />
+                        <div class="small font-italic text-muted mb-4">JPG atau PNG tidak lebih besar dari 2 MB</div>
                         <input type="file" name="foto" id="photoInput" class="d-none"
                             accept="image/jpeg, image/png" />
                         <label for="photoInput" id="unggahFoto" class="btn btn-primary" type="button">
                             <i class="fas fa-upload me-1"></i>
                             Unggah Foto
                         </label>
+                        @error('foto')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -70,32 +91,46 @@
                                 Nama Lengkap
                                 <span class="text-danger">*</span>
                             </label>
-                            <input class="form-control" name="name" id="nameField" type="text"
-                                placeholder="Masukkan nama lengkap anda" value="" />
+                            <input class="form-control @error('name') is-invalid @enderror" name="name" id="nameField"
+                                type="text" placeholder="Masukkan nama lengkap anda"
+                                value="{{ old('name', $user->name ?? '') }}" />
+                            @error('name')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1" for="emailField">
                                 Email
                                 <span class="text-danger">*</span>
                             </label>
-                            <input class="form-control" name="email" id="emailField" type="email"
-                                placeholder="Masukkan email anda" value="" />
+                            <input class="form-control @error('email') is-invalid @enderror" name="email" id="emailField"
+                                type="email" placeholder="Masukkan email anda"
+                                value="{{ old('email', $user->email ?? '') }}" />
+                            @error('email')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1 w-100" for="passwordField">
                                 Password
-                                <span class="text-danger">*</span>
+                                @if (!isset($user))
+                                    <span class="text-danger">*</span>
+                                @endif
                                 <span id="defaultPassword" class="text-primary float-end">Default
                                     Password</span>
                             </label>
                             <div class="position-relative">
-                                <input class="form-control" name="password" id="passwordField" type="password"
-                                    placeholder="Masukkan password anda" value="" />
+                                <input class="form-control @error('password') is-invalid @enderror" name="password"
+                                    id="passwordField" type="password" placeholder="Masukkan password anda"
+                                    value="{{ old('password') }}" />
                                 <span id="togglePassword"
                                     class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
                                     data-feather="eye-off">
                                 </span>
                             </div>
+                            @error('password')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                         <button class="btn btn-light" type="reset">
                             <i class="fa-solid fa-rotate-left me-1"></i>
@@ -103,7 +138,11 @@
                         </button>
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-floppy-disk me-1"></i>
-                            Simpan
+                            @if (isset($user))
+                                Perbarui
+                            @else
+                                Simpan
+                            @endif
                         </button>
                     </div>
                 </div>
@@ -173,11 +212,11 @@
         // Function to preview image
         function previewImage(input) {
             if (input.files && input.files[0]) {
-                // Validate file size
-                if (input.files[0].size > 5 * 1024 * 1024) {
+                // Validate file size (2MB maximum)
+                if (input.files[0].size > 2 * 1024 * 1024) {
                     Toast.fire({
                         icon: 'error',
-                        title: 'Ukuran file harus kurang dari 5 MB.'
+                        title: 'Ukuran file harus kurang atau tidak lebih dari 2 MB.'
                     });
 
                     $('#previewImage').attr('src', '{{ asset('assets/admin/img/user-placeholder.svg') }}');

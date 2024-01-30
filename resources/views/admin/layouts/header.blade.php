@@ -93,12 +93,14 @@
             <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage"
                 href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
-                <img class="img-fluid" src="{{ asset('assets/admin/img/profile-1.png') }}" />
+                <img class="img-fluid" style="object-fit: cover; width: 40px; height: 40px; border-radius: 50%;"
+                    src="{{ Auth::user()->foto ? asset('storage/usersProfile/' . Auth::user()->foto) : asset('assets/admin/img/profile-1.png') }}" />
             </a>
             <div class="dropdown-menu dropdown-menu-end border-0 shadow animated--fade-in-up"
                 aria-labelledby="navbarDropdownUserImage">
                 <h6 class="dropdown-header d-flex align-items-center">
-                    <img class="dropdown-user-img" src="{{ asset('assets/admin/img/profile-1.png') }}" />
+                    <img class="dropdown-user-img" style="object-fit: cover;"
+                        src="{{ Auth::user()->foto ? asset('storage/usersProfile/' . Auth::user()->foto) : asset('assets/admin/img/profile-1.png') }}" />
                     <div class="dropdown-user-details">
                         <div class="dropdown-user-details-name">{{ Auth::user()->name }}</div>
                         <div class="dropdown-user-details-email">
