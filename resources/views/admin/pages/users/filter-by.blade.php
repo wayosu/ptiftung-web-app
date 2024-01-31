@@ -9,18 +9,23 @@
         <a class="dropdown-item small py-2" href="{{ route('users.index') }}">
             All Users
         </a>
+        <div class="dropdown-divider m-0"></div>
     @endif
     @if (Route::currentRouteName() != 'users.byAdmin')
         <a class="dropdown-item small py-2" href="{{ route('users.byAdmin') }}">
             Admin
         </a>
+        <div class="dropdown-divider m-0"></div>
     @endif
-    <div class="dropdown-divider m-0"></div>
-    <a class="dropdown-item small py-2" href="#">
-        Dosen
-    </a>
-    <div class="dropdown-divider m-0"></div>
-    <a class="dropdown-item small py-2" href="#">
-        Mahasiswa
-    </a>
+    @if (Route::currentRouteName() != 'users.byDosen')
+        <a class="dropdown-item small py-2" href="{{ route('users.byDosen') }}">
+            Dosen
+        </a>
+        <div class="dropdown-divider m-0"></div>
+    @endif
+    @if (Route::currentRouteName() != 'users.byMahasiswa')
+        <a class="dropdown-item small py-2" href="{{ route('users.byMahasiswa') }}">
+            Mahasiswa
+        </a>
+    @endif
 </div>

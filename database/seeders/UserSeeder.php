@@ -25,6 +25,11 @@ class UserSeeder extends Seeder
         // Create 10 users with 'mahasiswa' role
         User::factory()->count(10)->mahasiswa()->create()->each(function ($user) {
             $user->assignRole('mahasiswa');
+
+            $user->mahasiswa()->create([
+                'program_studi' => 'Pendidikan Teknologi Informasi',
+                'angkatan' => 2020,
+            ]);
         });
     }
 }

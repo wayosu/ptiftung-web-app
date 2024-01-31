@@ -16,9 +16,11 @@
                                 : asset('assets/admin/img/user-placeholder.svg'))
                             : asset('assets/admin/img/user-placeholder.svg') }}"
                         alt="profile-image">
-                    <div class="text-center w-100">
-                        <h1 class="fw-bolder mb-2">{{ $user->name }}</h1>
-                        <h4 class="fw-400 mb-2">{{ $user->email }}</h4>
+                    <div class="text-center">
+                        <h1 class="fw-bolder mb-2">{{ $user->name ?? '' }}</h1>
+                        <h5 class="fw-400 mb-2">{{ $user->nim ?? '' }} - Angkatan {{ $user->mahasiswa->angkatan ?? '' }}
+                        </h5>
+                        <h6 class="fw-400 mb-3">Program Studi {{ $user->mahasiswa->program_studi ?? '' }}</h6>
                         <hr>
                         <span class="small text-muted">
                             Akun ini dibuat pada tanggal

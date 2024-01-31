@@ -68,9 +68,9 @@
                             Refresh
                         </a>
                         @include('admin.pages.users.filter-by')
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createAdmin') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createMahasiswa') }}">
                             <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Admin
+                            Tambah Mahasiswa
                         </a>
                     </div>
                 </div>
@@ -86,7 +86,9 @@
                     <thead>
                         <tr>
                             <th>Nama</th>
-                            <th>Email</th>
+                            <th>NIM</th>
+                            <th>Program Studi</th>
+                            <th>Angkatan</th>
                             <th>Tanggal Dibuat</th>
                             <th>Aksi</th>
                         </tr>
@@ -105,7 +107,9 @@
                             @foreach ($users as $user)
                                 <tr>
                                     <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->nim }}</td>
+                                    <td>{{ $user->mahasiswa->program_studi ?? '-' }}</td>
+                                    <td>{{ $user->mahasiswa->angkatan ?? '-' }}</td>
                                     <td>{{ date('d F Y H:i', strtotime($user->created_at)) }}</td>
                                     <td>
                                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
@@ -115,7 +119,7 @@
                                         </a>
 
                                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                            href="{{ route('users.editAdmin', $user->id) }}" title="Ubah Profil">
+                                            href="{{ route('users.editMahasiswa', $user->id) }}" title="Ubah Profil">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
@@ -130,7 +134,7 @@
                                     </td>
                                 </tr>
 
-                                @include('admin.pages.users.admin.detail')
+                                @include('admin.pages.users.mahasiswa.detail')
                             @endforeach
                         @endif
                     </tbody>
@@ -154,7 +158,7 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [2, 'desc']
+                    [1, 'asc']
                 ],
             });
 

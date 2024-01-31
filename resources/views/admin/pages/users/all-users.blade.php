@@ -59,7 +59,7 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Refresh
                         </a>
-                        @include('admin.pages.users.admin.filter-by')
+                        @include('admin.pages.users.filter-by')
                         <a class="btn btn-sm btn-light text-primary dropdown-toggle" id="navbarDropdownDocs"
                             href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">

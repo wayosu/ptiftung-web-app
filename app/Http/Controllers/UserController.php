@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -69,7 +70,7 @@ class UserController extends Controller
             'icon' => 'users',
             'title' => 'Daftar Admin',
             'subtitle' => 'Daftar seluruh admin.',
-            'active' => 'users',
+            'active' => 'admin',
             'users' => $users
         ]);
     }
@@ -79,7 +80,7 @@ class UserController extends Controller
         return view('admin.pages.users.admin.form', [
             'icon' => 'file-text',
             'title' => 'Formulir Tambah Admin',
-            'active' => 'users'
+            'active' => 'admin'
         ]);
     }
 
@@ -132,7 +133,7 @@ class UserController extends Controller
         return view('admin.pages.users.admin.form', [
             'icon' => 'file-text',
             'title' => 'Formulir Edit Admin',
-            'active' => 'users',
+            'active' => 'admin',
             'user' => $user
         ]);
     }
@@ -190,5 +191,174 @@ class UserController extends Controller
         $user->update($dataUser);
 
         return redirect()->route('users.byAdmin')->with('success', 'Data admin berhasil diubah.');
+    }
+
+    public function byDosen()
+    {
+        return view('admin.pages.users.dosen.index', [
+            'icon' => 'users',
+            'title' => 'Daftar Dosen',
+            'subtitle' => 'Daftar seluruh dosen.',
+            'active' => 'dosen',
+        ]);
+    }
+
+    public function byMahasiswa()
+    {
+        // ambil data
+        $users = User::with('mahasiswa')->whereHas('roles', function ($q) {
+            $q->where('name', 'mahasiswa');
+        })->orderBy("nim", "asc")->get();
+
+        return view('admin.pages.users.mahasiswa.index', [
+            'icon' => 'users',
+            'title' => 'Daftar Mahasiswa',
+            'subtitle' => 'Daftar seluruh mahasiswa.',
+            'active' => 'mahasiswa',
+            'users' => $users
+        ]);
+    }
+
+    public function createMahasiswa()
+    {
+        return view('admin.pages.users.mahasiswa.form', [
+            'icon' => 'file-text',
+            'title' => 'Formulir Tambah Mahasiswa',
+            'active' => 'mahasiswa'
+        ]);
+    }
+
+    public function storeMahasiswa(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|min:3',
+            'nim' => 'required|numeric|unique:users,nim',
+            'program_studi' => 'required',
+            'angkatan' => 'required|numeric',
+            'password' => 'required|min:6',
+            'foto' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.min' => 'Minimal 3 karakter.',
+            'nim.required' => 'NIM harus diisi.',
+            'nim.numeric' => 'NIM harus berupa angka.',
+            'nim.unique' => 'NIM sudah terdaftar.',
+            'program_studi.required' => 'Program Studi harus diisi.',
+            'angkatan.required' => 'Angkatan harus diisi.',
+            'angkatan.numeric' => 'Angkatan harus berupa angka.',
+            'password.required' => 'Password harus diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berupa jpeg, png, jpg.',
+            'foto.max' => 'Foto maksimal 2MB.',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $nameFile = $request->nim . '-' .  $request->file('foto')->hashName();
+
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+
+            $user = User::create([
+                'name' => $request->name,
+                'nim' => $request->nim,
+                'password' => bcrypt($request->password),
+                'foto' => $nameFile,
+            ]);
+        } else {
+            $user = User::create([
+                'name' => $request->name,
+                'nim' => $request->nim,
+                'password' => bcrypt($request->password),
+            ]);
+        }
+
+        $user->assignRole('mahasiswa');
+
+        Mahasiswa::create([
+            'user_id' => $user->id,
+            'program_studi' => $request->program_studi,
+            'angkatan' => $request->angkatan,
+        ]);
+
+        return redirect()->route('users.byMahasiswa')->with('success', 'Data mahasiswa berhasil ditambahkan.');
+    }
+
+    public function editMahasiswa($id)
+    {
+        $user = User::with('mahasiswa')->findOrFail($id);
+
+        return view('admin.pages.users.mahasiswa.form', [
+            'icon' => 'file-text',
+            'title' => 'Formulir Edit Mahasiswa',
+            'active' => 'mahasiswa',
+            'user' => $user
+        ]);
+    }
+
+    public function updateMahasiswa(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|min:3',
+            'nim' => 'required|numeric|unique:users,nim,' . $id,
+            'program_studi' => 'required',
+            'angkatan' => 'required|numeric',
+            'foto' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.min' => 'Minimal 3 karakter.',
+            'nim.required' => 'NIM harus diisi.',
+            'nim.numeric' => 'NIM harus berupa angka.',
+            'nim.unique' => 'NIM sudah terdaftar.',
+            'program_studi.required' => 'Program Studi harus diisi.',
+            'angkatan.required' => 'Angkatan harus diisi.',
+            'angkatan.numeric' => 'Angkatan harus berupa angka.',
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berupa jpeg, png, jpg.',
+            'foto.max' => 'Foto maksimal 2MB.',
+        ]);
+
+        if ($request->password) {
+            $request->validate([
+                'password' => 'min:6'
+            ], [
+                'password.min' => 'Password minimal 6 karakter.',
+            ]);
+        }
+
+        $user = User::with('mahasiswa')->findOrFail($id);
+
+        if ($request->hasFile('foto')) {
+            if (Storage::exists('public/usersProfile/' . $user->foto)) {
+                Storage::delete('public/usersProfile/' . $user->foto);
+            }
+
+            $nameFile = $request->nim . '-' .  $request->file('foto')->hashName();
+
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+
+            $dataUser = [
+                'name' => $request->name,
+                'nim' => $request->nim,
+                'foto' => $nameFile
+            ];
+        } else {
+            $dataUser = [
+                'name' => $request->name,
+                'nim' => $request->nim,
+            ];
+        }
+
+        if ($request->password) {
+            $dataUser['password'] = bcrypt($request->password);
+        }
+
+        $user->update($dataUser);
+
+        $user->mahasiswa()->update([
+            'program_studi' => $request->program_studi,
+            'angkatan' => $request->angkatan,
+        ]);
+
+        return redirect()->route('users.byMahasiswa')->with('success', 'Data mahasiswa berhasil diubah.');
     }
 }

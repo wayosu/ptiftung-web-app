@@ -92,7 +92,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (count($users) == 0)
+                        {{-- @if (count($users) == 0)
                             <tr>
                                 <td colspan="4" class="text-center">
                                     <div class="d-flex gap-1 justify-content-center align-items-center small">
@@ -113,6 +113,7 @@
                                             data-bs-toggle="modal" data-bs-target="#detailModal{{ $user->id }}">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @include('admin.pages.users.admin.detail')
 
                                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
                                             href="{{ route('users.editAdmin', $user->id) }}" title="Ubah Profil">
@@ -129,10 +130,8 @@
                                         </a>
                                     </td>
                                 </tr>
-
-                                @include('admin.pages.users.admin.detail')
                             @endforeach
-                        @endif
+                        @endif --}}
                     </tbody>
                 </table>
             </div>
