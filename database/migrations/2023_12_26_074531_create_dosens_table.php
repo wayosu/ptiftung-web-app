@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('slug')->nullable()->unique();
-            $table->string('jk')->nullable();
+            $table->string('jenis_kelamin')->nullable();
             $table->string('umur')->nullable();
             $table->string('gelar')->nullable();
             $table->string('link_gscholar')->nullable();

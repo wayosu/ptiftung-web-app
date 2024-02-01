@@ -68,9 +68,9 @@
                             Refresh
                         </a>
                         @include('admin.pages.users.filter-by')
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createAdmin') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createDosen') }}">
                             <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Admin
+                            Tambah Dosen
                         </a>
                     </div>
                 </div>

@@ -72,11 +72,11 @@
                                 Admin
                             </a>
                             <div class="dropdown-divider m-0"></div>
-                            <a class="dropdown-item small py-2" href="#">
+                            <a class="dropdown-item small py-2" href="{{ route('users.createDosen') }}">
                                 Dosen
                             </a>
                             <div class="dropdown-divider m-0"></div>
-                            <a class="dropdown-item small py-2" href="#">
+                            <a class="dropdown-item small py-2" href="{{ route('users.createMahasiswa') }}">
                                 Mahasiswa
                             </a>
                         </div>

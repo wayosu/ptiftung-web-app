@@ -32,8 +32,8 @@
                     <div class="collapse" id="byRole" data-bs-parent="#accordionSidenavAppsMenu">
                         <nav class="sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ route('users.byAdmin') }}">Admin</a>
-                            <a class="nav-link" href="#">Dosen</a>
-                            <a class="nav-link" href="#">Mahasiswa</a>
+                            <a class="nav-link" href="{{ route('users.byDosen') }}">Dosen</a>
+                            <a class="nav-link" href="{{ route('users.byMahasiswa') }}">Mahasiswa</a>
                         </nav>
                     </div>
                 </nav>

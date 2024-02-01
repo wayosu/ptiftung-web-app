@@ -68,7 +68,7 @@ class UserController extends Controller
         // tampilkan view
         return view('admin.pages.users.admin.index', [
             'icon' => 'users',
-            'title' => 'Daftar Admin',
+            'title' => 'Admin',
             'subtitle' => 'Daftar seluruh admin.',
             'active' => 'admin',
             'users' => $users
@@ -78,8 +78,9 @@ class UserController extends Controller
     public function createAdmin()
     {
         return view('admin.pages.users.admin.form', [
-            'icon' => 'file-text',
-            'title' => 'Formulir Tambah Admin',
+            'icon' => 'users',
+            'title' => 'Admin',
+            'subtitle' => 'Tambah Admin',
             'active' => 'admin'
         ]);
     }
@@ -131,8 +132,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         return view('admin.pages.users.admin.form', [
-            'icon' => 'file-text',
-            'title' => 'Formulir Edit Admin',
+            'icon' => 'users',
+            'title' => 'Admin',
+            'subtitle' => 'Edit Admin',
             'active' => 'admin',
             'user' => $user
         ]);
@@ -197,9 +199,18 @@ class UserController extends Controller
     {
         return view('admin.pages.users.dosen.index', [
             'icon' => 'users',
-            'title' => 'Daftar Dosen',
+            'title' => 'Dosen',
             'subtitle' => 'Daftar seluruh dosen.',
             'active' => 'dosen',
+        ]);
+    }
+    public function createDosen()
+    {
+        return view('admin.pages.users.dosen.form', [
+            'icon' => 'users',
+            'title' => 'Dosen',
+            'subtitle' => 'Tambah Dosen',
+            'active' => 'dosen'
         ]);
     }
 
@@ -212,7 +223,7 @@ class UserController extends Controller
 
         return view('admin.pages.users.mahasiswa.index', [
             'icon' => 'users',
-            'title' => 'Daftar Mahasiswa',
+            'title' => 'Mahasiswa',
             'subtitle' => 'Daftar seluruh mahasiswa.',
             'active' => 'mahasiswa',
             'users' => $users
@@ -222,8 +233,9 @@ class UserController extends Controller
     public function createMahasiswa()
     {
         return view('admin.pages.users.mahasiswa.form', [
-            'icon' => 'file-text',
-            'title' => 'Formulir Tambah Mahasiswa',
+            'icon' => 'users',
+            'title' => 'Mahasiswa',
+            'subtitle' => 'Tambah Mahasiswa',
             'active' => 'mahasiswa'
         ]);
     }
@@ -288,8 +300,9 @@ class UserController extends Controller
         $user = User::with('mahasiswa')->findOrFail($id);
 
         return view('admin.pages.users.mahasiswa.form', [
-            'icon' => 'file-text',
-            'title' => 'Formulir Edit Mahasiswa',
+            'icon' => 'users',
+            'title' => 'Mahasiswa',
+            'subtitle' => 'Edit Mahasiswa',
             'active' => 'mahasiswa',
             'user' => $user
         ]);
