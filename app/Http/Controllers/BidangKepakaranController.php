@@ -4,132 +4,88 @@ namespace App\Http\Controllers;
 
 use App\Models\BidangKepakaran;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
 class BidangKepakaranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('admin.pages.bidang-kepakaran.bidangKepakaran', [
+        // ambil data
+        $bidangKepakarans = BidangKepakaran::all();
+
+        return view('admin.pages.bidang-kepakaran.index', [
             'icon' => 'list',
             'title' => 'Bidang Kepakaran',
             'subtitle' => 'Daftar Bidang Kepakaran',
             'active' => 'bidangKepakaran',
+            'bidangKepakarans' => $bidangKepakarans
         ]);
     }
 
-    public function indexAjax()
+    public function create()
     {
-        // ambil data
-        $data = BidangKepakaran::orderBy('bidang_kepakaran', 'asc')->get();
-
-        // kembalikan response
-        return DataTables::of($data)
-            ->addColumn('aksi', function ($data) {
-                return view('admin.components.bidang-kepakaran.tombolAksi', compact('data'));
-            })
-            ->make(true);
+        return view('admin.pages.bidang-kepakaran.form', [
+            'icon' => 'plus',
+            'title' => 'Bidang Kepakaran',
+            'subtitle' => 'Tambah Bidang Kepakaran',
+            'active' => 'bidangKepakaran',
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validasi = Validator::make($request->all(), [
-            'bidangKepakaran' => 'required',
+        $request->validate([
+            'bidang_kepakaran' => 'required|unique:bidang_kepakarans',
         ], [
-            'bidangKepakaran.required' => 'Bidang Kepakaran harus diisi!',
+            'bidang_kepakaran.required' => 'Bidang Kepakaran harus diisi!',
+            'bidang_kepakaran.unique' => 'Bidang Kepakaran sudah ada!',
         ]);
 
-        // Cek validasi
-        if ($validasi->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'code' => '400',
-                'errors' => $validasi->errors()->all(),
-                'message' => 'Data gagal disimpan!',
-            ]);
-        } else {
-            $bidangKepakaran = new BidangKepakaran();
-            $bidangKepakaran->bidang_kepakaran = $request->bidangKepakaran;
-            $bidangKepakaran->slug = Str::slug($request->bidangKepakaran);
-            $bidangKepakaran->save();
+        BidangKepakaran::create([
+            'bidang_kepakaran' => $request->bidang_kepakaran,
+            'slug' => Str::slug($request->bidang_kepakaran),
+        ]);
 
-            return response()->json([
-                'status' => 'success',
-                'code' => '200',
-                'message' => 'Data berhasil disimpan!',
-            ]);
-        }
+        return redirect()->route('bidangKepakaran.index')->with('success', 'Bidang Kepakaran berhasil ditambahkan!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
-        // ambil data berdasarkan id
-        $data = BidangKepakaran::findOrFail($id);
+        // ambil data
+        $bidangKepakaran = BidangKepakaran::findOrFail($id);
 
-        // kembalikan response
-        return response()->json([
-            'status' => 'success',
-            'code' => '200',
-            'result' => $data,
+        return view('admin.pages.bidang-kepakaran.form', [
+            'icon' => 'edit',
+            'title' => 'Bidang Kepakaran',
+            'subtitle' => 'Edit Bidang Kepakaran',
+            'active' => 'bidangKepakaran',
+            'bidangKepakaran' => $bidangKepakaran
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        $validasi = Validator::make($request->all(), [
-            'bidangKepakaran' => 'required',
+        $request->validate([
+            'bidang_kepakaran' => 'required|unique:bidang_kepakarans,bidang_kepakaran,' . $id,
         ], [
-            'bidangKepakaran.required' => 'Bidang Kepakaran harus diisi!',
+            'bidang_kepakaran.required' => 'Bidang Kepakaran harus diisi!',
+            'bidang_kepakaran.unique' => 'Bidang Kepakaran sudah ada!',
         ]);
 
-        // Cek validasi
-        if ($validasi->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'code' => '400',
-                'errors' => $validasi->errors()->all(),
-                'message' => 'Data gagal disimpan!',
-            ]);
-        } else {
-            $bidangKepakaran = BidangKepakaran::findOrFail($id);
-            $bidangKepakaran->bidang_kepakaran = $request->bidangKepakaran;
-            $bidangKepakaran->slug = Str::slug($request->bidangKepakaran);
-            $bidangKepakaran->save();
+        $bidangKepakaran = BidangKepakaran::findOrFail($id);
 
-            return response()->json([
-                'status' => 'success',
-                'code' => '200',
-                'message' => 'Data berhasil diubah!',
-            ]);
-        }
+        $bidangKepakaran->update([
+            'bidang_kepakaran' => $request->bidang_kepakaran,
+        ]);
+
+        return redirect()->route('bidangKepakaran.index')->with('success', 'Bidang Kepakaran berhasil diubah!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $bidangKepakaran = BidangKepakaran::findOrFail($id);
         $bidangKepakaran->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'code' => '200',
-            'message' => 'Data berhasil dihapus!',
-        ]);
+        return redirect()->route('bidangKepakaran.index')->with('success', 'Bidang Kepakaran berhasil dihapus!');
     }
 }

@@ -78,7 +78,7 @@ class UserController extends Controller
     public function createAdmin()
     {
         return view('admin.pages.users.admin.form', [
-            'icon' => 'users',
+            'icon' => 'plus',
             'title' => 'Admin',
             'subtitle' => 'Tambah Admin',
             'active' => 'admin'
@@ -132,7 +132,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         return view('admin.pages.users.admin.form', [
-            'icon' => 'users',
+            'icon' => 'edit',
             'title' => 'Admin',
             'subtitle' => 'Edit Admin',
             'active' => 'admin',
@@ -207,7 +207,7 @@ class UserController extends Controller
     public function createDosen()
     {
         return view('admin.pages.users.dosen.form', [
-            'icon' => 'users',
+            'icon' => 'plus',
             'title' => 'Dosen',
             'subtitle' => 'Tambah Dosen',
             'active' => 'dosen'
@@ -233,7 +233,7 @@ class UserController extends Controller
     public function createMahasiswa()
     {
         return view('admin.pages.users.mahasiswa.form', [
-            'icon' => 'users',
+            'icon' => 'plus',
             'title' => 'Mahasiswa',
             'subtitle' => 'Tambah Mahasiswa',
             'active' => 'mahasiswa'
@@ -300,7 +300,7 @@ class UserController extends Controller
         $user = User::with('mahasiswa')->findOrFail($id);
 
         return view('admin.pages.users.mahasiswa.form', [
-            'icon' => 'users',
+            'icon' => 'edit',
             'title' => 'Mahasiswa',
             'subtitle' => 'Edit Mahasiswa',
             'active' => 'mahasiswa',

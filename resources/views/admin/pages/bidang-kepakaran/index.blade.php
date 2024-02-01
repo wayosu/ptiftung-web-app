@@ -76,4 +76,140 @@
             </div>
         </div>
     </header>
+
+    <!-- Main page content-->
+    <div class="container-fluid px-4">
+        <div class="card">
+            <div class="card-body overflow-hidden">
+                <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Bidang Kepakaran</th>
+                            <th>Tanggal Dibuat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (count($bidangKepakarans) == 0)
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center align-items-center small">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        Data tidak ditemukan.
+                                    </div>
+                                </td>
+                            </tr>
+                        @else
+                            @foreach ($bidangKepakarans as $bidangKepakaran)
+                                <tr>
+                                    <td>{{ $bidangKepakaran->bidang_kepakaran }}</td>
+                                    <td>{{ date('d F Y H:i', strtotime($bidangKepakaran->created_at)) }}</td>
+                                    <td>
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+                                            href="{{ route('bidangKepakaran.edit', $bidangKepakaran->id) }}"
+                                            title="Ubah Profil">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <form id="deleteForm" class="d-none" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
+                                            href="javascript:void(0)" title="Hapus"
+                                            data-user-id="{{ $bidangKepakaran->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 @endsection
+
+
+@push('js')
+    <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // initialize datatables
+            $('#myDataTables').DataTable({
+                responsive: true,
+                order: [
+                    [0, 'asc']
+                ],
+            });
+
+            // toast config
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener(
+                        'mouseenter',
+                        Swal.stopTimer)
+                    toast.addEventListener(
+                        'mouseleave',
+                        Swal.resumeTimer)
+                }
+            });
+
+            // toast notification
+            @if (Session::has('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ Session::get('success') }}'
+                })
+            @endif
+
+            // confirm delete with swal
+            $('.tombol-hapus').on('click', function(e) {
+                e.preventDefault();
+
+                // Extracting the delete URL from the form
+                const userId = $(this).data('user-id');
+                const deleteUrl = "{{ route('bidangKepakaran.destroy', ':id') }}";
+                const newDeleteUrl = deleteUrl.replace(':id', userId);
+
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    html: `Jika anda yakin, silahkan ketik "<b>Hapus Data</b>" di bawah ini. Jika tidak, klik tombol <b>Batal</b>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Hapus Data',
+                    cancelButtonText: 'Batal',
+                    input: 'text',
+                    inputAttributes: {
+                        autocomplete: 'off', // Disable autocomplete
+                    },
+                    inputValidator: (value) => {
+                        const trimmedValue = value.trim();
+
+                        if (!trimmedValue) {
+                            return 'Mohon diisi dengan benar!'
+                        } else if (trimmedValue.toLowerCase() === 'hapus data') {
+                            $('#deleteForm').attr('action', newDeleteUrl).submit();
+                        } else {
+                            return 'Mohon diisi dengan benar!';
+                        }
+                    },
+                });
+            });
+        });
+    </script>
+@endpush

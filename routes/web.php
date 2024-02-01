@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
 
     // Dosen //
     Route::get('/users/dosen', [App\Http\Controllers\UserController::class, 'byDosen'])->name('users.byDosen');
+    Route::get('/users/dosen/create', [App\Http\Controllers\UserController::class, 'createDosen'])->name('users.createDosen');
 
     // Mahasiswa //
     Route::get('/users/mahasiswa', [App\Http\Controllers\UserController::class, 'byMahasiswa'])->name('users.byMahasiswa');
@@ -47,7 +48,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
 
     // Start Bidang Kepakaran //
     Route::get('/bidang-kepakaran', [App\Http\Controllers\BidangKepakaranController::class, 'index'])->name('bidangKepakaran.index');
-    Route::get('/bidangKepakaranAjax', [App\Http\Controllers\BidangKepakaranController::class, 'indexAjax'])->name('bidangKepakaran.indexAjax');
+    Route::get('/bidang-kepakaran/create', [App\Http\Controllers\BidangKepakaranController::class, 'create'])->name('bidangKepakaran.create');
     Route::post('/bidang-kepakaran', [App\Http\Controllers\BidangKepakaranController::class, 'store'])->name('bidangKepakaran.store');
     Route::get('/bidang-kepakaran/{id}/edit', [App\Http\Controllers\BidangKepakaranController::class, 'edit'])->name('bidangKepakaran.edit');
     Route::put('/bidang-kepakaran/{id}', [App\Http\Controllers\BidangKepakaranController::class, 'update'])->name('bidangKepakaran.update');
