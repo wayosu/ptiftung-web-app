@@ -3,32 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\BidangKepakaran;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // ambil data
-        $users = User::with('roles')->orderBy("created_at", "desc")->get();
+        if ($request->ajax()) {
+            // ambil data
+            $users = User::with('roles')->orderBy("created_at", "desc")->get();
 
-        // transformasi data ke bentuk array
-        $users = $users->transform(function ($item) {
-            $item->role_name = Str::ucfirst($item->roles->pluck('name')->implode(', '));
-            return $item;
-        })->all();
+            // transformasi data ke bentuk array
+            $users = $users->transform(function ($item) {
+                $item->role_name = Str::ucfirst($item->roles->pluck('name')->implode(', '));
+                return $item;
+            })->all();
+
+            // tampilkan data dalam format DataTables
+            return DataTables::of($users)
+                ->addColumn('aksi', function ($users) {
+                    return view('admin.pages.users.tombol-aksi', compact('users'));
+                })
+                ->make(true);
+        }
 
         // tampilkan view
-        return view('admin.pages.users.all-users', [
+        return view('admin.pages.users.index', [
             'icon' => 'users',
-            'title' => 'All Users',
+            'title' => 'Semua Pengguna',
             'subtitle' => 'Daftar seluruh pengguna aplikasi.',
             'active' => 'users',
-            'users' => $users
         ]);
     }
 
@@ -206,12 +216,28 @@ class UserController extends Controller
     }
     public function createDosen()
     {
+        // ambil data bidang kepakaran
+        $bidangKepakarans = BidangKepakaran::orderBy('id', 'asc')->get();
+
         return view('admin.pages.users.dosen.form', [
             'icon' => 'plus',
             'title' => 'Dosen',
             'subtitle' => 'Tambah Dosen',
-            'active' => 'dosen'
+            'active' => 'dosen',
+            'bidangKepakarans' => $bidangKepakarans
         ]);
+    }
+
+    public function storeDosen(Request $request)
+    {
+    }
+
+    public function editDosen($id)
+    {
+    }
+
+    public function updateDosen(Request $request, $id)
+    {
     }
 
     public function byMahasiswa()

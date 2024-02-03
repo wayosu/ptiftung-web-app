@@ -67,7 +67,7 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Refresh
                         </a>
-                        @include('admin.pages.users.filter-by')
+                        @include('admin.pages.users.filter-berdasarkan')
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createMahasiswa') }}">
                             <i class="fa-solid fa-plus me-1"></i>
                             Tambah Mahasiswa

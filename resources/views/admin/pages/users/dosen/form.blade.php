@@ -2,10 +2,9 @@
 
 @push('css')
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css"
-        integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('assets/admin/libs/datepicker/css/bootstrap-datepicker.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/libs/select2/css/select2-bootstrap-5-theme.min.css') }}">
     <style>
         .rounded-circle-image {
             width: 150px;
@@ -28,6 +27,45 @@
 
         #defaultPassword:hover {
             text-decoration: underline;
+        }
+
+        .btn-pendidikan {
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            transform: translateY(-50%);
+            margin: 0 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50% !important;
+            padding: 0 !important;
+            z-index: 5;
+        }
+
+        .add_pendidikan {
+            color: #0061f2 !important;
+            background: transparent !important;
+        }
+
+        .remove_pendidikan {
+            color: #e81500 !important;
+            background: transparent !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection {
+            padding: 0.875rem 1.125rem !important;
+            font-size: 0.875rem !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-search .select2-search__field {
+            line-height: 1.7 !important;
+        }
+
+        .select2-selection__choice {
+            background-color: #e9ecef;
+            border: none !important;
+            font-size: 12px;
+            font-size: 0.85rem !important;
         }
     </style>
 @endpush
@@ -52,6 +90,10 @@
                             <i class="fa-solid fa-arrow-left me-1"></i>
                             Kembali
                         </a>
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('bidangKepakaran.index') }}">
+                            <i class="fa-solid fa-list me-1"></i>
+                            Daftar Bidang Kepakaran
+                        </a>
                     </div>
                 </div>
             </div>
@@ -60,7 +102,7 @@
 
     <div class="container-xl px-4 mt-4">
         <form
-            action="@if (isset($user)) {{ route('users.updateMahasiswa', $user->id) }} @else {{ route('users.storeMahasiswa') }} @endif"
+            action="@if (isset($user)) {{ route('users.updateDosen', $user->id) }} @else {{ route('users.storeDosen') }} @endif"
             method="POST" class="row gap-4" enctype="multipart/form-data">
             @csrf
             @if (isset($user))
@@ -94,7 +136,7 @@
 
             <div class="col-xl-12">
                 <div class="card mb-4">
-                    <div class="card-header">Detail Akun</div>
+                    <div class="card-header">Informasi Dosen</div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 col-md-6">
@@ -196,15 +238,21 @@
                             <label class="small mb-1" for="biografiField">
                                 Biografi
                             </label>
-                            <textarea name="biografi" id="biografiField" class="form-control" placeholder="Biografi dosen...">{{ old('biografi', $user->dosen->biografi ?? '') }}</textarea>
+                            <textarea name="biografi" rows="5" id="biografiField" class="form-control" placeholder="Biografi dosen...">{{ old('biografi', $user->dosen->biografi ?? '') }}</textarea>
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1" for="pendidikanField">
                                 Pendidikan
                             </label>
-                            <div class="input-group pendidikanGroup">
-                                <input type="text" id="pendidikanField" name="pendidikan[]" class="form-control">
-                                <button class="btn btn-info add_pendidikan" type="button">
+                            <div class="position-relative">
+                                <div class="input-group input-group-joined pendidikanGroup">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-user-graduate"></i>
+                                    </span>
+                                    <input type="text" id="pendidikanField" name="pendidikan[]" class="form-control"
+                                        placeholder="...">
+                                </div>
+                                <button class="btn btn-primary btn-pendidikan add_pendidikan" type="button">
                                     <i class='fa-solid fa-plus-circle'></i>
                                 </button>
                             </div>
@@ -214,11 +262,64 @@
                             <label class="small mb-1" for="bidangKepakaranField">
                                 Bidang Kepakaran
                             </label>
+                            <select name="bidang_kepakaran[]" id="bidangKepakaranField" class="form-select select2"
+                                multiple>
+                                @foreach ($bidangKepakarans as $item)
+                                    <option value="{{ $item->id }}">{{ $item->bidang_kepakaran }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" for="minatPenelitianField">
+                                Minat Penelitian
+                            </label>
+                            <input class="form-control" name="minat_penelitian" id="minatPenelitianField" type="text"
+                                placeholder="Masukkan minat penelitan dosen"
+                                value="{{ old('minat_penelitian', $user->dosen->minat_penelitian ?? '') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" for="linkScopusField">
+                                Tautan Profil - Scopus
+                            </label>
+                            <div class="input-group input-group-joined">
+                                <span class="input-group-text">
+                                    <i data-feather="link"></i>
+                                </span>
+                                <input class="form-control ps-0" name="link_scopus" id="linkScopusField" type="text"
+                                    placeholder="https://www.scopus.com/..."
+                                    value="{{ old('link_scopus', $user->dosen->link_scopus ?? '') }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" for="linkSintaField">
+                                Tautan Profil - Sinta
+                            </label>
+                            <div class="input-group input-group-joined">
+                                <span class="input-group-text">
+                                    <i data-feather="link"></i>
+                                </span>
+                                <input class="form-control ps-0" name="link_sinta" id="linkSintaField" type="text"
+                                    placeholder="https://sinta.kemdikbud.go.id/..."
+                                    value="{{ old('link_sinta', $user->dosen->link_sinta ?? '') }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" for="linkGscholarField">
+                                Tautan Profil - Google Scholar
+                            </label>
+                            <div class="input-group input-group-joined">
+                                <span class="input-group-text">
+                                    <i data-feather="link"></i>
+                                </span>
+                                <input class="form-control ps-0" name="link_gscholar" id="linkGscholarField"
+                                    type="text" placeholder="https://scholar.google.com/..."
+                                    value="{{ old('link_gscholar', $user->dosen->link_gscholar ?? '') }}">
+                            </div>
                         </div>
 
                         <button class="btn btn-light" type="reset">
                             <i class="fa-solid fa-rotate-left me-1"></i>
-                            Reset
+                            Atur Ulang
                         </button>
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-floppy-disk me-1"></i>
@@ -237,13 +338,19 @@
 
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-    {{-- <script src="{{ asset('assets/admin/libs/datepicker/datepicker.min.js') }}"></script> --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"
-        integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            // Initialize select2
+            $('.select2').select2({
+                theme: 'bootstrap-5',
+                dropdownCssClass: "select2--small",
+                placeholder: "-- Pilih Bidang Kepakaran --",
+                width: '100%',
+            });
+
             // Handle file input change
             $('#photoInput').on('change', function() {
                 previewImage(this);
@@ -290,19 +397,24 @@
             });
 
             // Handle add pendidikan
-            $('.pendidikanGroup').on('click', '.add_pendidikan', function() {
+            $('.add_pendidikan').on('click', function() {
                 const appendField = `
-					<div class="input-group mb-3 pendidikanGroup">
-						<input type="text" name="pendidikan[]" class="form-control">
-						<button class="btn btn-danger remove_pendidikan" type="button">
-							<i class='fa-solid fa-minus-circle'></i>
-						</button>
-					</div>
+                    <div class="position-relative mb-3">
+                        <div class="input-group input-group-joined pendidikanGroup">
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </span>
+                            <input type="text" id="pendidikanField" name="pendidikan[]" class="form-control" placeholder="...">
+                        </div>
+                        <button class="btn btn-danger btn-pendidikan remove_pendidikan" type="button">
+                            <i class='fa-solid fa-minus-circle'></i>
+                        </button>
+                    </div>
 				`;
                 $('#extraPendidikanField').append(appendField);
 
                 // Handle remove pendidikan
-                $('.pendidikanGroup').on('click', '.remove_pendidikan', function() {
+                $('.remove_pendidikan').on('click', function() {
                     $(this).parent().remove();
                 });
             });

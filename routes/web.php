@@ -23,27 +23,31 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
     // Start Users //
-    Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::delete('/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::delete('/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
 
-    // Admin //
-    Route::get('/users/admin', [App\Http\Controllers\UserController::class, 'byAdmin'])->name('users.byAdmin');
-    Route::get('/users/admin/create', [App\Http\Controllers\UserController::class, 'createAdmin'])->name('users.createAdmin');
-    Route::post('/users/admin', [App\Http\Controllers\UserController::class, 'storeAdmin'])->name('users.storeAdmin');
-    Route::get('/users/admin/{id}/edit', [App\Http\Controllers\UserController::class, 'editAdmin'])->name('users.editAdmin');
-    Route::put('/users/admin/{id}', [App\Http\Controllers\UserController::class, 'updateAdmin'])->name('users.updateAdmin');
+        // Admin //
+        Route::get('/admin', [App\Http\Controllers\UserController::class, 'byAdmin'])->name('users.byAdmin');
+        Route::get('/admin/create', [App\Http\Controllers\UserController::class, 'createAdmin'])->name('users.createAdmin');
+        Route::post('/admin', [App\Http\Controllers\UserController::class, 'storeAdmin'])->name('users.storeAdmin');
+        Route::get('/admin/{id}/edit', [App\Http\Controllers\UserController::class, 'editAdmin'])->name('users.editAdmin');
+        Route::put('/admin/{id}', [App\Http\Controllers\UserController::class, 'updateAdmin'])->name('users.updateAdmin');
 
-    // Dosen //
-    Route::get('/users/dosen', [App\Http\Controllers\UserController::class, 'byDosen'])->name('users.byDosen');
-    Route::get('/users/dosen/create', [App\Http\Controllers\UserController::class, 'createDosen'])->name('users.createDosen');
+        // Dosen //
+        Route::get('/dosen', [App\Http\Controllers\UserController::class, 'byDosen'])->name('users.byDosen');
+        Route::get('/dosen/create', [App\Http\Controllers\UserController::class, 'createDosen'])->name('users.createDosen');
+        Route::post('/dosen', [App\Http\Controllers\UserController::class, 'storeDosen'])->name('users.storeDosen');
+        Route::get('/dosen/{id}/edit', [App\Http\Controllers\UserController::class, 'editDosen'])->name('users.editDosen');
+        Route::put('/dosen/{id}', [App\Http\Controllers\UserController::class, 'updateDosen'])->name('users.updateDosen');
 
-    // Mahasiswa //
-    Route::get('/users/mahasiswa', [App\Http\Controllers\UserController::class, 'byMahasiswa'])->name('users.byMahasiswa');
-    Route::get('/users/mahasiswa/create', [App\Http\Controllers\UserController::class, 'createMahasiswa'])->name('users.createMahasiswa');
-    Route::post('/users/mahasiswa', [App\Http\Controllers\UserController::class, 'storeMahasiswa'])->name('users.storeMahasiswa');
-    Route::get('/users/mahasiswa/{id}/edit', [App\Http\Controllers\UserController::class, 'editMahasiswa'])->name('users.editMahasiswa');
-    Route::put('/users/mahasiswa/{id}', [App\Http\Controllers\UserController::class, 'updateMahasiswa'])->name('users.updateMahasiswa');
-
+        // Mahasiswa //
+        Route::get('/mahasiswa', [App\Http\Controllers\UserController::class, 'byMahasiswa'])->name('users.byMahasiswa');
+        Route::get('/mahasiswa/create', [App\Http\Controllers\UserController::class, 'createMahasiswa'])->name('users.createMahasiswa');
+        Route::post('/mahasiswa', [App\Http\Controllers\UserController::class, 'storeMahasiswa'])->name('users.storeMahasiswa');
+        Route::get('/mahasiswa/{id}/edit', [App\Http\Controllers\UserController::class, 'editMahasiswa'])->name('users.editMahasiswa');
+        Route::put('/mahasiswa/{id}', [App\Http\Controllers\UserController::class, 'updateMahasiswa'])->name('users.updateMahasiswa');
+    });
     // End Users //
 
     // Start Bidang Kepakaran //

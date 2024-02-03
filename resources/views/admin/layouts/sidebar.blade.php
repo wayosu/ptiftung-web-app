@@ -8,25 +8,25 @@
                 <span class="badge bg-warning-soft text-warning ms-auto">4 New!</span>
             </a>
 
-            <div class="sidenav-menu-heading">Dashboard</div>
+            <div class="sidenav-menu-heading">Dasbor</div>
             <a class="nav-link" href="{{ route('dashboard') }}">
                 <div class="nav-link-icon"><i data-feather="activity"></i></div>
-                Dashboard
+                Dasbor
             </a>
 
-            <div class="sidenav-menu-heading">Master Data</div>
+            <div class="sidenav-menu-heading">Data Master</div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                 data-bs-target="#userdata" aria-expanded="false" aria-controls="userdata">
                 <div class="nav-link-icon"><i data-feather="users"></i></div>
-                Users
+                Pengguna
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="userdata" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                    <a class="nav-link" href="{{ route('users.index') }}">All Users</a>
+                    <a class="nav-link" href="{{ route('users.index') }}">Semua Pengguna</a>
                     <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                         data-bs-target="#byRole" aria-expanded="false" aria-controls="byRole">
-                        By Role
+                        Berdasarkan Peran
                         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
                     <div class="collapse" id="byRole" data-bs-parent="#accordionSidenavAppsMenu">

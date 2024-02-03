@@ -59,7 +59,7 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Refresh
                         </a>
-                        @include('admin.pages.users.filter-by')
+                        @include('admin.pages.users.filter-berdasarkan')
                         <a class="btn btn-sm btn-light text-primary dropdown-toggle" id="navbarDropdownDocs"
                             href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
@@ -100,52 +100,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (count($users) == 0)
-                            <tr>
-                                <td colspan="4" class="text-center">
-                                    <div class="d-flex gap-1 justify-content-center align-items-center small">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                        Data tidak ditemukan.
-                                    </div>
-                                </td>
-                            </tr>
-                        @else
-                            @foreach ($users as $user)
-                                <tr>
-                                    <td>{{ $user->name }}</td>
-                                    <td>
-                                        @if ($user->role_name == 'Admin')
-                                            <span class="badge bg-blue-soft text-blue">Admin</span>
-                                        @elseif ($user->role_name == 'Dosen')
-                                            <span class="badge bg-red-soft text-red">Dosen</span>
-                                        @elseif ($user->role_name == 'Mahasiswa')
-                                            <span class="badge bg-green-soft text-green">Mahasiswa</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $user->created_at }}</td>
-                                    <td>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="#"
-                                            title="Detail">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="#"
-                                            title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-                                        <form id="deleteForm" class="d-none" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
-                                            href="javascript:void(0)" title="Hapus" data-user-id="{{ $user->id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
                     </tbody>
                 </table>
             </div>
@@ -160,6 +114,8 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -169,6 +125,32 @@
                 order: [
                     [2, 'desc']
                 ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
+                },
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('users.index') }}",
+                columns: [{
+                        data: 'name'
+                    },
+                    {
+                        data: 'role_name'
+                    },
+                    {
+                        data: 'created_at',
+                        render: function(data) {
+                            // with locale 'id'
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm:ss') +
+                                ' WITA';
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
             });
 
             // toast config
@@ -197,7 +179,7 @@
             @endif
 
             // confirm delete with swal
-            $('.tombol-hapus').on('click', function(e) {
+            $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
 
                 // Extracting the delete URL from the form

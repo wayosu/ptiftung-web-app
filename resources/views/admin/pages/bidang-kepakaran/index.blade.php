@@ -67,6 +67,10 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Refresh
                         </a>
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.byDosen') }}">
+                            <i class="fa-solid fa-users me-1"></i>
+                            Daftar Dosen
+                        </a>
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('bidangKepakaran.create') }}">
                             <i class="fa-solid fa-plus me-1"></i>
                             Tambah Bidang Kepakaran
