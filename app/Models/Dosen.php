@@ -12,7 +12,7 @@ class Dosen extends Model
     protected $table = 'dosens';
 
     protected $fillable = [
-        'user_id',
+        'dosen_id',
         'slug',
         'jk',
         'umur',
@@ -27,7 +27,7 @@ class Dosen extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'dosen_id', 'id');
     }
 
     public function bidangKepakaran()

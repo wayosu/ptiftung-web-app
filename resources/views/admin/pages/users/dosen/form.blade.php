@@ -138,17 +138,29 @@
                 <div class="card mb-4">
                     <div class="card-header">Informasi Dosen</div>
                     <div class="card-body">
+                        <div class="mb-3">
+                            <label class="small mb-1" for="nameField">
+                                Nama Lengkap
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input class="form-control @error('name') is-invalid @enderror" name="name" id="nameField"
+                                type="text" placeholder="Masukkan nama lengkap dosen"
+                                value="{{ old('name', $user->name ?? '') }}" />
+                            @error('name')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label class="small mb-1" for="nameField">
-                                        Nama Lengkap
+                                    <label class="small mb-1" for="gelarField">
+                                        Gelar
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input class="form-control @error('name') is-invalid @enderror" name="name"
-                                        id="nameField" type="text" placeholder="Masukkan nama lengkap dosen"
-                                        value="{{ old('name', $user->name ?? '') }}" />
-                                    @error('name')
+                                    <input class="form-control @error('gelar') is-invalid @enderror" name="gelar"
+                                        id="gelarField" type="text" placeholder="Masukkan gelar dosen"
+                                        value="{{ old('gelar', $user->gelar ?? '') }}" />
+                                    @error('gelar')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -232,7 +244,11 @@
                             </div>
                         </div>
 
-                        <hr class="mt-4">
+                        <div class="d-flex gap-3 align-items-center mt-3">
+                            <hr class="flex-grow-1 border-bottom">
+                            <span class="text-muted small fw-600">Informasi Lainnya</span>
+                            <hr class="flex-grow-1 border-bottom">
+                        </div>
 
                         <div class="mb-3">
                             <label class="small mb-1" for="biografiField">

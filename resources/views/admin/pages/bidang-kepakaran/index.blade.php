@@ -94,40 +94,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (count($bidangKepakarans) == 0)
+                        @foreach ($bidangKepakarans as $bidangKepakaran)
                             <tr>
-                                <td colspan="4" class="text-center">
-                                    <div class="d-flex gap-1 justify-content-center align-items-center small">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                        Data tidak ditemukan.
-                                    </div>
+                                <td>{{ $bidangKepakaran->bidang_kepakaran }}</td>
+                                <td>{{ date('d F Y H:i', strtotime($bidangKepakaran->created_at)) }}</td>
+                                <td>
+                                    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+                                        href="{{ route('bidangKepakaran.edit', $bidangKepakaran->id) }}"
+                                        title="Ubah Profil">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form id="deleteForm" class="d-none" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
+                                        href="javascript:void(0)" title="Hapus" data-user-id="{{ $bidangKepakaran->id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
-                        @else
-                            @foreach ($bidangKepakarans as $bidangKepakaran)
-                                <tr>
-                                    <td>{{ $bidangKepakaran->bidang_kepakaran }}</td>
-                                    <td>{{ date('d F Y H:i', strtotime($bidangKepakaran->created_at)) }}</td>
-                                    <td>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                            href="{{ route('bidangKepakaran.edit', $bidangKepakaran->id) }}"
-                                            title="Ubah Profil">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-                                        <form id="deleteForm" class="d-none" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
-                                            href="javascript:void(0)" title="Hapus"
-                                            data-user-id="{{ $bidangKepakaran->id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+                        @endforeach
                     </tbody>
                 </table>
             </div>

@@ -51,12 +51,12 @@ class User extends Authenticatable
     // relasi dengan tabel mahasiswa
     public function mahasiswa()
     {
-        return $this->hasOne(Mahasiswa::class, 'user_id', 'id');
+        return $this->hasOne(Mahasiswa::class, 'mahasiswa_id', 'id');
     }
 
     // relasi dengan tabel dosen
     public function dosen()
     {
-        return $this->hasOne(Dosen::class, 'user_id', 'id');
+        return $this->hasOne(Dosen::class, 'dosen_id', 'id');
     }
 }

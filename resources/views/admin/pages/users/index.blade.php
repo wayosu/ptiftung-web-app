@@ -135,13 +135,25 @@
                         data: 'name'
                     },
                     {
-                        data: 'role_name'
+                        data: 'role_name',
+                        render: function(data) {
+                            if (data == 'Admin') {
+                                return '<span class="badge bg-blue-soft text-blue">' + data +
+                                    '</span>';
+                            } else if (data == 'Dosen') {
+                                return '<span class="badge bg-green-soft text-green">' + data +
+                                    '</span>';
+                            } else if (data == 'Mahasiswa') {
+                                return '<span class="badge bg-yellow-soft text-yellow">' + data +
+                                    '</span>';
+                            }
+                        }
                     },
                     {
                         data: 'created_at',
                         render: function(data) {
                             // with locale 'id'
-                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm:ss') +
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
                                 ' WITA';
                         }
                     },

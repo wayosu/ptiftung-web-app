@@ -68,12 +68,26 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Data berhasil dihapus.');
     }
 
-    public function byAdmin()
+    public function byAdmin(Request $request)
     {
-        // ambil data
-        $users = User::whereHas('roles', function ($q) {
-            $q->where('name', 'admin');
-        })->orderBy("created_at", "desc")->get();
+        if ($request->ajax()) {
+            // ambil data
+            $users = User::whereHas('roles', function ($q) {
+                $q->where('name', 'admin');
+            })->orderBy("created_at", "desc")->get();
+
+            // transformasi data ke bentuk array
+            $users = $users->transform(function ($item) {
+                return $item;
+            })->all();
+
+            // tampilkan data dalam format DataTables
+            return DataTables::of($users)
+                ->addColumn('aksi', function ($users) {
+                    return view('admin.pages.users.admin.tombol-aksi', compact('users'));
+                })
+                ->make(true);
+        }
 
         // tampilkan view
         return view('admin.pages.users.admin.index', [
@@ -81,7 +95,6 @@ class UserController extends Controller
             'title' => 'Admin',
             'subtitle' => 'Daftar seluruh admin.',
             'active' => 'admin',
-            'users' => $users
         ]);
     }
 
@@ -230,6 +243,12 @@ class UserController extends Controller
 
     public function storeDosen(Request $request)
     {
+        /* 
+            validasi name, gelar, jenis_kelamin, umur, nip, email, password
+        */
+        $request->validate([
+            'name' => 'required'
+        ]);
     }
 
     public function editDosen($id)
@@ -240,19 +259,32 @@ class UserController extends Controller
     {
     }
 
-    public function byMahasiswa()
+    public function byMahasiswa(Request $request)
     {
-        // ambil data
-        $users = User::with('mahasiswa')->whereHas('roles', function ($q) {
-            $q->where('name', 'mahasiswa');
-        })->orderBy("nim", "asc")->get();
+        if ($request->ajax()) {
+            // ambil data
+            $users = User::with('mahasiswa')->whereHas('roles', function ($q) {
+                $q->where('name', 'mahasiswa');
+            })->orderBy("nim", "asc")->get();
+
+            // transformasi data ke bentuk array
+            $users = $users->transform(function ($item) {
+                return $item;
+            })->all();
+
+            // tampilkan data dalam format DataTables
+            return DataTables::of($users)
+                ->addColumn('aksi', function ($users) {
+                    return view('admin.pages.users.mahasiswa.tombol-aksi', compact('users'));
+                })
+                ->make(true);
+        }
 
         return view('admin.pages.users.mahasiswa.index', [
             'icon' => 'users',
             'title' => 'Mahasiswa',
             'subtitle' => 'Daftar seluruh mahasiswa.',
             'active' => 'mahasiswa',
-            'users' => $users
         ]);
     }
 
@@ -313,7 +345,7 @@ class UserController extends Controller
         $user->assignRole('mahasiswa');
 
         Mahasiswa::create([
-            'user_id' => $user->id,
+            'mahasiswa_id' => $user->id,
             'program_studi' => $request->program_studi,
             'angkatan' => $request->angkatan,
         ]);

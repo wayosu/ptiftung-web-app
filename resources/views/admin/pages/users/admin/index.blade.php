@@ -92,47 +92,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (count($users) == 0)
-                            <tr>
-                                <td colspan="4" class="text-center">
-                                    <div class="d-flex gap-1 justify-content-center align-items-center small">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                        Data tidak ditemukan.
-                                    </div>
-                                </td>
-                            </tr>
-                        @else
-                            @foreach ($users as $user)
-                                <tr>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ date('d F Y H:i', strtotime($user->created_at)) }}</td>
-                                    <td>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                            href="javascript:void(0)" role="button" title="Detail Profil"
-                                            data-bs-toggle="modal" data-bs-target="#detailModal{{ $user->id }}">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                            href="{{ route('users.editAdmin', $user->id) }}" title="Ubah Profil">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-                                        <form id="deleteForm" class="d-none" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
-                                            href="javascript:void(0)" title="Hapus" data-user-id="{{ $user->id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                @include('admin.pages.users.admin.detail')
-                            @endforeach
-                        @endif
                     </tbody>
                 </table>
             </div>
@@ -147,6 +106,8 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -156,6 +117,32 @@
                 order: [
                     [2, 'desc']
                 ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
+                },
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('users.byAdmin') }}",
+                columns: [{
+                        data: 'name'
+                    },
+                    {
+                        data: 'email'
+                    },
+                    {
+                        data: 'created_at',
+                        render: function(data) {
+                            // with locale 'id'
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
+                                ' WITA';
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
             });
 
             // toast config

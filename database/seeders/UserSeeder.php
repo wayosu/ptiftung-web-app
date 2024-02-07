@@ -15,7 +15,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create an admin user
-        User::factory()->create()->assignRole('admin');
+        User::factory()->count(2)->create()->each(function ($user) {
+            $user->assignRole('admin');
+        });
 
         // Create 10 users with 'dosen' role
         User::factory()->count(10)->dosen()->create()->each(function ($user) {
@@ -26,9 +28,12 @@ class UserSeeder extends Seeder
         User::factory()->count(10)->mahasiswa()->create()->each(function ($user) {
             $user->assignRole('mahasiswa');
 
+            $angkatan = rand(2018, 2023);
+
             $user->mahasiswa()->create([
+                'mahasiswa_id' => $user->id,
                 'program_studi' => 'Pendidikan Teknologi Informasi',
-                'angkatan' => 2020,
+                'angkatan' => $angkatan,
             ]);
         });
     }
