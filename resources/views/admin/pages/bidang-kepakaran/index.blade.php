@@ -65,7 +65,7 @@
                     <div class="col-12 col-xl-auto mb-3">
                         <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
-                            Refresh
+                            Segarkan
                         </a>
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('users.byDosen') }}">
                             <i class="fa-solid fa-users me-1"></i>
@@ -94,28 +94,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($bidangKepakarans as $bidangKepakaran)
-                            <tr>
-                                <td>{{ $bidangKepakaran->bidang_kepakaran }}</td>
-                                <td>{{ date('d F Y H:i', strtotime($bidangKepakaran->created_at)) }}</td>
-                                <td>
-                                    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                        href="{{ route('bidangKepakaran.edit', $bidangKepakaran->id) }}"
-                                        title="Ubah Profil">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-
-                                    <form id="deleteForm" class="d-none" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                    <a class="btn btn-datatable btn-icon btn-transparent-dark tombol-hapus"
-                                        href="javascript:void(0)" title="Hapus" data-user-id="{{ $bidangKepakaran->id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -131,6 +109,8 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -140,6 +120,29 @@
                 order: [
                     [0, 'asc']
                 ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
+                },
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('bidangKepakaran.index') }}",
+                columns: [{
+                        data: 'bidang_kepakaran'
+                    },
+                    {
+                        data: 'created_at',
+                        render: function(data) {
+                            // with locale 'id'
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
+                                ' WITA';
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
             });
 
             // toast config
@@ -168,7 +171,7 @@
             @endif
 
             // confirm delete with swal
-            $('.tombol-hapus').on('click', function(e) {
+            $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
 
                 // Extracting the delete URL from the form

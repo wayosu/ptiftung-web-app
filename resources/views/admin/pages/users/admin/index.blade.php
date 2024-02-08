@@ -65,7 +65,7 @@
                     <div class="col-12 col-xl-auto mb-3">
                         <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
-                            Refresh
+                            Segarkan
                         </a>
                         @include('admin.pages.users.filter-berdasarkan')
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createAdmin') }}">
@@ -115,7 +115,7 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [2, 'desc']
+                    [0, 'asc']
                 ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
@@ -171,7 +171,7 @@
             @endif
 
             // confirm delete with swal
-            $('.tombol-hapus').on('click', function(e) {
+            $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
 
                 // Extracting the delete URL from the form

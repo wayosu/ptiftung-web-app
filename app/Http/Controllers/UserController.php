@@ -123,6 +123,9 @@ class UserController extends Controller
             'email.unique' => 'Email sudah terdaftar.',
             'password.required' => 'Password harus diisi.',
             'password.min' => 'Password minimal 6 karakter.',
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berupa jpeg, png, jpg.',
+            'foto.max' => 'Foto maksimal 2MB.',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -243,12 +246,41 @@ class UserController extends Controller
 
     public function storeDosen(Request $request)
     {
-        /* 
-            validasi name, gelar, jenis_kelamin, umur, nip, email, password
-        */
         $request->validate([
-            'name' => 'required'
+            'name' => 'required|min:3',
+            'gelar' => 'required',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'umur' => 'required|numeric',
+            'nip' => 'required|numeric|unique:users,nip',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'foto' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.min' => 'Minimal 3 karakter.',
+            'gelar.required' => 'Gelar harus diisi.',
+            'jenis_kelamin.required' => 'Jenis kelamin harus dipilih.',
+            'umur.required' => 'Umur harus diisi.',
+            'umur.numeric' => 'Umur harus berupa angka.',
+            'nip.required' => 'NIP harus diisi.',
+            'nip.numeric' => 'NIP harus berupa angka.',
+            'nip.unique' => 'NIP sudah terdaftar.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berupa jpeg, png, jpg.',
+            'foto.max' => 'Foto maksimal 2MB.',
         ]);
+
+        if ($request->hasFile('foto')) {
+            $nameFile = md5(time()) . '-' .  $request->file('foto')->hashName();
+
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+        } else {
+        }
     }
 
     public function editDosen($id)
@@ -324,7 +356,7 @@ class UserController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            $nameFile = $request->nim . '-' .  $request->file('foto')->hashName();
+            $nameFile = md5(time()) . '-' .  $request->file('foto')->hashName();
 
             $request->file('foto')->storeAs('public/usersProfile', $nameFile);
 

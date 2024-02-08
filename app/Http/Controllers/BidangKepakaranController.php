@@ -5,20 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\BidangKepakaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class BidangKepakaranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // ambil data
-        $bidangKepakarans = BidangKepakaran::all();
+        if ($request->ajax()) {
+            // ambil data
+            $bidangKepakarans = BidangKepakaran::all();
+
+            // transformasi data ke bentuk array
+            $bidangKepakarans = $bidangKepakarans->transform(function ($item) {
+                return $item;
+            })->all();
+
+            // tampilkan data dalam format DataTables
+            return DataTables::of($bidangKepakarans)
+                ->addColumn('aksi', function ($bidangKepakarans) {
+                    return view('admin.pages.bidang-kepakaran.tombol-aksi', compact('bidangKepakarans'));
+                })
+                ->make(true);
+        }
 
         return view('admin.pages.bidang-kepakaran.index', [
             'icon' => 'list',
             'title' => 'Bidang Kepakaran',
             'subtitle' => 'Daftar Bidang Kepakaran',
             'active' => 'bidangKepakaran',
-            'bidangKepakarans' => $bidangKepakarans
         ]);
     }
 
