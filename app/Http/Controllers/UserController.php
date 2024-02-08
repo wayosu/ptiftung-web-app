@@ -129,8 +129,7 @@ class UserController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            $extractEmail = explode('@', $request->email);
-            $nameFile = $extractEmail[0] . '-' .  $request->file('foto')->hashName();
+            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             $request->file('foto')->storeAs('public/usersProfile', $nameFile);
 
@@ -195,8 +194,7 @@ class UserController extends Controller
                 Storage::delete('public/usersProfile/' . $user->foto);
             }
 
-            $extractEmail = explode('@', $request->email);
-            $nameFile = $extractEmail[0] . '-' .  $request->file('foto')->hashName();
+            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             $request->file('foto')->storeAs('public/usersProfile', $nameFile);
 
@@ -275,12 +273,52 @@ class UserController extends Controller
             'foto.max' => 'Foto maksimal 2MB.',
         ]);
 
-        if ($request->hasFile('foto')) {
-            $nameFile = md5(time()) . '-' .  $request->file('foto')->hashName();
+        $dataUser = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'nip' => $request->nip,
+        ];
 
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
-        } else {
+        $dataDosen = [
+            'slug' => Str::slug($request->name),
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'umur' => $request->umur,
+            'gelar' => $request->gelar,
+        ];
+
+        if ($request->biografi) {
+            $dataDosen['biografi'] = $request->biografi;
         }
+
+        if ($request->minat_penelitian) {
+            $dataDosen['minat_penelitian'] = $request->minat_penelitian;
+        }
+
+        if ($request->link_scopus) {
+            $dataDosen['link_scopus'] = $request->link_scopus;
+        }
+
+        if ($request->link_sinta) {
+            $dataDosen['link_sinta'] = $request->link_sinta;
+        }
+
+        if ($request->link_gscholar) {
+            $dataDosen['link_gscholar'] = $request->link_gscholar;
+        }
+
+        if ($request->hasFile('foto')) {
+            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $dataUser['foto'] = $nameFile;
+        }
+
+        $user = User::create($dataUser);
+        $user->assignRole('dosen');
+
+        $user->dosen()->create($dataDosen);
+
+        return redirect()->route('users.byDosen')->with('success', 'Data dosen berhasil ditambahkan.');
     }
 
     public function editDosen($id)
@@ -356,7 +394,7 @@ class UserController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            $nameFile = md5(time()) . '-' .  $request->file('foto')->hashName();
+            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             $request->file('foto')->storeAs('public/usersProfile', $nameFile);
 
@@ -435,7 +473,7 @@ class UserController extends Controller
                 Storage::delete('public/usersProfile/' . $user->foto);
             }
 
-            $nameFile = $request->nim . '-' .  $request->file('foto')->hashName();
+            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             $request->file('foto')->storeAs('public/usersProfile', $nameFile);
 

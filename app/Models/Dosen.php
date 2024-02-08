@@ -14,13 +14,12 @@ class Dosen extends Model
     protected $fillable = [
         'dosen_id',
         'slug',
-        'jk',
+        'jenis_kelamin',
         'umur',
         'gelar',
         'link_gscholar',
         'link_sinta',
         'link_scopus',
-        'img',
         'biografi',
         'minat_penelitian',
     ];

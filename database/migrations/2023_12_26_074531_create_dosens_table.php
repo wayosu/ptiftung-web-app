@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('link_gscholar')->nullable();
             $table->string('link_sinta')->nullable();
             $table->string('link_scopus')->nullable();
-            $table->string('img')->nullable();
             $table->text('biografi')->nullable();
             $table->text('minat_penelitian')->nullable();
             $table->timestamps();
