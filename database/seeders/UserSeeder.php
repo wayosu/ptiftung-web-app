@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
             $angkatan = rand(2018, 2023);
 
             $user->mahasiswa()->create([
-                'mahasiswa_id' => $user->id,
+                'user_id' => $user->id,
                 'program_studi' => 'Pendidikan Teknologi Informasi',
                 'angkatan' => $angkatan,
             ]);

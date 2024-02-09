@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\BidangKepakaran;
 use App\Models\Mahasiswa;
+use App\Models\Pendidikan;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -54,6 +55,8 @@ class UserController extends Controller
         if ($user->hasRole('mahasiswa')) {
             $user->mahasiswa()->delete();
         } elseif ($user->hasRole('dosen')) {
+            $user->dosen->pendidikan()->delete();
+            $user->dosen->bidangKepakaran()->detach();
             $user->dosen()->delete();
         }
 
@@ -219,8 +222,27 @@ class UserController extends Controller
         return redirect()->route('users.byAdmin')->with('success', 'Data admin berhasil diubah.');
     }
 
-    public function byDosen()
+    public function byDosen(Request $request)
     {
+        if ($request->ajax()) {
+            // ambil data
+            $users = User::with('dosen')->whereHas('roles', function ($q) {
+                $q->where('name', 'dosen');
+            })->orderBy("name", "asc")->get();
+
+            // transformasi data ke bentuk array
+            $users = $users->transform(function ($item) {
+                return $item;
+            })->all();
+
+            // tampilkan data dalam format DataTables
+            return DataTables::of($users)
+                ->addColumn('aksi', function ($users) {
+                    return view('admin.pages.users.dosen.tombol-aksi', compact('users'));
+                })
+                ->make(true);
+        }
+
         return view('admin.pages.users.dosen.index', [
             'icon' => 'users',
             'title' => 'Dosen',
@@ -280,13 +302,6 @@ class UserController extends Controller
             'nip' => $request->nip,
         ];
 
-        $dataDosen = [
-            'slug' => Str::slug($request->name),
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'umur' => $request->umur,
-            'gelar' => $request->gelar,
-        ];
-
         if ($request->biografi) {
             $dataDosen['biografi'] = $request->biografi;
         }
@@ -316,7 +331,26 @@ class UserController extends Controller
         $user = User::create($dataUser);
         $user->assignRole('dosen');
 
-        $user->dosen()->create($dataDosen);
+        $dataDosen = [
+            'slug' => Str::slug($request->name),
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'umur' => $request->umur,
+            'gelar' => $request->gelar,
+        ];
+
+        $dosen = $user->dosen()->create($dataDosen);
+
+        if ($request->pendidikan) {
+            $dosen->pendidikan()->createMany(
+                array_map(function ($pendidikan) {
+                    return ['pendidikan' => $pendidikan];
+                }, $request->pendidikan)
+            );
+        }
+
+        if ($request->bidang_kepakaran) {
+            $dosen->bidangKepakaran()->attach($request->bidang_kepakaran);
+        }
 
         return redirect()->route('users.byDosen')->with('success', 'Data dosen berhasil ditambahkan.');
     }

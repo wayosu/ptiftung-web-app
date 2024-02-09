@@ -12,13 +12,13 @@ class Mahasiswa extends Model
     protected $table = 'mahasiswas';
 
     protected $fillable = [
-        'mahasiswa_id',
+        'user_id',
         'program_studi',
         'angkatan'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'mahasiswa_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

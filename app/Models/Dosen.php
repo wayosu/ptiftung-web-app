@@ -12,7 +12,7 @@ class Dosen extends Model
     protected $table = 'dosens';
 
     protected $fillable = [
-        'dosen_id',
+        'user_id',
         'slug',
         'jenis_kelamin',
         'umur',
@@ -26,11 +26,16 @@ class Dosen extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'dosen_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function pendidikan()
+    {
+        return $this->hasMany(Pendidikan::class);
     }
 
     public function bidangKepakaran()
     {
-        return $this->belongsToMany(BidangKepakaran::class);
+        return $this->belongsToMany(BidangKepakaran::class)->withPivot('dosen_id', 'bidang_kepakaran_id')->as('bidang_kepakarans');
     }
 }

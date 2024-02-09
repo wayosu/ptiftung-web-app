@@ -15,4 +15,9 @@ class Pendidikan extends Model
         'dosen_id',
         'pendidikan',
     ];
+
+    public function dosen()
+    {
+        return $this->belongsTo(Dosen::class, 'dosen_id', 'id');
+    }
 }
