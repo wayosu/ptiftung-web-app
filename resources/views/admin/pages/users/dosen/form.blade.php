@@ -363,7 +363,7 @@
             $('.select2').select2({
                 theme: 'bootstrap-5',
                 dropdownCssClass: "select2--small",
-                placeholder: "-- Pilih Bidang Kepakaran --",
+                placeholder: "Cari Bidang Kepakaran...",
                 width: '100%',
             });
 

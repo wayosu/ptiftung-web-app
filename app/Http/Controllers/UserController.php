@@ -253,7 +253,7 @@ class UserController extends Controller
     public function createDosen()
     {
         // ambil data bidang kepakaran
-        $bidangKepakarans = BidangKepakaran::orderBy('id', 'asc')->get();
+        $bidangKepakarans = BidangKepakaran::orderBy('bidang_kepakaran', 'asc')->get();
 
         return view('admin.pages.users.dosen.form', [
             'icon' => 'plus',
@@ -302,6 +302,22 @@ class UserController extends Controller
             'nip' => $request->nip,
         ];
 
+        if ($request->hasFile('foto')) {
+            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
+            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $dataUser['foto'] = $nameFile;
+        }
+
+        $user = User::create($dataUser);
+        $user->assignRole('dosen');
+
+        $dataDosen = [
+            'slug' => Str::slug($request->name),
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'umur' => $request->umur,
+            'gelar' => $request->gelar,
+        ];
+
         if ($request->biografi) {
             $dataDosen['biografi'] = $request->biografi;
         }
@@ -322,22 +338,6 @@ class UserController extends Controller
             $dataDosen['link_gscholar'] = $request->link_gscholar;
         }
 
-        if ($request->hasFile('foto')) {
-            $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
-            $dataUser['foto'] = $nameFile;
-        }
-
-        $user = User::create($dataUser);
-        $user->assignRole('dosen');
-
-        $dataDosen = [
-            'slug' => Str::slug($request->name),
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'umur' => $request->umur,
-            'gelar' => $request->gelar,
-        ];
-
         $dosen = $user->dosen()->create($dataDosen);
 
         if ($request->pendidikan) {
@@ -357,6 +357,20 @@ class UserController extends Controller
 
     public function editDosen($id)
     {
+        $user = User::with('dosen')->whereHas('roles', function ($q) {
+            $q->where('name', 'dosen');
+        })->where('id', $id)->first();
+
+        $bidangKepakarans = BidangKepakaran::orderBy('bidang_kepakaran', 'asc')->get();
+
+        return view('admin.pages.users.dosen.form', [
+            'icon' => 'edit',
+            'title' => 'Dosen',
+            'subtitle' => 'Edit Dosen',
+            'active' => 'dosen',
+            'user' => $user,
+            'bidangKepakarans' => $bidangKepakarans
+        ]);
     }
 
     public function updateDosen(Request $request, $id)
