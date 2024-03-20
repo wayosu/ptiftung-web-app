@@ -145,6 +145,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/profil-lulusan/{id}', [App\Http\Controllers\ProfilLulusanController::class, 'destroy'])->name('profilLulusan.destroy');
     // End Profil Lulusan //
 
+    // Start Capaian Pembelajaran //
+    Route::get('/capaian-pembelajaran', [App\Http\Controllers\CapaianPembelajaranController::class, 'index'])->name('capaianPembelajaran.index');
+    Route::get('/capaian-pembelajaran/create', [App\Http\Controllers\CapaianPembelajaranController::class, 'create'])->name('capaianPembelajaran.create');
+    Route::post('/capaian-pembelajaran', [App\Http\Controllers\CapaianPembelajaranController::class, 'store'])->name('capaianPembelajaran.store');
+    Route::get('/capaian-pembelajaran/{id}/edit', [App\Http\Controllers\CapaianPembelajaranController::class, 'edit'])->name('capaianPembelajaran.edit');
+    Route::put('/capaian-pembelajaran/{id}', [App\Http\Controllers\CapaianPembelajaranController::class, 'update'])->name('capaianPembelajaran.update');
+    Route::delete('/capaian-pembelajaran/{id}', [App\Http\Controllers\CapaianPembelajaranController::class, 'destroy'])->name('capaianPembelajaran.destroy');
+    // End Capaian Pembelajaran //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

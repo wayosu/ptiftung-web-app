@@ -147,7 +147,8 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                     <a class="nav-link {{ isset($active) && $active == 'profil-lulusan' ? 'active' : '' }}"
                         href="{{ route('profilLulusan.index') }}">Profil Lulusan</a>
-                    <a class="nav-link" href="#">Capaian Pembelajaran</a>
+                    <a class="nav-link {{ isset($active) && $active == 'capaian-pembelajaran' ? 'active' : '' }}"
+                        href="{{ route('capaianPembelajaran.index') }}">Capaian Pembelajaran</a>
                     <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                         data-bs-target="#kurikulum" aria-expanded="false" aria-controls="kurikulum">
                         Kurikulum
