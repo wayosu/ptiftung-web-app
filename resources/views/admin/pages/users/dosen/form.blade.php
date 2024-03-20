@@ -91,7 +91,7 @@
                             Kembali
                         </a>
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('bidangKepakaran.index') }}">
-                            <i class="fa-solid fa-list me-1"></i>
+                            <i class="fa-regular fa-lightbulb me-1"></i>
                             Daftar Bidang Kepakaran
                         </a>
                     </div>
@@ -138,111 +138,201 @@
                 <div class="card mb-4">
                     <div class="card-header">Informasi Dosen</div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label class="small mb-1" for="nameField">
-                                Nama Lengkap
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control @error('name') is-invalid @enderror" name="name" id="nameField"
-                                type="text" placeholder="Masukkan nama lengkap dosen"
-                                value="{{ old('name', $user->name ?? '') }}" />
-                            @error('name')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="gelarField">
-                                        Gelar
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control @error('gelar') is-invalid @enderror" name="gelar"
-                                        id="gelarField" type="text" placeholder="Masukkan gelar dosen"
-                                        value="{{ old('gelar', $user->gelar ?? '') }}" />
-                                    @error('gelar')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1">
-                                        Jenis Kelamin
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" id="jk-lakilaki" type="radio" name="jenis_kelamin"
-                                            value="Laki-laki">
-                                        <label class="form-check-label" for="jk-lakilaki">Laki-laki</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" id="jk-perempuan" type="radio"
-                                            name="jenis_kelamin" value="Perempuan">
-                                        <label class="form-check-label" for="jk-perempuan">Perempuan</label>
-                                    </div>
-                                    @error('jenis_kelamin')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="umurField">
-                                        Umur
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control @error('umur') is-invalid @enderror" name="umur"
-                                        id="umurField" type="text" placeholder="Masukkan umur dosen"
-                                        value="{{ old('umur', $user->dosen->umur ?? '') }}" />
-                                    @error('umur')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                        @if (!isset($user))
+                            <div class="mb-3">
+                                <label class="small mb-1" for="nameField">
+                                    Nama Lengkap
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control @error('name') is-invalid @enderror" name="name"
+                                    id="nameField" type="text" placeholder="Masukkan nama lengkap dosen"
+                                    value="{{ old('name', $user->name ?? '') }}" />
+                                @error('name')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="nipField">
-                                        NIP
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control @error('nip') is-invalid @enderror" name="nip"
-                                        id="nipField" type="nip" placeholder="Masukkan nip dosen"
-                                        value="{{ old('nip', $user->nip ?? '') }}" autocomplete="off" />
-                                    @error('nip')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="emailField">
-                                        Email
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control @error('email') is-invalid @enderror" name="email"
-                                        id="emailField" type="email" placeholder="Masukkan email dosen"
-                                        value="{{ old('email', $user->email ?? '') }}" autocomplete="off" />
-                                    @error('email')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1 w-100" for="passwordField">
-                                        Password
-                                        @if (!isset($user))
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="jafaField">
+                                            JAFA (Jabatan Fungsional/Akademik Dosen)
                                             <span class="text-danger">*</span>
-                                        @endif
-                                    </label>
-                                    <div class="position-relative">
-                                        <input class="form-control @error('password') is-invalid @enderror"
-                                            name="password" id="passwordField" type="password"
-                                            placeholder="Masukkan password dosen" value="{{ old('password') }}" />
-                                        <span id="togglePassword"
-                                            class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
-                                            data-feather="eye-off">
-                                        </span>
+                                        </label>
+                                        <input class="form-control @error('jafa') is-invalid @enderror" name="jafa"
+                                            id="jafaField" type="text" placeholder="Masukkan jafa dosen"
+                                            value="{{ old('jafa', $user->jafa ?? '') }}" />
+                                        @error('jafa')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('password')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <div class="mb-3">
+                                        <label class="small mb-1">
+                                            Jenis Kelamin
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="jk-lakilaki" type="radio"
+                                                name="jenis_kelamin" value="Laki-laki">
+                                            <label class="form-check-label" for="jk-lakilaki">Laki-laki</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="jk-perempuan" type="radio"
+                                                name="jenis_kelamin" value="Perempuan">
+                                            <label class="form-check-label" for="jk-perempuan">Perempuan</label>
+                                        </div>
+                                        @error('jenis_kelamin')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="umurField">
+                                            Umur
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('umur') is-invalid @enderror" name="umur"
+                                            id="umurField" type="text" placeholder="Masukkan umur dosen"
+                                            value="{{ old('umur', $user->dosen->umur ?? '') }}" />
+                                        @error('umur')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="nipField">
+                                            NIP
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('nip') is-invalid @enderror" name="nip"
+                                            id="nipField" type="nip" placeholder="Masukkan nip dosen"
+                                            value="{{ old('nip', $user->nip ?? '') }}" autocomplete="off" />
+                                        @error('nip')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="emailField">
+                                            Email
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('email') is-invalid @enderror" name="email"
+                                            id="emailField" type="email" placeholder="Masukkan email dosen"
+                                            value="{{ old('email', $user->email ?? '') }}" autocomplete="off" />
+                                        @error('email')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1 w-100" for="passwordField">
+                                            Password
+                                            @if (!isset($user))
+                                                <span class="text-danger">*</span>
+                                            @endif
+                                        </label>
+                                        <div class="position-relative">
+                                            <input class="form-control @error('password') is-invalid @enderror"
+                                                name="password" id="passwordField" type="password"
+                                                placeholder="Masukkan password dosen" value="{{ old('password') }}" />
+                                            <span id="togglePassword"
+                                                class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
+                                                data-feather="eye-off">
+                                            </span>
+                                        </div>
+                                        @error('password')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="nameField">
+                                            Nama Lengkap
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('name') is-invalid @enderror" name="name"
+                                            id="nameField" type="text" placeholder="Masukkan nama lengkap dosen"
+                                            value="{{ old('name', $user->name ?? '') }}" />
+                                        @error('name')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1">
+                                            Jenis Kelamin
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="jk-lakilaki" type="radio"
+                                                name="jenis_kelamin" value="Laki-laki"
+                                                {{ optional($user->dosen)->jenis_kelamin == 'Laki-laki' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="jk-lakilaki">Laki-laki</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="jk-perempuan" type="radio"
+                                                name="jenis_kelamin" value="Perempuan"
+                                                {{ optional($user->dosen)->jenis_kelamin == 'Perempuan' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="jk-perempuan">Perempuan</label>
+                                        </div>
+                                        @error('jenis_kelamin')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="umurField">
+                                            Umur
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('umur') is-invalid @enderror" name="umur"
+                                            id="umurField" type="text" placeholder="Masukkan umur dosen"
+                                            value="{{ old('umur', $user->dosen->umur ?? '') }}" />
+                                        @error('umur')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="jafaField">
+                                            JAFA (Jabatan Fungsional/Akademik Dosen)
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('jafa') is-invalid @enderror" name="jafa"
+                                            id="jafaField" type="text" placeholder="Masukkan jafa dosen"
+                                            value="{{ old('jafa', $user->dosen->jafa ?? '') }}" />
+                                        @error('jafa')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="nipField">
+                                            NIP
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('nip') is-invalid @enderror" name="nip"
+                                            id="nipField" type="nip" placeholder="Masukkan nip dosen"
+                                            value="{{ old('nip', $user->nip ?? '') }}" autocomplete="off" />
+                                        @error('nip')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="emailField">
+                                            Email
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control @error('email') is-invalid @enderror" name="email"
+                                            id="emailField" type="email" placeholder="Masukkan email dosen"
+                                            value="{{ old('email', $user->email ?? '') }}" autocomplete="off" />
+                                        @error('email')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="d-flex gap-3 align-items-center mt-3">
                             <hr class="flex-grow-1 border-bottom">
@@ -266,23 +356,55 @@
                                         <i class="fa-solid fa-user-graduate"></i>
                                     </span>
                                     <input type="text" id="pendidikanField" name="pendidikan[]" class="form-control"
-                                        placeholder="...">
+                                        value="{{ $user->dosen->pendidikans[0]->pendidikan ?? '' }}" placeholder="...">
                                 </div>
                                 <button class="btn btn-primary btn-pendidikan add_pendidikan" type="button">
                                     <i class='fa-solid fa-plus-circle'></i>
                                 </button>
                             </div>
                         </div>
-                        <div id="extraPendidikanField"></div>
+                        <div id="extraPendidikanField">
+                            @if (isset($user))
+                                @if (isset($user->dosen->pendidikans))
+                                    @foreach ($user->dosen->pendidikans as $item)
+                                        @if ($loop->iteration != 1)
+                                            <div class="position-relative mb-3">
+                                                <div class="input-group input-group-joined pendidikanGroup">
+                                                    <span class="input-group-text">
+                                                        <i class="fa-solid fa-user-graduate"></i>
+                                                    </span>
+                                                    <input type="text" id="pendidikanField" name="pendidikan[]"
+                                                        class="form-control" value="{{ $item->pendidikan ?? '' }}"
+                                                        placeholder="...">
+                                                </div>
+                                                <button class="btn btn-danger btn-pendidikan remove_pendidikan"
+                                                    type="button">
+                                                    <i class='fa-solid fa-minus-circle'></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endif
+                        </div>
                         <div class="mb-3">
                             <label class="small mb-1" for="bidangKepakaranField">
                                 Bidang Kepakaran
                             </label>
                             <select name="bidang_kepakaran[]" id="bidangKepakaranField" class="form-select select2"
                                 multiple>
-                                @foreach ($bidangKepakarans as $item)
-                                    <option value="{{ $item->id }}">{{ $item->bidang_kepakaran }}</option>
-                                @endforeach
+                                @if (!isset($user))
+                                    @foreach ($bidangKepakarans as $item)
+                                        <option value="{{ $item->id }}">{{ $item->bidang_kepakaran }}</option>
+                                    @endforeach
+                                @else
+                                    @foreach ($bidangKepakarans as $item)
+                                        <option value="{{ $item->id }}"
+                                            @if ($user->dosen && $user->dosen->bidangKepakarans->contains($item->id)) selected @endif>
+                                            {{ $item->bidang_kepakaran }}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="mb-3">
@@ -359,7 +481,7 @@
     <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            // Initialize select2
+            // inisialisasi select2
             $('.select2').select2({
                 theme: 'bootstrap-5',
                 dropdownCssClass: "select2--small",
@@ -367,28 +489,28 @@
                 width: '100%',
             });
 
-            // Handle file input change
+            // menangani perubahan input file
             $('#photoInput').on('change', function() {
                 previewImage(this);
             });
 
-            // Trigger file input click on button click
+            // memicu input file klik pada tombol klik
             $('#unggahFoto').on('click', function(e) {
                 e.preventDefault();
 
-                // Reset the value of the file input
+                // mengatur ulang nilai input file
                 $('#photoInput').val('');
 
-                // Trigger the click event
+                // memicu peristiwa klik
                 $('#photoInput').click();
             });
 
-            // Handle default password (nip)
+            // menangani default password (nip)
             $('#nipField').on('input', function() {
                 $('#passwordField').val(this.value);
             });
 
-            // Hadle date picker bootstrap max current year
+            // menangani bootstrap datepicker
             $('#angkatanField').datepicker({
                 format: 'yyyy',
                 viewMode: 'years',
@@ -398,7 +520,7 @@
                 endDate: new Date(),
             });
 
-            // Handle toggle password
+            // menangani event toggle password
             $('#togglePassword').click(function() {
                 const input = $('#passwordField');
                 const icon = $(this);
@@ -412,7 +534,12 @@
                 }
             });
 
-            // Handle add pendidikan
+            // menangani event tombol hapus pendidikan
+            $('#extraPendidikanField').on('click', '.remove_pendidikan', function() {
+                $(this).parent().remove();
+            });
+
+            // menangani event tombol tambah pendidikan
             $('.add_pendidikan').on('click', function() {
                 const appendField = `
                     <div class="position-relative mb-3">
@@ -428,52 +555,35 @@
                     </div>
 				`;
                 $('#extraPendidikanField').append(appendField);
-
-                // Handle remove pendidikan
-                $('.remove_pendidikan').on('click', function() {
-                    $(this).parent().remove();
-                });
             });
 
         });
 
-        // toast config
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener(
-                    'mouseenter',
-                    Swal.stopTimer)
-                toast.addEventListener(
-                    'mouseleave',
-                    Swal.resumeTimer)
-            }
-        });
-
-        // Function to preview image
+        // fungsi melihat pratinjau gambar
         function previewImage(input) {
             if (input.files && input.files[0]) {
-                // Validate file size (2MB maximum)
+                // validasi ukuran file (maksimum 2MB)
                 if (input.files[0].size > 2 * 1024 * 1024) {
-                    Toast.fire({
+                    Swal.fire({
                         icon: 'error',
-                        title: 'Ukuran file harus kurang atau tidak lebih dari 2 MB.'
+                        title: 'Maaf terjadi kesalahan',
+                        text: 'Ukuran file maksimal 2 MB'
                     });
 
+                    // mengatur ulang gambar pratinjau
                     $('#previewImage').attr('src', '{{ asset('assets/admin/img/user-placeholder.svg') }}');
                     return;
                 }
 
+                // memuat gambar pratinjau dengan FileReader
                 var reader = new FileReader();
 
+                // memuat gambar setelah FileReader selesai
                 reader.onload = function(e) {
                     $('#previewImage').attr('src', e.target.result);
                 };
 
+                // memuat gambar dari input file
                 reader.readAsDataURL(input.files[0]);
             }
         }

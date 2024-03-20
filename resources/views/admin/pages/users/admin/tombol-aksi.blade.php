@@ -1,3 +1,7 @@
+<a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="{{ route('users.formResetPassword', $users->id) }}"
+    title="Atur Ulang Password">
+    <i class="fas fa-key"></i>
+</a>
 <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="{{ route('users.editAdmin', $users->id) }}"
     title="Edit">
     <i class="fas fa-edit"></i>

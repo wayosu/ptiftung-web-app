@@ -13,7 +13,7 @@ class BidangKepakaranSeeder extends Seeder
      */
     public function run(): void
     {
-        // make 10 random bidang kepakaran
+        // buat 10 data dummy untuk bidang kepakaran
         BidangKepakaran::factory()->count(10)->create();
     }
 }

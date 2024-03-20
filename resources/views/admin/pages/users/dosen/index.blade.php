@@ -69,7 +69,7 @@
                         </a>
                         @include('admin.pages.users.filter-berdasarkan')
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('bidangKepakaran.index') }}">
-                            <i class="fa-solid fa-list me-1"></i>
+                            <i class="fa-regular fa-lightbulb me-1"></i>
                             Daftar Bidang Kepakaran
                         </a>
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createDosen') }}">
@@ -91,7 +91,7 @@
                         <tr>
                             <th>Nama</th>
                             <th>NIP</th>
-                            <th>Gelar</th>
+                            <th>JAFA</th>
                             <th>Jenis Kelamin</th>
                             <th>Tanggal Dibuat</th>
                             <th>Aksi</th>
@@ -136,7 +136,7 @@
                         data: 'nip'
                     },
                     {
-                        data: 'dosen.gelar'
+                        data: 'dosen.jafa'
                     },
                     {
                         data: 'dosen.jenis_kelamin'
@@ -157,10 +157,10 @@
                 ]
             });
 
-            // toast config
+            // toast konfigurasi
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
+                position: 'bottom-end',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -171,14 +171,25 @@
                     toast.addEventListener(
                         'mouseleave',
                         Swal.resumeTimer)
+                    toast.addEventListener(
+                        'click',
+                        Swal.close
+                    )
                 }
             });
 
-            // toast notification
+            // toast notifikasi
             @if (Session::has('success'))
                 Toast.fire({
                     icon: 'success',
-                    title: '{{ Session::get('success') }}'
+                    title: 'Berhasil',
+                    text: '{{ Session::get('success') }}'
+                })
+            @elseif (Session::has('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Maaf terjadi kesalahan',
+                    text: '{{ Session::get('error') }}'
                 })
             @endif
 

@@ -14,22 +14,24 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create an admin user
+        // buat 2 data dummy pengguna dengan role 'admin'
         User::factory()->count(2)->create()->each(function ($user) {
             $user->assignRole('admin');
         });
 
-        // Create 10 users with 'dosen' role
+        // buat 10 data dummy pengguna dengan role 'dosen'
         User::factory()->count(10)->dosen()->create()->each(function ($user) {
             $user->assignRole('dosen');
         });
 
-        // Create 10 users with 'mahasiswa' role
+        // buat 10 data dummy pengguna dengan role 'mahasiswa'
         User::factory()->count(10)->mahasiswa()->create()->each(function ($user) {
             $user->assignRole('mahasiswa');
 
+            // buat angkatan yang acak dari 2018-2023
             $angkatan = rand(2018, 2023);
 
+            // buat data dummy ke dalam tabel mahasiswa
             $user->mahasiswa()->create([
                 'user_id' => $user->id,
                 'program_studi' => 'Pendidikan Teknologi Informasi',

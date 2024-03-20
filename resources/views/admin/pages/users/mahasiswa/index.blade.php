@@ -3,7 +3,6 @@
 @push('css')
     <link href="{{ asset('assets/admin/libs/datatables/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/admin/libs/datatables/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" />
-
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
 
     <style>
@@ -48,7 +47,7 @@
 @endpush
 
 @section('content')
-    <!-- Header content-->
+    <!-- Konten Header-->
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
         <div class="container-fluid px-4">
             <div class="page-header-content">
@@ -78,7 +77,7 @@
         </div>
     </header>
 
-    <!-- Main page content-->
+    <!-- Konten Halaman Utama-->
     <div class="container-fluid px-4">
         <div class="card">
             <div class="card-body overflow-hidden">
@@ -113,7 +112,7 @@
 
     <script>
         $(document).ready(function() {
-            // initialize datatables
+            // inisialisasi datatables
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
@@ -140,7 +139,7 @@
                     {
                         data: 'created_at',
                         render: function(data) {
-                            // with locale 'id'
+                            // menggunakan locale 'id'
                             return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
                                 ' WITA';
                         }
@@ -153,10 +152,10 @@
                 ]
             });
 
-            // toast config
+            // toast konfigurasi
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
+                position: 'bottom-end',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -167,22 +166,33 @@
                     toast.addEventListener(
                         'mouseleave',
                         Swal.resumeTimer)
+                    toast.addEventListener(
+                        'click',
+                        Swal.close
+                    )
                 }
             });
 
-            // toast notification
+            // toast notifikasi
             @if (Session::has('success'))
                 Toast.fire({
                     icon: 'success',
-                    title: '{{ Session::get('success') }}'
+                    title: 'Berhasil',
+                    text: '{{ Session::get('success') }}'
+                })
+            @elseif (Session::has('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Maaf terjadi kesalahan',
+                    text: '{{ Session::get('error') }}'
                 })
             @endif
 
-            // confirm delete with swal
+            // konfirmasi tombol hapus menggunakan swal
             $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
 
-                // Extracting the delete URL from the form
+                // Mengekstrak URL 'hapus' dari formulir
                 const userId = $(this).data('user-id');
                 const deleteUrl = "{{ route('users.destroy', ':id') }}";
                 const newDeleteUrl = deleteUrl.replace(':id', userId);
@@ -198,11 +208,12 @@
                     cancelButtonText: 'Batal',
                     input: 'text',
                     inputAttributes: {
-                        autocomplete: 'off', // Disable autocomplete
+                        autocomplete: 'off', // Menonaktifkan pelengkapan otomatis
                     },
                     inputValidator: (value) => {
                         const trimmedValue = value.trim();
 
+                        // Memastikan inputan tidak kosong
                         if (!trimmedValue) {
                             return 'Mohon diisi dengan benar!'
                         } else if (trimmedValue.toLowerCase() === 'hapus data') {

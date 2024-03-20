@@ -1,3 +1,7 @@
+<a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="{{ route('users.formResetPassword', $users->id) }}"
+    title="Atur Ulang Password">
+    <i class="fas fa-key"></i>
+</a>
 @if ($users->role_name == 'Admin')
     <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="{{ route('users.editAdmin', $users->id) }}"
         title="Edit">
@@ -9,8 +13,8 @@
         <i class="fas fa-edit"></i>
     </a>
 @elseif ($users->role_name == 'Mahasiswa')
-    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="{{ route('users.editMahasiswa', $users->id) }}"
-        title="Edit">
+    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+        href="{{ route('users.editMahasiswa', $users->id) }}" title="Edit">
         <i class="fas fa-edit"></i>
     </a>
 @endif

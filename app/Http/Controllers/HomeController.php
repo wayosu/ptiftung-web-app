@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**
@@ -23,11 +21,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard', [
+        return view('admin.pages.dashboard', [
             'icon' => 'activity',
-            'title' => 'Dashboard',
-            'subtitle' => 'Ikhtisar dashboard dan ringkasan konten.',
-            'active' => 'dashboard',
+            'title' => 'Dasbor',
+            'subtitle' => 'Ikhtisar dasbor dan ringkasan konten.',
+            'active' => 'dasbor',
         ]);
     }
 }

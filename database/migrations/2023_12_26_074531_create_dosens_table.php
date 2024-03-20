@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->nullable()->unique();
             $table->string('jenis_kelamin')->nullable();
             $table->string('umur')->nullable();
-            $table->string('gelar')->nullable();
+            $table->string('jafa')->nullable();
             $table->string('link_gscholar')->nullable();
             $table->string('link_sinta')->nullable();
             $table->string('link_scopus')->nullable();

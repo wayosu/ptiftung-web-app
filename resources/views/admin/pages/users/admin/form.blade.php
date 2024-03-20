@@ -116,28 +116,28 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="small mb-1 w-100" for="passwordField">
-                                Password
-                                @if (!isset($user))
+                        @if (!isset($user))
+                            <div class="mb-3">
+                                <label class="small mb-1 w-100" for="passwordField">
+                                    Password
                                     <span class="text-danger">*</span>
-                                @endif
-                                <span id="defaultPassword" class="text-primary float-end">Default
-                                    Password</span>
-                            </label>
-                            <div class="position-relative">
-                                <input class="form-control @error('password') is-invalid @enderror" name="password"
-                                    id="passwordField" type="password" placeholder="Masukkan password anda"
-                                    value="{{ old('password') }}" />
-                                <span id="togglePassword"
-                                    class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
-                                    data-feather="eye-off">
-                                </span>
+                                    <span id="defaultPassword" class="text-primary float-end">Default
+                                        Password</span>
+                                </label>
+                                <div class="position-relative">
+                                    <input class="form-control @error('password') is-invalid @enderror" name="password"
+                                        id="passwordField" type="password" placeholder="Masukkan password anda"
+                                        value="{{ old('password') }}" />
+                                    <span id="togglePassword"
+                                        class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
+                                        data-feather="eye-off">
+                                    </span>
+                                </div>
+                                @error('password')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('password')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @endif
                         <button class="btn btn-light" type="reset">
                             <i class="fa-solid fa-rotate-left me-1"></i>
                             Atur Ulang
@@ -198,31 +198,15 @@
             });
         });
 
-        // toast config
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener(
-                    'mouseenter',
-                    Swal.stopTimer)
-                toast.addEventListener(
-                    'mouseleave',
-                    Swal.resumeTimer)
-            }
-        });
-
         // Function to preview image
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 // Validate file size (2MB maximum)
                 if (input.files[0].size > 2 * 1024 * 1024) {
-                    Toast.fire({
+                    Swal.fire({
                         icon: 'error',
-                        title: 'Ukuran file harus kurang atau tidak lebih dari 2 MB.'
+                        title: 'Maaf terjadi kesalahan',
+                        text: 'Ukuran file maksimal 2 MB'
                     });
 
                     $('#previewImage').attr('src', '{{ asset('assets/admin/img/user-placeholder.svg') }}');

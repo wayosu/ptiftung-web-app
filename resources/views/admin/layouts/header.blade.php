@@ -7,7 +7,7 @@
     <!-- * * Tip * * You can use text or an image for your navbar brand.-->
     <!-- * * * * * * When using an image, we recommend the SVG format.-->
     <!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="index.html">Dashboard WEB PTI</a>
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="index.html">Dasbor WEB PTI</a>
     <!-- Navbar Search Input-->
     <!-- * * Note: * * Visible only on and above the lg breakpoint-->
     <form class="form-inline me-auto d-none d-lg-block me-3">
@@ -109,14 +109,14 @@
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#!">
+                <a class="dropdown-item" href="{{ route('pengaturanAkun') }}">
                     <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
-                    Account
+                    Pengaturan Akun
                 </a>
                 <a class="dropdown-item" href="{{ route('logout') }}"
                     onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                     <div class="dropdown-item-icon"><i data-feather="log-out"></i></div>
-                    Logout
+                    Keluar
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf

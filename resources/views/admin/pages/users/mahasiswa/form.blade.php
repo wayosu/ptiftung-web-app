@@ -33,7 +33,7 @@
 @endpush
 
 @section('content')
-    <!-- Header content-->
+    <!-- Konten Header -->
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
         <div class="container-xl px-4">
             <div class="page-header-content">
@@ -58,6 +58,7 @@
         </div>
     </header>
 
+    <!-- Konten Halaman Utama -->
     <div class="container-xl px-4 mt-4">
         <form
             action="@if (isset($user)) {{ route('users.updateMahasiswa', $user->id) }} @else {{ route('users.storeMahasiswa') }} @endif"
@@ -194,35 +195,34 @@
 
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-    {{-- <script src="{{ asset('assets/admin/libs/datepicker/datepicker.min.js') }}"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"
         integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            // Handle file input change
+            // Menangani perubahan input file
             $('#photoInput').on('change', function() {
                 previewImage(this);
             });
 
-            // Trigger file input click on button click
+            // Memicu input file klik pada tombol klik
             $('#unggahFoto').on('click', function(e) {
                 e.preventDefault();
 
-                // Reset the value of the file input
+                // Mengatur ulang nilai input file
                 $('#photoInput').val('');
 
-                // Trigger the click event
+                // Memicu peristiwa klik
                 $('#photoInput').click();
             });
 
-            // Handle default password (nim)
+            // Menangani password default (nim)
             $('#nimField').on('input', function() {
                 $('#passwordField').val(this.value);
             });
 
-            // Hadle date picker bootstrap max current year
+            // Menangani bootstrap pemilih tanggal dengan tahun maksimal saat ini
             $('#angkatanField').datepicker({
                 format: 'yyyy',
                 viewMode: 'years',
@@ -232,7 +232,7 @@
                 endDate: new Date(),
             });
 
-            // Handle toggle password
+            // Menangani event toggle password
             $('#togglePassword').click(function() {
                 const input = $('#passwordField');
                 const icon = $(this);
@@ -247,43 +247,31 @@
             });
         });
 
-        // toast config
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener(
-                    'mouseenter',
-                    Swal.stopTimer)
-                toast.addEventListener(
-                    'mouseleave',
-                    Swal.resumeTimer)
-            }
-        });
-
-        // Function to preview image
+        // Fungsi untuk melihat pratinjau gambar
         function previewImage(input) {
             if (input.files && input.files[0]) {
-                // Validate file size (2MB maximum)
+                // Validasi ukuran file (maksimum 2MB)
                 if (input.files[0].size > 2 * 1024 * 1024) {
-                    Toast.fire({
+                    Swal.fire({
                         icon: 'error',
-                        title: 'Ukuran file harus kurang atau tidak lebih dari 2 MB.'
+                        title: 'Maaf terjadi kesalahan',
+                        text: 'Ukuran file maksimal 2 MB'
                     });
 
+                    // Mengatur ulang gambar pratinjau
                     $('#previewImage').attr('src', '{{ asset('assets/admin/img/user-placeholder.svg') }}');
                     return;
                 }
 
+                // Memuat gambar pratinjau dengan FileReader
                 var reader = new FileReader();
 
+                // Memuat gambar setelah FileReader selesai
                 reader.onload = function(e) {
                     $('#previewImage').attr('src', e.target.result);
                 };
 
+                // Memuat gambar dari input file
                 reader.readAsDataURL(input.files[0]);
             }
         }

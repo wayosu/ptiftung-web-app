@@ -19,6 +19,8 @@ class Mahasiswa extends Model
 
     public function user()
     {
+        // relasi one to one
+        // setiap data Mahasiswa dimiliki oleh satu User
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

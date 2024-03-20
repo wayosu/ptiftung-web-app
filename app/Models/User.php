@@ -48,15 +48,31 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // relasi dengan tabel mahasiswa
     public function mahasiswa()
     {
+        // relasi one to one
+        // satu User hanya memiliki satu data Mahasiswa
         return $this->hasOne(Mahasiswa::class, 'user_id', 'id');
     }
 
-    // relasi dengan tabel dosen
     public function dosen()
     {
+        // relasi one to one
+        // satu User hanya memiliki satu data Dosen
         return $this->hasOne(Dosen::class, 'user_id', 'id');
+    }
+
+    public function saranaKategoris()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data SaranaKategori
+        return $this->hasMany(SaranaKategori::class, 'created_by', 'id');
+    }
+
+    public function sistemInformasis()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data SistemInformasi
+        return $this->hasMany(SistemInformasi::class, 'created_by', 'id');
     }
 }

@@ -14,17 +14,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
 
-Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dasbor');
 
     // Start Users //
-    Route::group(['prefix' => 'users'], function () {
+    Route::group(['prefix' => 'pengguna'], function () {
         Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::get('/{id}/reset-password', [App\Http\Controllers\UserController::class, 'formResetPassword'])->name('users.formResetPassword');
+        Route::put('/{id}/reset-password', [App\Http\Controllers\UserController::class, 'resetPassword'])->name('users.resetPassword');
         Route::delete('/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
 
         // Admin //
@@ -58,4 +60,102 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
     Route::put('/bidang-kepakaran/{id}', [App\Http\Controllers\BidangKepakaranController::class, 'update'])->name('bidangKepakaran.update');
     Route::delete('/bidang-kepakaran/{id}', [App\Http\Controllers\BidangKepakaranController::class, 'destroy'])->name('bidangKepakaran.destroy');
     // End Bidang Kepakaran //
+
+    // Start Sejarah //
+    Route::get('/sejarah', [App\Http\Controllers\ProfilProgramStudiController::class, 'sejarah'])->name('sejarah.index');
+    Route::put('/sejarah', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateSejarah'])->name('sejarah.update');
+    // End Sejarah //
+
+    // Start Visi Keilmuan, Tujuan, dan Strategi //
+    Route::get('/visi-keilmuan-tujuan-strategi', [App\Http\Controllers\ProfilProgramStudiController::class, 'visiKeilmuanTujuanStrategi'])->name('visiKeilmuanTujuanStrategi.index');
+    Route::put('/visi-keilmuan-tujuan-strategi', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateVisiKeilmuanTujuanStrategi'])->name('visiKeilmuanTujuanStrategi.update');
+    // End Visi Keilmuan, Tujuan, dan Strategi //
+
+    // Start Struktur Organisasi //
+    Route::get('/struktur-organisasi', [App\Http\Controllers\ProfilProgramStudiController::class, 'strukturOrganisasi'])->name('strukturOrganisasi.index');
+    Route::put('/struktur-organisasi', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateStrukturOrganisasi'])->name('strukturOrganisasi.update');
+    // End Struktur Organisasi //
+
+    // Start Kontak dan Lokasi //
+    Route::get('/kontak-lokasi', [App\Http\Controllers\ProfilProgramStudiController::class, 'kontakLokasi'])->name('kontakLokasi.index');
+    Route::put('/kontak-lokasi', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateKontakLokasi'])->name('kontakLokasi.update');
+    // End Kontak dan Lokasi //
+
+    // Start Kategori Sarana //
+    Route::get('/kategori-sarana', [App\Http\Controllers\SaranaKategoriController::class, 'index'])->name('kategoriSarana.index');
+    Route::get('/kategori-sarana/create', [App\Http\Controllers\SaranaKategoriController::class, 'create'])->name('kategoriSarana.create');
+    Route::post('/kategori-sarana', [App\Http\Controllers\SaranaKategoriController::class, 'store'])->name('kategoriSarana.store');
+    Route::get('/kategori-sarana/{id}/edit', [App\Http\Controllers\SaranaKategoriController::class, 'edit'])->name('kategoriSarana.edit');
+    Route::put('/kategori-sarana/{id}', [App\Http\Controllers\SaranaKategoriController::class, 'update'])->name('kategoriSarana.update');
+    Route::delete('/kategori-sarana/{id}', [App\Http\Controllers\SaranaKategoriController::class, 'destroy'])->name('kategoriSarana.destroy');
+    // End Kategori Sarana //
+
+    // Start Sarana //
+    Route::get('/sarana', [App\Http\Controllers\SaranaController::class, 'index'])->name('sarana.index');
+    Route::get('/sarana/create', [App\Http\Controllers\SaranaController::class, 'create'])->name('sarana.create');
+    Route::post('/sarana/upload-image', [App\Http\Controllers\SaranaTemporaryImageController::class, 'uploadTemporaryImage'])->name('sarana.uploadTemporaryImage');
+    Route::get('/sarana/get-image', [App\Http\Controllers\SaranaTemporaryImageController::class, 'getTemporaryImage'])->name('sarana.getTemporaryImage');
+    Route::delete('/sarana/delete-image', [App\Http\Controllers\SaranaTemporaryImageController::class, 'deleteTemporaryImage'])->name('sarana.deleteTemporaryImage');
+    Route::get('/sarana/{id}/detail-image', [App\Http\Controllers\SaranaImageController::class, 'detailImage'])->name('sarana.detailImage');
+    Route::delete('/sarana/{id}/delete-image', [App\Http\Controllers\SaranaImageController::class, 'deleteImage'])->name('sarana.deleteImage');
+    Route::post('/sarana', [App\Http\Controllers\SaranaController::class, 'store'])->name('sarana.store');
+    Route::get('/sarana/{id}/edit', [App\Http\Controllers\SaranaController::class, 'edit'])->name('sarana.edit');
+    Route::put('/sarana/{id}', [App\Http\Controllers\SaranaController::class, 'update'])->name('sarana.update');
+    Route::delete('/sarana/{id}', [App\Http\Controllers\SaranaController::class, 'destroy'])->name('sarana.destroy');
+    // End Sarana //
+
+    // Start Kategori Prasarana //
+    Route::get('/kategori-prasarana', [App\Http\Controllers\PrasaranaKategoriController::class, 'index'])->name('kategoriPrasarana.index');
+    Route::get('/kategori-prasarana/create', [App\Http\Controllers\PrasaranaKategoriController::class, 'create'])->name('kategoriPrasarana.create');
+    Route::post('/kategori-prasarana', [App\Http\Controllers\PrasaranaKategoriController::class, 'store'])->name('kategoriPrasarana.store');
+    Route::get('/kategori-prasarana/{id}/edit', [App\Http\Controllers\PrasaranaKategoriController::class, 'edit'])->name('kategoriPrasarana.edit');
+    Route::put('/kategori-prasarana/{id}', [App\Http\Controllers\PrasaranaKategoriController::class, 'update'])->name('kategoriPrasarana.update');
+    Route::delete('/kategori-prasarana/{id}', [App\Http\Controllers\PrasaranaKategoriController::class, 'destroy'])->name('kategoriPrasarana.destroy');
+    // End Kategori Prasarana //
+
+    // Start Prasarana //
+    Route::get('/prasarana', [App\Http\Controllers\PrasaranaController::class, 'index'])->name('prasarana.index');
+    Route::get('/prasarana/create', [App\Http\Controllers\PrasaranaController::class, 'create'])->name('prasarana.create');
+    Route::post('/prasarana/upload-image', [App\Http\Controllers\PrasaranaTemporaryImageController::class, 'uploadTemporaryImage'])->name('prasarana.uploadTemporaryImage');
+    Route::get('/prasarana/get-image', [App\Http\Controllers\PrasaranaTemporaryImageController::class, 'getTemporaryImage'])->name('prasarana.getTemporaryImage');
+    Route::delete('/prasarana/delete-image', [App\Http\Controllers\PrasaranaTemporaryImageController::class, 'deleteTemporaryImage'])->name('prasarana.deleteTemporaryImage');
+    Route::get('/prasarana/{id}/detail-image', [App\Http\Controllers\PrasaranaImageController::class, 'detailImage'])->name('prasarana.detailImage');
+    Route::delete('/prasarana/{id}/delete-image', [App\Http\Controllers\PrasaranaImageController::class, 'deleteImage'])->name('prasarana.deleteImage');
+    Route::post('/prasarana', [App\Http\Controllers\PrasaranaController::class, 'store'])->name('prasarana.store');
+    Route::get('/prasarana/{id}/edit', [App\Http\Controllers\PrasaranaController::class, 'edit'])->name('prasarana.edit');
+    Route::put('/prasarana/{id}', [App\Http\Controllers\PrasaranaController::class, 'update'])->name('prasarana.update');
+    Route::delete('/prasarana/{id}', [App\Http\Controllers\PrasaranaController::class, 'destroy'])->name('prasarana.destroy');
+    // End Prasarana //
+
+    // Start Sistem Informasi //
+    Route::get('/sistem-informasi', [App\Http\Controllers\SistemInformasiController::class, 'index'])->name('sistemInformasi.index');
+    Route::get('/sistem-informasi/create', [App\Http\Controllers\SistemInformasiController::class, 'create'])->name('sistemInformasi.create');
+    Route::post('/sistem-informasi', [App\Http\Controllers\SistemInformasiController::class, 'store'])->name('sistemInformasi.store');
+    Route::get('/sistem-informasi/{id}/edit', [App\Http\Controllers\SistemInformasiController::class, 'edit'])->name('sistemInformasi.edit');
+    Route::put('/sistem-informasi/{id}', [App\Http\Controllers\SistemInformasiController::class, 'update'])->name('sistemInformasi.update');
+    Route::delete('/sistem-informasi/{id}', [App\Http\Controllers\SistemInformasiController::class, 'destroy'])->name('sistemInformasi.destroy');
+    // End Sistem Informasi //
+
+    // Start Profil Lulusan //
+    Route::get('/profil-lulusan', [App\Http\Controllers\ProfilLulusanController::class, 'index'])->name('profilLulusan.index');
+    Route::get('/profil-lulusan/create', [App\Http\Controllers\ProfilLulusanController::class, 'create'])->name('profilLulusan.create');
+    Route::post('/profil-lulusan', [App\Http\Controllers\ProfilLulusanController::class, 'store'])->name('profilLulusan.store');
+    Route::get('/profil-lulusan/{id}/edit', [App\Http\Controllers\ProfilLulusanController::class, 'edit'])->name('profilLulusan.edit');
+    Route::put('/profil-lulusan/{id}', [App\Http\Controllers\ProfilLulusanController::class, 'update'])->name('profilLulusan.update');
+    Route::delete('/profil-lulusan/{id}', [App\Http\Controllers\ProfilLulusanController::class, 'destroy'])->name('profilLulusan.destroy');
+    // End Profil Lulusan //
+
+    // Start Pengaturan Akun //
+    Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
+    Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');
+    Route::put('/pengaturan-akun/password', [App\Http\Controllers\PengaturanController::class, 'updatePasswordAkun'])->name('passwordAkun.update');
+    // End Pengaturan Akun //
+
+    // Start Pengaturan Sistem //
+    Route::get('/pengaturan-sistem', [App\Http\Controllers\PengaturanController::class, 'pengaturanSistem'])->name('pengaturanSistem');
+    Route::put('/pengaturan-sistem', [App\Http\Controllers\PengaturanController::class, 'updatePengaturanSistem'])->name('pengaturanSistem.update');
+    Route::put('/ubah-logo', [App\Http\Controllers\PengaturanController::class, 'updateLogo'])->name('pengaturanSistem.updateLogo');
+    Route::post('/setel-ke-pengaturan-pabrik', [App\Http\Controllers\PengaturanController::class, 'resetToFactory'])->name('pengaturanSistem.resetToFactory');
+    // End Pengaturan Sistem //
+
 });

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('nim')->nullable()->unique();
             $table->string('nip')->nullable()->unique();
-            $table->string('hak_akses_khusus')->nullable();
+            $table->string('hak_istimewa')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
         });

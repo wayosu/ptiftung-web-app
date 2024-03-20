@@ -115,7 +115,7 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [0, 'asc']
+                    [2, 'desc']
                 ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
@@ -145,10 +145,10 @@
                 ]
             });
 
-            // toast config
+            // toast konfigurasi
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
+                position: 'bottom-end',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -159,14 +159,25 @@
                     toast.addEventListener(
                         'mouseleave',
                         Swal.resumeTimer)
+                    toast.addEventListener(
+                        'click',
+                        Swal.close
+                    )
                 }
             });
 
-            // toast notification
+            // toast notifikasi
             @if (Session::has('success'))
                 Toast.fire({
                     icon: 'success',
-                    title: '{{ Session::get('success') }}'
+                    title: 'Berhasil',
+                    text: '{{ Session::get('success') }}'
+                })
+            @elseif (Session::has('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Maaf terjadi kesalahan',
+                    text: '{{ Session::get('error') }}'
                 })
             @endif
 

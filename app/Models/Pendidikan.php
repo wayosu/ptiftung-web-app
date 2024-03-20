@@ -18,6 +18,8 @@ class Pendidikan extends Model
 
     public function dosen()
     {
+        // relasi one to many
+        // setiap data Pendidikan dimiliki oleh satu Dosen
         return $this->belongsTo(Dosen::class, 'dosen_id', 'id');
     }
 }

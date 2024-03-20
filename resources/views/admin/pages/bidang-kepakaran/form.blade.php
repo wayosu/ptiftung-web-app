@@ -37,7 +37,7 @@
 
             <div class="col-xl-6">
                 <div class="card mb-4">
-                    <div class="card-header">Formulir Bidang Kepakaran</div>
+                    <div class="card-header">Form Bidang Kepakaran</div>
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="small mb-1" for="bidangKepakaranField">
@@ -54,7 +54,7 @@
                         </div>
                         <button class="btn btn-light" type="reset">
                             <i class="fa-solid fa-rotate-left me-1"></i>
-                            Reset
+                            Atur Ulang
                         </button>
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-floppy-disk me-1"></i>

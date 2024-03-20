@@ -18,6 +18,8 @@ class BidangKepakaran extends Model
 
     public function dosen()
     {
+        // relasi many to many
+        // setiap BidangKepakaran dapat terkait dengan banyak Dosen, dan sebaliknya
         return $this->belongsToMany(Dosen::class);
     }
 }

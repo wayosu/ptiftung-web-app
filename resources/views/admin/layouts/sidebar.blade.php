@@ -9,35 +9,49 @@
             </a>
 
             <div class="sidenav-menu-heading">Dasbor</div>
-            <a class="nav-link" href="{{ route('dashboard') }}">
+            <a class="nav-link {{ isset($active) && $active == 'dasbor' ? 'active' : '' }}"
+                href="{{ route('dasbor') }}">
                 <div class="nav-link-icon"><i data-feather="activity"></i></div>
                 Dasbor
             </a>
 
             <div class="sidenav-menu-heading">Data Master</div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#userdata" aria-expanded="false" aria-controls="userdata">
+            <a class="nav-link {{ isset($active) && ($active == 'users' || $active == 'admin' || $active == 'dosen' || $active == 'mahasiswa') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#userdata" aria-expanded="false"
+                aria-controls="userdata">
                 <div class="nav-link-icon"><i data-feather="users"></i></div>
                 Pengguna
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="userdata" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'users' || $active == 'admin' || $active == 'dosen' || $active == 'mahasiswa') ? 'show' : '' }}"
+                id="userdata" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                    <a class="nav-link" href="{{ route('users.index') }}">Semua Pengguna</a>
-                    <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                        data-bs-target="#byRole" aria-expanded="false" aria-controls="byRole">
+                    <a class="nav-link {{ isset($active) && $active == 'users' ? 'active' : '' }}"
+                        href="{{ route('users.index') }}">Semua Pengguna</a>
+                    <a class="nav-link {{ isset($active) && ($active == 'admin' || $active == 'dosen' || $active == 'mahasiswa') ? 'active' : 'collapsed' }}"
+                        href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#byRole"
+                        aria-expanded="false" aria-controls="byRole">
                         Berdasarkan Peran
                         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="byRole" data-bs-parent="#accordionSidenavAppsMenu">
+                    <div class="collapse {{ isset($active) && ($active == 'admin' || $active == 'dosen' || $active == 'mahasiswa') ? 'show' : '' }}"
+                        id="byRole" data-bs-parent="#accordionSidenavAppsMenu">
                         <nav class="sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ route('users.byAdmin') }}">Admin</a>
-                            <a class="nav-link" href="{{ route('users.byDosen') }}">Dosen</a>
-                            <a class="nav-link" href="{{ route('users.byMahasiswa') }}">Mahasiswa</a>
+                            <a class="nav-link {{ isset($active) && $active == 'admin' ? 'active' : '' }}"
+                                href="{{ route('users.byAdmin') }}">Admin</a>
+                            <a class="nav-link {{ isset($active) && $active == 'dosen' ? 'active' : '' }}"
+                                href="{{ route('users.byDosen') }}">Dosen</a>
+                            <a class="nav-link {{ isset($active) && $active == 'mahasiswa' ? 'active' : '' }}"
+                                href="{{ route('users.byMahasiswa') }}">Mahasiswa</a>
                         </nav>
                     </div>
                 </nav>
             </div>
+            <a class="nav-link @if (isset($active) && $active == 'bidang-kepakaran') active @endif"
+                href="{{ route('bidangKepakaran.index') }}">
+                <div class="nav-link-icon"><i class="fa-regular fa-lightbulb"></i></div>
+                Bidang Kepakaran
+            </a>
 
             <div class="sidenav-menu-heading">Layanan Administrasi</div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
@@ -56,62 +70,83 @@
             </div>
 
             <div class="sidenav-menu-heading">Informasi</div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                <div class="nav-link-icon"><i data-feather="info"></i></div>
-                Profil
+            <a class="nav-link {{ isset($active) && ($active == 'sejarah' || $active == 'visi-keilmuan-tujuan-strategi' || $active == 'struktur-organisasi' || $active == 'kontak-lokasi') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
+                aria-expanded="false" aria-controls="collapseLayouts">
+                <div class="nav-link-icon"><i class="fa-solid fa-landmark"></i></div>
+                Profil Program Studi
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="collapseLayouts" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'sejarah' || $active == 'visi-keilmuan-tujuan-strategi' || $active == 'struktur-organisasi' || $active == 'kontak-lokasi') ? 'show' : '' }}"
+                id="collapseLayouts" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                    <a class="nav-link" href="#">Sejarah</a>
-                    <a class="nav-link" href="#">Visi, Tujuan dan Strategi</a>
-                    <a class="nav-link" href="#">Struktur Organisasi</a>
-                    <a class="nav-link" href="#">Kontak dan Lokasi</a>
+                    <a class="nav-link {{ isset($active) && $active == 'sejarah' ? 'active' : '' }}"
+                        href="{{ route('sejarah.index') }}">Sejarah</a>
+                    <a class="nav-link {{ isset($active) && $active == 'visi-keilmuan-tujuan-strategi' ? 'active' : '' }}"
+                        href="{{ route('visiKeilmuanTujuanStrategi.index') }}">Visi Keilmuan, Tujuan
+                        dan Strategi</a>
+                    <a class="nav-link {{ isset($active) && $active == 'struktur-organisasi' ? 'active' : '' }}"
+                        href="{{ route('strukturOrganisasi.index') }}">Struktur Organisasi</a>
+                    <a class="nav-link {{ isset($active) && $active == 'kontak-lokasi' ? 'active' : '' }}"
+                        href="{{ route('kontakLokasi.index') }}">Kontak dan Lokasi</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#fasilitas" aria-expanded="false" aria-controls="fasilitas">
-                <div class="nav-link-icon"><i data-feather="home"></i></div>
+            <a class="nav-link {{ isset($active) && ($active == 'sarana' || $active == 'kategori-sarana' || $active == 'prasarana' || $active == 'kategori-prasarana' || $active == 'sistem-informasi') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#fasilitas"
+                aria-expanded="false" aria-controls="fasilitas">
+                <div class="nav-link-icon"><i class="fa-regular fa-hospital"></i></div>
                 Fasilitas
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="fasilitas" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'sarana' || $active == 'kategori-sarana' || $active == 'prasarana' || $active == 'kategori-prasarana' || $active == 'sistem-informasi') ? 'show' : '' }}"
+                id="fasilitas" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                    <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                        data-bs-target="#sarana" aria-expanded="false" aria-controls="sarana">
+                    <a class="nav-link {{ isset($active) && ($active == 'sarana' || $active == 'kategori-sarana') ? 'active' : 'collapsed' }}"
+                        href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#sarana"
+                        aria-expanded="false" aria-controls="sarana">
                         Sarana
                         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="sarana" data-bs-parent="#accordionSidenavAppsMenu">
+                    <div class="collapse {{ isset($active) && ($active == 'sarana' || $active == 'kategori-sarana') ? 'show' : '' }}"
+                        id="sarana" data-bs-parent="#accordionSidenavAppsMenu">
                         <nav class="sidenav-menu-nested nav">
-                            <a class="nav-link" href="#">Sarana</a>
-                            <a class="nav-link" href="#">Kategori Sarana</a>
+                            <a class="nav-link {{ isset($active) && $active == 'sarana' ? 'active' : '' }}"
+                                href="{{ route('sarana.index') }}">Sarana</a>
+                            <a class="nav-link {{ isset($active) && $active == 'kategori-sarana' ? 'active' : '' }}"
+                                href="{{ route('kategoriSarana.index') }}">Kategori Sarana</a>
                         </nav>
                     </div>
-                    <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                        data-bs-target="#prasarana" aria-expanded="false" aria-controls="prasarana">
+                    <a class="nav-link {{ isset($active) && ($active == 'prasarana' || $active == 'kategori-prasarana') ? 'active' : 'collapsed' }}"
+                        href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#prasarana"
+                        aria-expanded="false" aria-controls="prasarana">
                         Prasarana
                         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="prasarana" data-bs-parent="#accordionSidenavAppsMenu">
+                    <div class="collapse {{ isset($active) && ($active == 'prasarana' || $active == 'kategori-prasarana') ? 'show' : '' }}"
+                        id="prasarana" data-bs-parent="#accordionSidenavAppsMenu">
                         <nav class="sidenav-menu-nested nav">
-                            <a class="nav-link" href="#">Prasarana</a>
-                            <a class="nav-link" href="#">Kategori Prsarana</a>
+                            <a class="nav-link {{ isset($active) && $active == 'prasarana' ? 'active' : '' }}"
+                                href="{{ route('prasarana.index') }}">Prasarana</a>
+                            <a class="nav-link {{ isset($active) && $active == 'kategori-prasarana' ? 'active' : '' }}"
+                                href="{{ route('kategoriPrasarana.index') }}">Kategori Prsarana</a>
                         </nav>
                     </div>
-                    <a class="nav-link" href="#">Sistem Informasi</a>
+                    <a class="nav-link {{ isset($active) && $active == 'sistem-informasi' ? 'active' : '' }}"
+                        href="{{ route('sistemInformasi.index') }}">Sistem Informasi</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#akademik" aria-expanded="false" aria-controls="akademik">
+            <a class="nav-link {{ isset($active) && ($active == 'profil-lulusan' || $active == 'capaian-pembelajaran') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#akademik"
+                aria-expanded="false" aria-controls="akademik">
                 <div class="nav-link-icon"><i class="fas fa-graduation-cap"></i></div>
                 Akademik
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="akademik" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'profil-lulusan' || $active == 'capaian-pembelajaran') ? 'show' : '' }}"
+                id="akademik" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                    <a class="nav-link" href="#">Profil Lulusan</a>
+                    <a class="nav-link {{ isset($active) && $active == 'profil-lulusan' ? 'active' : '' }}"
+                        href="{{ route('profilLulusan.index') }}">Profil Lulusan</a>
                     <a class="nav-link" href="#">Capaian Pembelajaran</a>
                     <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                         data-bs-target="#kurikulum" aria-expanded="false" aria-controls="kurikulum">
@@ -210,20 +245,26 @@
             </div>
 
             <div class="sidenav-menu-heading">Pengaturan</div>
-            <a class="nav-link" href="#">
+            <a class="nav-link {{ isset($active) && $active == 'pengaturan-akun' ? 'active' : '' }}"
+                href="{{ route('pengaturanAkun') }}">
                 <div class="nav-link-icon"><i class="fas fa-user-gear"></i></div>
                 Akun
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link {{ isset($active) && $active == 'pengaturan-sistem' ? 'active' : '' }}"
+                href="{{ route('pengaturanSistem') }}">
+                <div class="nav-link-icon"><i class="fas fa-gear"></i></div>
+                Sistem
+            </a>
+            {{-- <a class="nav-link" href="#">
                 <div class="nav-link-icon"><i data-feather="settings"></i></div>
                 Pengaturan
-            </a>
+            </a> --}}
         </div>
     </div>
     <!-- Sidenav Footer-->
     <div class="sidenav-footer">
         <div class="sidenav-footer-content">
-            <div class="sidenav-footer-subtitle">Logged in as:</div>
+            <div class="sidenav-footer-subtitle">Masuk sebagai:</div>
             <div class="sidenav-footer-title">{{ Auth::user()->name }}</div>
         </div>
     </div>
