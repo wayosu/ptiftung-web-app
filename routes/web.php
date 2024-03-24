@@ -154,6 +154,24 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/capaian-pembelajaran/{id}', [App\Http\Controllers\CapaianPembelajaranController::class, 'destroy'])->name('capaianPembelajaran.destroy');
     // End Capaian Pembelajaran //
 
+    // Start Kurikulum //
+    Route::get('/kurikulum', [App\Http\Controllers\KurikulumController::class, 'index'])->name('kurikulum.index');
+    Route::get('/kurikulum/create', [App\Http\Controllers\KurikulumController::class, 'create'])->name('kurikulum.create');
+    Route::post('/kurikulum', [App\Http\Controllers\KurikulumController::class, 'store'])->name('kurikulum.store');
+    Route::get('/kurikulum/{id}/edit', [App\Http\Controllers\KurikulumController::class, 'edit'])->name('kurikulum.edit');
+    Route::put('/kurikulum/{id}', [App\Http\Controllers\KurikulumController::class, 'update'])->name('kurikulum.update');
+    Route::delete('/kurikulum/{id}', [App\Http\Controllers\KurikulumController::class, 'destroy'])->name('kurikulum.destroy');
+    // End Kurikulum //
+
+    // Start Dokumen Kurikulum //
+    Route::get('/dokumen-kurikulum', [App\Http\Controllers\DokumenKurikulumController::class, 'index'])->name('dokumenKurikulum.index');
+    Route::get('/dokumen-kurikulum/create', [App\Http\Controllers\DokumenKurikulumController::class, 'create'])->name('dokumenKurikulum.create');
+    Route::post('/dokumen-kurikulum', [App\Http\Controllers\DokumenKurikulumController::class, 'store'])->name('dokumenKurikulum.store');
+    Route::get('/dokumen-kurikulum/{id}/edit', [App\Http\Controllers\DokumenKurikulumController::class, 'edit'])->name('dokumenKurikulum.edit');
+    Route::put('/dokumen-kurikulum/{id}', [App\Http\Controllers\DokumenKurikulumController::class, 'update'])->name('dokumenKurikulum.update');
+    Route::delete('/dokumen-kurikulum/{id}', [App\Http\Controllers\DokumenKurikulumController::class, 'destroy'])->name('dokumenKurikulum.destroy');
+    // End Dokumen Kurikulum //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

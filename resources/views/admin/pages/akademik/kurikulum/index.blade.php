@@ -59,9 +59,9 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('capaianPembelajaran.create') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('kurikulum.create') }}">
                             <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Capaian Pembelajaran
+                            Tambah Kurikulum
                         </a>
                     </div>
                 </div>
@@ -76,7 +76,13 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Capaian Pembelajaran</th>
+                            <th>Kode</th>
+                            <th>Mata Kuliah</th>
+                            <th>SKS</th>
+                            <th>Sifat</th>
+                            <th>Semester</th>
+                            <th>Prasyarat</th>
+                            <th>Tuatan Dokumen</th>
                             <th>Tanggal Dibuat</th>
                             <th>Dibuat Oleh</th>
                             <th>Aksi</th>
@@ -89,7 +95,6 @@
         </div>
     </div>
 @endsection
-
 
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
@@ -107,16 +112,49 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [3, 'desc']
+                    [4, 'desc']
                 ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('capaianPembelajaran.index') }}",
+                ajax: "{{ route('kurikulum.index') }}",
                 columns: [{
-                        data: 'capaian_pembelajaran'
+                        data: 'kode_mk'
+                    },
+                    {
+                        data: 'nama_mk'
+                    },
+                    {
+                        data: 'sks'
+                    },
+                    {
+                        data: 'sifat'
+                    },
+                    {
+                        data: 'semester'
+                    },
+                    {
+                        data: 'prasyarat',
+                        render: function(data) {
+                            if (data) {
+                                return data;
+                            } else {
+                                return '-';
+                            }
+                        }
+                    },
+                    {
+                        data: 'link_gdrive',
+                        render: function(data) {
+                            if (data) {
+                                return '<a href="' + data +
+                                    '" target="_blank" class="btn btn-sm btn-primary"><i class="fa-solid fa-file-lines me-1"></i> Lihat Dokumen</a>';
+                            } else {
+                                return '-';
+                            }
+                        }
                     },
                     {
                         data: 'created_at',
@@ -179,7 +217,7 @@
 
                 // mengekstrak URL hapus dari formulir
                 const dataId = $(this).data('id');
-                const deleteUrl = "{{ route('capaianPembelajaran.destroy', ':id') }}";
+                const deleteUrl = "{{ route('kurikulum.destroy', ':id') }}";
                 const newDeleteUrl = deleteUrl.replace(':id', dataId);
 
                 Swal.fire({

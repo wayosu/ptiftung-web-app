@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('capaian_pembelajarans', function (Blueprint $table) {
+        Schema::create('dokumen_kurikulums', function (Blueprint $table) {
             $table->id();
-            $table->string('capaian_pembelajaran');
-            
+            $table->string('keterangan');
+            $table->string('link_gdrive');
+            $table->boolean('active')->default(true);
+            $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('capaian_pembelajarans');
+        Schema::dropIfExists('dokumen_kurikulums');
     }
 };
