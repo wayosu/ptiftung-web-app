@@ -165,10 +165,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
 
     // Start Dokumen Kurikulum //
     Route::get('/dokumen-kurikulum', [App\Http\Controllers\DokumenKurikulumController::class, 'index'])->name('dokumenKurikulum.index');
-    Route::get('/dokumen-kurikulum/create', [App\Http\Controllers\DokumenKurikulumController::class, 'create'])->name('dokumenKurikulum.create');
     Route::post('/dokumen-kurikulum', [App\Http\Controllers\DokumenKurikulumController::class, 'store'])->name('dokumenKurikulum.store');
-    Route::get('/dokumen-kurikulum/{id}/edit', [App\Http\Controllers\DokumenKurikulumController::class, 'edit'])->name('dokumenKurikulum.edit');
-    Route::put('/dokumen-kurikulum/{id}', [App\Http\Controllers\DokumenKurikulumController::class, 'update'])->name('dokumenKurikulum.update');
+    Route::post('/dokumen-kurikulum/update-status', [App\Http\Controllers\DokumenKurikulumController::class, 'updateStatus'])->name('dokumenKurikulum.updateStatus');
     Route::delete('/dokumen-kurikulum/{id}', [App\Http\Controllers\DokumenKurikulumController::class, 'destroy'])->name('dokumenKurikulum.destroy');
     // End Dokumen Kurikulum //
 

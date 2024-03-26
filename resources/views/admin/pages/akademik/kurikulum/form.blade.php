@@ -126,10 +126,14 @@
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1" for="tautanField">
-                                Tautan Google Drive
+                                Dokumen
+                                <span class="text-danger">
+                                    *<small>Tautan Google Drive</small>
+                                </span>
                             </label>
                             <input class="form-control @error('link_gdrive') is-invalid @enderror" name="link_gdrive"
-                                id="tautanField" type="text" placeholder="Masukkan tautan google drive"
+                                id="tautanField" type="text"
+                                placeholder="Masukkan dokumen menggunakan tautan google drive"
                                 value="{{ old('link_gdrive', $kurikulum->link_gdrive ?? '') }}" />
                             @error('link_gdrive')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
