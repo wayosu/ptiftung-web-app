@@ -190,7 +190,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1">
-                                Upload Gambar (JPG, JPEG, PNG)
+                                Upload Gambar (JPG, JPEG, PNG) max. 2MB
                             </label>
                             <div class="dropzone" id="myDropzone"></div>
                         </div>

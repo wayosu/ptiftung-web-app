@@ -170,6 +170,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/dokumen-kurikulum/{id}', [App\Http\Controllers\DokumenKurikulumController::class, 'destroy'])->name('dokumenKurikulum.destroy');
     // End Dokumen Kurikulum //
 
+    // Start Kalender Akademik //
+    Route::get('/kalender-akademik', [App\Http\Controllers\KalenderAkademikController::class, 'index'])->name('kalenderAkademik.index');
+    Route::get('/kalender-akademik/create', [App\Http\Controllers\KalenderAkademikController::class, 'create'])->name('kalenderAkademik.create');
+    Route::post('/kalender-akademik', [App\Http\Controllers\KalenderAkademikController::class, 'store'])->name('kalenderAkademik.store');
+    Route::get('/kalender-akademik/{id}/edit', [App\Http\Controllers\KalenderAkademikController::class, 'edit'])->name('kalenderAkademik.edit');
+    Route::put('/kalender-akademik/{id}', [App\Http\Controllers\KalenderAkademikController::class, 'update'])->name('kalenderAkademik.update');
+    Route::delete('/kalender-akademik/{id}', [App\Http\Controllers\KalenderAkademikController::class, 'destroy'])->name('kalenderAkademik.destroy');
+    // End Kalender Akademik //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');
