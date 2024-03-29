@@ -38,6 +38,25 @@
             <div class="col-xl-6">
                 <div class="card mb-4">
                     <div class="card-header">Form {{ $title ?? '' }}</div>
+                    @if (isset($kalenderAkademik) && $kalenderAkademik->createdBy)
+                        <div class="card-header bg-white">
+                            <div
+                                class="d-flex flex-column flex-md-row-reverse align-items-start align-items-md-center justify-content-between">
+                                <div class="text-xs text-muted">
+                                    <i class="fa-solid fa-user fa-xs me-1"></i>
+                                    <span>
+                                        {{ $kalenderAkademik->createdBy->name }}
+                                    </span>
+                                </div>
+                                <div class="text-xs text-muted">
+                                    <i class="fa-solid fa-calendar fa-xs me-1"></i>
+                                    <span>
+                                        {{ \Carbon\Carbon::parse($kalenderAkademik->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="small mb-1" for="kegiatanField">
@@ -76,6 +95,30 @@
                             @endif
                         </button>
                     </div>
+                    @if (isset($kalenderAkademik) && $kalenderAkademik->updatedBy)
+                        <div class="card-footer p-2 bg-white">
+                            <div
+                                class="d-flex gap-3 py-2 align-items-center text-start bg-white text-muted text-xs overflow-hidden">
+                                <div class="px-3 border-end border-2">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </div>
+                                <div>
+                                    Terakhir diperbarui oleh
+                                    <span class="fw-bolder">
+                                        {{ $kalenderAkademik->updatedBy->name }}
+                                    </span>
+                                    pada
+                                    <span class="fw-bolder">
+                                        {{ \Carbon\Carbon::parse($kalenderAkademik->updated_at)->isoFormat('dddd, D MMMM Y') }}
+                                    </span>
+                                    pukul
+                                    <span class="fw-bolder">
+                                        {{ \Carbon\Carbon::parse($kalenderAkademik->updated_at)->isoFormat('H:mm') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </form>

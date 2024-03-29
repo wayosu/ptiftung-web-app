@@ -3,63 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\KegiatanPerkuliahanImage;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KegiatanPerkuliahanImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function detailImage($id)
     {
-        //
+        try {
+            // ambil data dari model KegiatanPerkuliahanImage berdasarkan sarana_id
+            $kegiatanPerkuliahanImages = KegiatanPerkuliahanImage::where('kegiatan_perkuliahan_id', $id)->pluck('gambar');
+
+            // Periksa apakah gambar yang diambil kosong
+            if ($kegiatanPerkuliahanImages->isEmpty()) {
+                return redirect()->route('kegiatanPerkuliahan.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            }
+
+            // tampilkan halaman
+            return view('admin.pages.akademik.kegiatan-perkuliahan.gambar', [
+                'icon' => 'fa-regular fa-images',
+                'title' => 'Kegiatan Perkuliahan',
+                'subtitle' => 'Detail Dokumentasi Kegiatan',
+                'active' => 'kegiatan-perkuliahan',
+                'kegiatanPerkuliahanImages' => $kegiatanPerkuliahanImages
+            ]);
+        } catch (\Exception $e) { // jika bermasalah mengambil data
+            return redirect()->route('kegiatanPerkuliahan.index')->with('error', 'Halaman sedang bermasalah.');
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function deleteImage($id)
     {
-        //
-    }
+        try {
+            // cari data dari model KegiatanPerkuliahanImage berdasarkan id
+            $kegiatanPerkuliahanImage = KegiatanPerkuliahanImage::findOrFail($id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+            if (Storage::exists('akademik/kegiatan-perkuliahan/' . $kegiatanPerkuliahanImage->gambar)) {
+                Storage::delete('akademik/kegiatan-perkuliahan/' . $kegiatanPerkuliahanImage->gambar);
+            }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(KegiatanPerkuliahanImage $kegiatanPerkuliahanImage)
-    {
-        //
-    }
+            $kegiatanPerkuliahanImage->delete();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(KegiatanPerkuliahanImage $kegiatanPerkuliahanImage)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, KegiatanPerkuliahanImage $kegiatanPerkuliahanImage)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(KegiatanPerkuliahanImage $kegiatanPerkuliahanImage)
-    {
-        //
+            return redirect()->back()->with('success', 'Gambar berhasil dihapus.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
+            return redirect()->back()->with('error', 'Data bermasalah. Data tidak ditemukan!');
+        } catch (\Exception $e) { // jika gagal menghapus data
+            return redirect()->back()->with('error', 'Gambar gagal dihapus!');
+        }
     }
 }

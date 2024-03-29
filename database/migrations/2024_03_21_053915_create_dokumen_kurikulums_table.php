@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('link_gdrive');
             $table->boolean('active')->default(true);
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

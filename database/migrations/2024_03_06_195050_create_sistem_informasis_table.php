@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('sistem_informasi');
             $table->string('link');
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

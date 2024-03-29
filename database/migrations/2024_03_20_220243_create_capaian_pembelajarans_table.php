@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('capaian_pembelajarans', function (Blueprint $table) {
             $table->id();
             $table->string('capaian_pembelajaran');
-            
+            $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -15,7 +15,8 @@ class DokumenKurikulum extends Model
         'keterangan',
         'link_gdrive',
         'active',
-        'created_by',  
+        'created_by',
+        'updated_by',
     ];
 
     public function createdBy()
@@ -23,5 +24,10 @@ class DokumenKurikulum extends Model
         // relasi one to one
         // setiap data DokumenKurikulum dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

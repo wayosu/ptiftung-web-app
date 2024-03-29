@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('link_instagram')->nullable();
             $table->text('alamat')->nullable();
             $table->text('link_embed_gmaps')->nullable();
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -179,6 +179,20 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/kalender-akademik/{id}', [App\Http\Controllers\KalenderAkademikController::class, 'destroy'])->name('kalenderAkademik.destroy');
     // End Kalender Akademik //
 
+    // Start Kegiatan Perkuliahan //
+    Route::get('/kegiatan-perkuliahan', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'index'])->name('kegiatanPerkuliahan.index');
+    Route::get('/kegiatan-perkuliahan/create', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'create'])->name('kegiatanPerkuliahan.create');
+    Route::post('/kegiatan-perkuliahan/upload-image', [App\Http\Controllers\KegiatanPerkuliahanTemporaryImageController::class, 'uploadTemporaryImage'])->name('kegiatanPerkuliahan.uploadTemporaryImage');
+    Route::get('/kegiatan-perkuliahan/get-image', [App\Http\Controllers\KegiatanPerkuliahanTemporaryImageController::class, 'getTemporaryImage'])->name('kegiatanPerkuliahan.getTemporaryImage');
+    Route::delete('/kegiatan-perkuliahan/delete-image', [App\Http\Controllers\KegiatanPerkuliahanTemporaryImageController::class, 'deleteTemporaryImage'])->name('kegiatanPerkuliahan.deleteTemporaryImage');
+    Route::get('/kegiatan-perkuliahan/{id}/detail-image', [App\Http\Controllers\KegiatanPerkuliahanImageController::class, 'detailImage'])->name('kegiatanPerkuliahan.detailImage');
+    Route::delete('/kegiatan-perkuliahan/{id}/delete-image', [App\Http\Controllers\KegiatanPerkuliahanImageController::class, 'deleteImage'])->name('kegiatanPerkuliahan.deleteImage');
+    Route::post('/kegiatan-perkuliahan', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'store'])->name('kegiatanPerkuliahan.store');
+    Route::get('/kegiatan-perkuliahan/{id}/edit', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'edit'])->name('kegiatanPerkuliahan.edit');
+    Route::put('/kegiatan-perkuliahan/{id}', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'update'])->name('kegiatanPerkuliahan.update');
+    Route::delete('/kegiatan-perkuliahan/{id}', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'destroy'])->name('kegiatanPerkuliahan.destroy');
+    // End Kegiatan Perkuliahan //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

@@ -27,5 +27,11 @@ class ProfilProgramStudi extends Model
         'link_instagram',
         'alamat',
         'link_embed_gmaps',
+        'updated_by',
     ];
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

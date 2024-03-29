@@ -156,12 +156,14 @@ class ProfilLulusanController extends Controller
                     'subjudul' => $request->subjudul,
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
+                    'updated_by' => auth()->user()->id,
                 ];
             } else {
                 $data = [
                     'judul' => $request->judul,
                     'subjudul' => $request->subjudul,
                     'deskripsi' => $request->deskripsi,
+                    'updated_by' => auth()->user()->id,
                 ];
             }
 

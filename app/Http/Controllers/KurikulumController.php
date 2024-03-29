@@ -134,7 +134,7 @@ class KurikulumController extends Controller
                 'semester' => $request->semester,
                 'prasyarat' => $request->prasyarat,
                 'link_gdrive' => $request->link_gdrive,
-                'created_by' => auth()->user()->id,
+                'updated_by' => auth()->user()->id,
             ]);
 
             return redirect()->route('kurikulum.index')->with('success', 'Data berhasil diperbarui.');

@@ -14,7 +14,7 @@ class BidangKepakaranController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $bidangKepakarans = BidangKepakaran::all();
+            $bidangKepakarans = BidangKepakaran::with('createdBy')->get();
 
             // transformasi data ke bentuk array
             $bidangKepakarans = $bidangKepakarans->transform(function ($item) {
@@ -53,35 +53,46 @@ class BidangKepakaranController extends Controller
     {
         // validasi data yang dikirim
         $request->validate([
-            'bidang_kepakaran' => 'required|unique:bidang_kepakarans',
+            'bidang_kepakaran' => 'required|unique:bidang_kepakarans,bidang_kepakaran',
         ], [
             'bidang_kepakaran.required' => 'Bidang Kepakaran harus diisi!',
             'bidang_kepakaran.unique' => 'Bidang Kepakaran sudah ada!',
         ]);
 
-        // simpan data
-        BidangKepakaran::create([
-            'bidang_kepakaran' => $request->bidang_kepakaran,
-            'slug' => Str::slug($request->bidang_kepakaran),
-        ]);
+        try { // jika sukses menambahkan data
+            // simpan data
+            BidangKepakaran::create([
+                'bidang_kepakaran' => $request->bidang_kepakaran,
+                'slug' => Str::slug($request->bidang_kepakaran),
+                'created_by' => auth()->user()->id,
+            ]);
 
-        // mengalihkan ke halaman bidang kepakaran -> index
-        return redirect()->route('bidangKepakaran.index')->with('success', 'Bidang Kepakaran berhasil ditambahkan!');
+            // mengalihkan ke halaman bidang kepakaran -> index
+            return redirect()->route('bidangKepakaran.index')->with('success', 'Data berhasil ditambahkan.');
+        } catch (\Exception $e) { // jika gagal menambahkan data
+            return redirect()->route('bidangKepakaran.index')->with('error', 'Data gagal ditambahkan!');
+        }
     }
 
     public function edit($id)
     {
-        // cari data berdasarkan id
-        $bidangKepakaran = BidangKepakaran::findOrFail($id);
+        try { // jika sukses mengambil data
+            // cari data berdasarkan id
+            $bidangKepakaran = BidangKepakaran::findOrFail($id);
 
-        // tampilkan halaman
-        return view('admin.pages.bidang-kepakaran.form', [
-            'icon' => 'edit',
-            'title' => 'Bidang Kepakaran',
-            'subtitle' => 'Edit Bidang Kepakaran',
-            'active' => 'bidang-kepakaran',
-            'bidangKepakaran' => $bidangKepakaran
-        ]);
+            // tampilkan halaman
+            return view('admin.pages.bidang-kepakaran.form', [
+                'icon' => 'edit',
+                'title' => 'Bidang Kepakaran',
+                'subtitle' => 'Edit Bidang Kepakaran',
+                'active' => 'bidang-kepakaran',
+                'bidangKepakaran' => $bidangKepakaran
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
+            return redirect()->route('bidangKepakaran.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
+        } catch (\Exception $e) { // jika bermasalah mengambil data
+            return redirect()->route('bidangKepakaran.index')->with('error', 'Halaman sedang bermasalah!');
+        }
     }
 
     public function update(Request $request, $id)
@@ -94,16 +105,24 @@ class BidangKepakaranController extends Controller
             'bidang_kepakaran.unique' => 'Bidang Kepakaran sudah ada!',
         ]);
 
-        // cari data berdasarkan id
-        $bidangKepakaran = BidangKepakaran::findOrFail($id);
+        try { // jika sukses update data
+            // cari data berdasarkan id
+            $bidangKepakaran = BidangKepakaran::findOrFail($id);
 
-        // update data
-        $bidangKepakaran->update([
-            'bidang_kepakaran' => $request->bidang_kepakaran,
-        ]);
+            // update data
+            $bidangKepakaran->update([
+                'bidang_kepakaran' => $request->bidang_kepakaran,
+                'slug' => Str::slug($request->bidang_kepakaran),
+                'updated_by' => auth()->user()->id,
+            ]);
 
-        // mengalihkan ke halaman bidang kepakaran -> index
-        return redirect()->route('bidangKepakaran.index')->with('success', 'Bidang Kepakaran berhasil diubah!');
+            // mengalihkan ke halaman bidang kepakaran -> index
+            return redirect()->route('bidangKepakaran.index')->with('success', 'Bidang Kepakaran berhasil diubah!');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
+            return redirect()->route('bidangKepakaran.index')->with('error', 'Data gagal diperbarui. Data tidak ditemukan!');
+        } catch (\Exception $e) { // jika gagal update data
+            return redirect()->route('bidangKepakaran.index')->with('error', 'Data gagal diperbarui!');
+        }
     }
 
     public function destroy($id)

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 class RefreshDatabase extends Command
 {
@@ -27,6 +28,10 @@ class RefreshDatabase extends Command
     {
         $this->call('migrate:fresh');
         $this->call('db:seed');
+
+        // Bersihkan folder storage di direktori public dan storage/app
+        File::cleanDirectory(public_path('storage'));
+        File::cleanDirectory(storage_path('app'));
 
         $this->info('Oke, Aman. Database sudah di-segarkan🍃.');
     }

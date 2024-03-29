@@ -17,6 +17,7 @@ class ProfilLulusan extends Model
         'deskripsi',
         'gambar',
         'created_by',
+        'updated_by',
     ];
 
     public function createdBy()
@@ -24,5 +25,10 @@ class ProfilLulusan extends Model
         // relasi one to one
         // setiap data Profil Lulusan dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

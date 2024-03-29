@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('bidang_kepakaran');
             $table->string('slug');
+            $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

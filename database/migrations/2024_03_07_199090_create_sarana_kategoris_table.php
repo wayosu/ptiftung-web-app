@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('sarana_kategori');
             $table->string('slug')->unique();
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

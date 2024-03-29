@@ -87,7 +87,7 @@ class PrasaranaController extends Controller
 
             // looping data dari table prasarana temporary image
             foreach ($prasaranaTemporaryImages as $prasaranaTemporaryImage) {
-                // salin file dari prasarana tmp ke sarana
+                // salin file dari prasarana tmp ke prasarana
                 Storage::copy('fasilitas/prasarana/tmp/' . $prasaranaTemporaryImage->file, 'fasilitas/prasarana/' . $prasaranaTemporaryImage->file);
 
                 // simpan data gambar ke database
@@ -153,6 +153,7 @@ class PrasaranaController extends Controller
                 'keterangan' => $request->keterangan,
                 'slug' => Str::slug($request->keterangan),
                 'prasarana_kategori_id' => $request->prasarana_kategori_id,
+                'updated_by' => auth()->user()->id,
             ]);
 
             // ambil data dari table prasarana temporary image

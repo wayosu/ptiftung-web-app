@@ -18,12 +18,25 @@ class KegiatanPerkuliahan extends Model
         'thumbnail',
         'link_video',
         'created_by',
+        'updated_by',
     ];
+
+    public function kegiatanPerkuliahanImages()
+    {
+        // relasi one to many
+        // satu KegiatanPerkuliahan dapat memiliki banyak data KegiatanPerkuliahanImage
+        return $this->hasMany(KegiatanPerkuliahanImage::class);
+    }
 
     public function createdBy()
     {
         // relasi one to one
         // setiap data KegiatanPerkuliahan dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

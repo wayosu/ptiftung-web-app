@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('prasyarat')->nullable();
             $table->string('link_gdrive')->nullable();
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

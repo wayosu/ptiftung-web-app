@@ -153,6 +153,7 @@ class SaranaController extends Controller
                 'keterangan' => $request->keterangan,
                 'slug' => Str::slug($request->keterangan),
                 'sarana_kategori_id' => $request->sarana_kategori_id,
+                'updated_by' => auth()->user()->id,
             ]);
 
             // ambil data dari table sarana temporary image

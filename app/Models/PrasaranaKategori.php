@@ -15,6 +15,7 @@ class PrasaranaKategori extends Model
         'prasarana_kategori',
         'slug',
         'created_by',
+        'updated_by'
     ];
 
     public function prasaranas()
@@ -29,5 +30,10 @@ class PrasaranaKategori extends Model
         // relasi one to one
         // setiap data PrasaranaKategori dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

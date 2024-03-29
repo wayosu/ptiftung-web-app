@@ -75,18 +75,7 @@
                         <div class="card-body p-0 overflow-hidden">
                             <img src="{{ asset('storage/akademik/profil-lulusan/' . $profilLulusan->gambar) }}"
                                 alt="profil-lulusan-image" class="img-fluid">
-                            <div
-                                class="d-flex align-items-center justify-content-between border-top border-bottom px-3 py-2">
-                                <div class="text-xs fw-600">Dibuat Oleh:
-                                    <br><span class="fw-400">{{ $profilLulusan->createdBy->name }}</span>
-                                </div>
-                                <div class="text-xs fw-600">
-                                    Tanggal Dibuat:
-                                    <br><span
-                                        class="fw-400">{{ \Carbon\Carbon::parse($profilLulusan->created_at)->isoFormat('dddd, D MMMM Y') }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-column gap-3 p-3">
+                            <div class="d-flex border-top flex-column gap-3 p-3">
                                 <div>
                                     <h1 class="small fw-bolder mb-2">Judul</h1>
                                     <p class="mb-0">{{ $profilLulusan->judul }}</p>
@@ -108,6 +97,25 @@
             <div class="{{ isset($profilLulusan) ? 'col-xl-8' : 'col-xl-6' }}">
                 <div class="card mb-4">
                     <div class="card-header">Form Profil Lulusan</div>
+                    @if (isset($profilLulusan) && $profilLulusan->createdBy)
+                        <div class="card-header bg-white">
+                            <div
+                                class="d-flex flex-column flex-md-row-reverse align-items-start align-items-md-center justify-content-between">
+                                <div class="text-xs text-muted">
+                                    <i class="fa-solid fa-user fa-xs me-1"></i>
+                                    <span>
+                                        {{ $profilLulusan->createdBy->name }}
+                                    </span>
+                                </div>
+                                <div class="text-xs text-muted">
+                                    <i class="fa-solid fa-calendar fa-xs me-1"></i>
+                                    <span>
+                                        {{ \Carbon\Carbon::parse($profilLulusan->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="small mb-1" for="judulField">
@@ -179,6 +187,30 @@
                             @endif
                         </button>
                     </div>
+                    @if (isset($profilLulusan) && $profilLulusan->updatedBy)
+                        <div class="card-footer p-2 bg-white">
+                            <div
+                                class="d-flex gap-3 py-2 align-items-center text-start bg-white text-muted text-xs overflow-hidden">
+                                <div class="px-3 border-end border-2">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </div>
+                                <div>
+                                    Terakhir diperbarui oleh
+                                    <span class="fw-bolder">
+                                        {{ $profilLulusan->updatedBy->name }}
+                                    </span>
+                                    pada
+                                    <span class="fw-bolder">
+                                        {{ \Carbon\Carbon::parse($profilLulusan->updated_at)->isoFormat('dddd, D MMMM Y') }}
+                                    </span>
+                                    pukul
+                                    <span class="fw-bolder">
+                                        {{ \Carbon\Carbon::parse($profilLulusan->updated_at)->isoFormat('H:mm') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </form>

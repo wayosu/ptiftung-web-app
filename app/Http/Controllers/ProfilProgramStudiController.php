@@ -12,7 +12,12 @@ class ProfilProgramStudiController extends Controller
     public function sejarah()
     {
         // ambil data (hanya nama_program_studi dan sejarah)
-        $profil = ProfilProgramStudi::where('id', 1)->first(['nama_program_studi', 'sejarah']);
+        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
+            'nama_program_studi', 
+            'sejarah', 
+            'updated_by', 
+            'updated_at'
+        ]);
 
         // tampilkan halaman
         return view('admin.pages.profil.sejarah', [
@@ -20,7 +25,9 @@ class ProfilProgramStudiController extends Controller
             'title' => 'Sejarah',
             'subtitle' => 'Sejarah Program Studi ' . $profil->nama_program_studi,
             'active' => 'sejarah',
-            'sejarah' => $profil->sejarah
+            'sejarah' => $profil->sejarah,
+            'updatedBy' => $profil->updatedBy->name ?? null,
+            'updatedAt' => $profil->updated_at
         ]);
     }
 
@@ -39,7 +46,8 @@ class ProfilProgramStudiController extends Controller
 
             // update data
             $sejarah->update([
-                'sejarah' => $request->sejarah
+                'sejarah' => $request->sejarah,
+                'updated_by' => auth()->user()->id
             ]);
 
             return redirect()->route('sejarah.index')->with('success', 'Data berhasil diperbarui.');
@@ -53,11 +61,13 @@ class ProfilProgramStudiController extends Controller
     public function visiKeilmuanTujuanStrategi()
     {
         // ambil data (hanya nama_program_studi, visi_keilmuan, tujuan, dan strategi)
-        $profil = ProfilProgramStudi::where('id', 1)->first([
+        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
             'nama_program_studi',
             'visi_keilmuan',
             'tujuan',
-            'strategi'
+            'strategi',
+            'updated_by',
+            'updated_at'
         ]);
 
         // tampilkan halaman
@@ -68,7 +78,9 @@ class ProfilProgramStudiController extends Controller
             'active' => 'visi-keilmuan-tujuan-strategi',
             'visiKeilmuan' => $profil->visi_keilmuan,
             'tujuan' => $profil->tujuan,
-            'strategi' => $profil->strategi
+            'strategi' => $profil->strategi,
+            'updatedBy' => $profil->updatedBy->name ?? null,
+            'updatedAt' => $profil->updated_at
         ]);
     }
 
@@ -93,7 +105,8 @@ class ProfilProgramStudiController extends Controller
             $visiKeilmuanTujuanStrategi->update([
                 'visi_keilmuan' => $request->visi_keilmuan,
                 'tujuan' => $request->tujuan,
-                'strategi' => $request->strategi
+                'strategi' => $request->strategi,
+                'updated_by' => auth()->user()->id
             ]);
 
             return redirect()->route('visiKeilmuanTujuanStrategi.index')->with('success', 'Data berhasil diperbarui.');
@@ -107,7 +120,12 @@ class ProfilProgramStudiController extends Controller
     public function strukturOrganisasi()
     {
         // ambil data (hanya nama_program_studi dan struktur_organisasi)
-        $profil = ProfilProgramStudi::where('id', 1)->first(['nama_program_studi', 'struktur_organisasi']);
+        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
+            'nama_program_studi', 
+            'struktur_organisasi',
+            'updated_by',
+            'updated_at'
+        ]);
 
         // tampilkan halaman
         return view('admin.pages.profil.struktur-organisasi', [
@@ -115,7 +133,9 @@ class ProfilProgramStudiController extends Controller
             'title' => 'Struktur Organisasi',
             'subtitle' => 'Struktur Organisasi Program Studi ' . $profil->nama_program_studi,
             'active' => 'struktur-organisasi',
-            'strukturOrganisasi' => $profil->struktur_organisasi
+            'strukturOrganisasi' => $profil->struktur_organisasi,
+            'updatedBy' => $profil->updatedBy->name ?? null,
+            'updatedAt' => $profil->updated_at
         ]);
     }
 
@@ -150,7 +170,8 @@ class ProfilProgramStudiController extends Controller
 
                 // update data
                 $strukturOrganisasi->update([
-                    'struktur_organisasi' => $nameFile
+                    'struktur_organisasi' => $nameFile,
+                    'updated_by' => auth()->user()->id
                 ]);
 
                 return redirect()->route('strukturOrganisasi.index')->with('success', 'Data berhasil diperbarui.');
@@ -167,14 +188,16 @@ class ProfilProgramStudiController extends Controller
     public function kontakLokasi()
     {
         // ambil data (hanya nama_program_studi, alamat, link_embed_gmaps, nomor_telepon, email, link_facebook, link_instagram)
-        $profil = ProfilProgramStudi::where('id', 1)->first([
+        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
             'nama_program_studi',
             'alamat',
             'link_embed_gmaps',
             'nomor_telepon',
             'email',
             'link_facebook',
-            'link_instagram'
+            'link_instagram',
+            'updated_by',
+            'updated_at'
         ]);
 
         // tampilkan halaman
@@ -189,6 +212,8 @@ class ProfilProgramStudiController extends Controller
             'linkInstagram' => $profil->link_instagram,
             'alamat' => $profil->alamat,
             'linkEmbedGmaps' => $profil->link_embed_gmaps,
+            'updatedBy' => $profil->updatedBy->name ?? null,
+            'updatedAt' => $profil->updated_at
         ]);
     }
 
@@ -217,6 +242,7 @@ class ProfilProgramStudiController extends Controller
                 'link_instagram' => $request->link_instagram,
                 'alamat' => $request->alamat,
                 'link_embed_gmaps' => $request->link_embed_gmaps,
+                'updated_by' => auth()->user()->id
             ]);
 
             return redirect()->route('kontakLokasi.index')->with('success', 'Data berhasil diperbarui.');

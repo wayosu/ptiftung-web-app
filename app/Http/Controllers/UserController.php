@@ -119,8 +119,8 @@ class UserController extends Controller
         }
 
         // hapus foto dari storage/penyimpanan
-        if (Storage::exists('public/usersProfile/' . $user->foto)) {
-            Storage::delete('public/usersProfile/' . $user->foto);
+        if (Storage::exists('usersProfile/' . $user->foto)) {
+            Storage::delete('usersProfile/' . $user->foto);
         }
 
         // hapus data pengguna
@@ -199,7 +199,7 @@ class UserController extends Controller
             $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             // simpan file ke storage/penyimpanan
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $request->file('foto')->storeAs('usersProfile', $nameFile);
 
             // simpan data
             $user = User::create([
@@ -260,16 +260,16 @@ class UserController extends Controller
         // jika ada file yang dikirim
         if ($request->hasFile('foto')) {
             // cek apakah ada file yang lama
-            if (Storage::exists('public/usersProfile/' . $user->foto)) {
+            if (Storage::exists('usersProfile/' . $user->foto)) {
                 // hapus file
-                Storage::delete('public/usersProfile/' . $user->foto);
+                Storage::delete('usersProfile/' . $user->foto);
             }
 
             // namakan file
             $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             // simpan file ke storage/penyimpanan
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $request->file('foto')->storeAs('usersProfile', $nameFile);
 
             // tampung data ke variabel dataUser
             $dataUser = [
@@ -383,7 +383,7 @@ class UserController extends Controller
             $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             // simpan file ke storage/penyimpanan
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $request->file('foto')->storeAs('usersProfile', $nameFile);
 
             // simpan data ke variabel dataUser
             $dataUser['foto'] = $nameFile;
@@ -512,16 +512,16 @@ class UserController extends Controller
         // jika ada file yang dikirim
         if ($request->hasFile('foto')) {
             // cek apakah ada file yang lama
-            if (Storage::exists('public/usersProfile/' . $user->foto)) {
+            if (Storage::exists('usersProfile/' . $user->foto)) {
                 // hapus file
-                Storage::delete('public/usersProfile/' . $user->foto);
+                Storage::delete('usersProfile/' . $user->foto);
             }
 
             // namakan file
             $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             // simpan file ke storage/penyimpanan
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $request->file('foto')->storeAs('usersProfile', $nameFile);
 
             // Tampung data ke variabel
             $dataUser = [
@@ -668,7 +668,7 @@ class UserController extends Controller
             $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             // simpan file ke storage/penyimpanan
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $request->file('foto')->storeAs('usersProfile', $nameFile);
 
             // simpan data
             $user = User::create([
@@ -753,16 +753,16 @@ class UserController extends Controller
         // jika ada file yang dikirim
         if ($request->hasFile('foto')) {
             // cek apakah ada file yang lama
-            if (Storage::exists('public/usersProfile/' . $user->foto)) {
+            if (Storage::exists('usersProfile/' . $user->foto)) {
                 // hapus file
-                Storage::delete('public/usersProfile/' . $user->foto);
+                Storage::delete('usersProfile/' . $user->foto);
             }
 
             // namakan file
             $nameFile = md5(time() . Str::random(5)) . '.' . $request->file('foto')->extension();
 
             // simpan file ke storage/penyimpanan
-            $request->file('foto')->storeAs('public/usersProfile', $nameFile);
+            $request->file('foto')->storeAs('usersProfile', $nameFile);
 
             // tampung data ke variabel dataUser
             $dataUser = [

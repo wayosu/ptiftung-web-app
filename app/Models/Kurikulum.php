@@ -19,7 +19,8 @@ class Kurikulum extends Model
         'semester',
         'prasyarat',
         'link_gdrive',
-        'created_by',  
+        'created_by',
+        'updated_by',
     ];
 
     public function createdBy()
@@ -27,5 +28,10 @@ class Kurikulum extends Model
         // relasi one to one
         // setiap data Kurikulum dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -76,6 +76,30 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="card">
+                    @if (isset($updatedBy) && $updatedBy !== null)
+                        <div class="card-header p-2 bg-white">
+                            <div
+                                class="d-flex gap-3 py-2 align-items-center text-start bg-white text-muted text-xs overflow-hidden">
+                                <div class="px-3 border-end border-2">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </div>
+                                <div>
+                                    Terakhir diperbarui oleh
+                                    <span class="fw-bolder">
+                                        {{ $updatedBy }}
+                                    </span>
+                                    pada
+                                    <span class="fw-bolder">
+                                        {{ \Carbon\Carbon::parse($updatedAt)->isoFormat('dddd, D MMMM Y') }}
+                                    </span>
+                                    pukul
+                                    <span class="fw-bolder">
+                                        {{ \Carbon\Carbon::parse($updatedAt)->isoFormat('H:mm') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="card-body overflow-hidden">
                         <form id="formUpdate" action="{{ route('sejarah.update') }}" method="POST">
                             @csrf

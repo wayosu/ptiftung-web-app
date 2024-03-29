@@ -14,7 +14,8 @@ class SistemInformasi extends Model
     protected $fillable = [
         'sistem_informasi',
         'link',
-        'created_by'
+        'created_by',
+        'updated_by',
     ];
 
     public function createdBy()
@@ -22,5 +23,10 @@ class SistemInformasi extends Model
         // relasi one to one
         // setiap data SistemInformasi dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

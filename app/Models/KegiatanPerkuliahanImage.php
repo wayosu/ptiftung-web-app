@@ -13,14 +13,12 @@ class KegiatanPerkuliahanImage extends Model
 
     protected $fillable = [
         'kegiatan_perkuliahan_id',
-        'kegiatan_perkuliahans',
         'gambar',
     ];
 
-    public function createdBy()
-    {
+    public function kegiatanPerkuliahan() {
         // relasi one to one
-        // setiap data KegiatanPerkuliahanImage dimiliki oleh satu User
-        return $this->belongsTo(User::class, 'created_by');
+        // setiap data KegiatanPerkuliahanImage dimiliki oleh satu KegiatanPerkuliahan
+        return $this->belongsTo(KegiatanPerkuliahan::class);
     }
 }

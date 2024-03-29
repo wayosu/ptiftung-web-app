@@ -13,13 +13,19 @@ class CapaianPembelajaran extends Model
 
     protected $fillable = [
         'capaian_pembelajaran',
-        'created_by'
+        'created_by',
+        'updated_by',
     ];
 
     public function createdBy()
     {
         // relasi one to one
-        // setiap data Prasarana dimiliki oleh satu User
+        // setiap data CapaianPembelajaran dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

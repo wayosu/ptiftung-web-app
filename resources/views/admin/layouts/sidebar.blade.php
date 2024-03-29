@@ -135,14 +135,14 @@
                         href="{{ route('sistemInformasi.index') }}">Sistem Informasi</a>
                 </nav>
             </div>
-            <a class="nav-link {{ isset($active) && ($active == 'profil-lulusan' || $active == 'capaian-pembelajaran' || $active == 'kurikulum' || $active == 'dokumen-kurikulum' || $active == 'kalender-akademik') ? 'active' : 'collapsed' }}"
+            <a class="nav-link {{ isset($active) && ($active == 'profil-lulusan' || $active == 'capaian-pembelajaran' || $active == 'kurikulum' || $active == 'dokumen-kurikulum' || $active == 'kalender-akademik' || $active == 'kegiatan-perkuliahan') ? 'active' : 'collapsed' }}"
                 href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#akademik"
                 aria-expanded="false" aria-controls="akademik">
                 <div class="nav-link-icon"><i class="fas fa-graduation-cap"></i></div>
                 Akademik
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse {{ isset($active) && ($active == 'profil-lulusan' || $active == 'capaian-pembelajaran' || $active == 'kurikulum' || $active == 'dokumen-kurikulum' || $active == 'kalender-akademik') ? 'show' : '' }}"
+            <div class="collapse {{ isset($active) && ($active == 'profil-lulusan' || $active == 'capaian-pembelajaran' || $active == 'kurikulum' || $active == 'dokumen-kurikulum' || $active == 'kalender-akademik' || $active == 'kegiatan-perkuliahan') ? 'show' : '' }}"
                 id="akademik" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                     <a class="nav-link {{ isset($active) && $active == 'profil-lulusan' ? 'active' : '' }}"
@@ -166,7 +166,8 @@
                     </div>
                     <a class="nav-link {{ isset($active) && $active == 'kalender-akademik' ? 'active' : '' }}"
                         href="{{ route('kalenderAkademik.index') }}">Kalender Akademik</a>
-                    <a class="nav-link" href="#">Kegiatan Perkuliahan</a>
+                    <a class="nav-link {{ isset($active) && $active == 'kegiatan-perkuliahan' ? 'active' : '' }}"
+                        href="{{ route('kegiatanPerkuliahan.index') }}">Kegiatan Perkuliahan</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"

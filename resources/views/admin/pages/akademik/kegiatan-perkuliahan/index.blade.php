@@ -3,8 +3,10 @@
 @push('css')
     <link href="{{ asset('assets/admin/libs/datatables/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/admin/libs/datatables/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" />
-
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+        integrity="sha512-ZKX+BvQihRJPA8CROKBhDNvoc2aDMOdAlcm7TUQY+35XYtrd3yh95QOOhsPDQY9QnKE0Wqag9y38OIgEvb88cA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         #myDataTables {
@@ -67,13 +69,9 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.byDosen') }}">
-                            <i class="fa-solid fa-users me-1"></i>
-                            Daftar Dosen
-                        </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('bidangKepakaran.create') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('kegiatanPerkuliahan.create') }}">
                             <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Bidang Kepakaran
+                            Tambah Kegiatan Perkuliahan
                         </a>
                     </div>
                 </div>
@@ -88,10 +86,11 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Bidang Kepakaran</th>
-                            <th>Tanggal Dibuat</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Aksi</th>
+                            <th>Judul</th>
+                            <th>Thumbnail</th>
+                            <th width="25%">Tanggal Dibuat</th>
+                            <th width="15%">Dibuat Oleh</th>
+                            <th width="10%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,7 +101,6 @@
     </div>
 @endsection
 
-
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
@@ -112,6 +110,9 @@
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"
+        integrity="sha512-k2GFCTbp9rQU412BStrcD/rlwv1PYec9SNrkbQlo6RZCf75l6KcC3UwDY8H5n5hl4v77IDtIPwOk9Dqjs/mMBQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
         $(document).ready(function() {
@@ -119,16 +120,28 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [1, 'desc']
+                    [3, 'desc']
                 ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('bidangKepakaran.index') }}",
+                ajax: "{{ route('kegiatanPerkuliahan.index') }}",
                 columns: [{
-                        data: 'bidang_kepakaran'
+                        data: 'judul'
+                    },
+                    {
+                        data: 'thumbnail',
+                        render: function(data) {
+                            let path =
+                                `{{ asset('storage/akademik/kegiatan-perkuliahan/thumbnail/`+ data +`') }}`;
+                            return `
+                                <a href="${path}" data-lightbox="image" data-title="${data}" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-image"></i>
+                                </a>
+                            `;
+                        }
                     },
                     {
                         data: 'created_at',
@@ -139,7 +152,7 @@
                         }
                     },
                     {
-                        data: 'created_by.name'
+                        data: 'created_by.name',
                     },
                     {
                         data: 'aksi',
@@ -185,14 +198,14 @@
                 })
             @endif
 
-            // konfirmasi hapus dengan swal
+            // konfirmasi tombol hapus menggunakan swal
             $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
 
-                // mengekstrak URL hapus dari formulir
-                const userId = $(this).data('user-id');
-                const deleteUrl = "{{ route('bidangKepakaran.destroy', ':id') }}";
-                const newDeleteUrl = deleteUrl.replace(':id', userId);
+                // mengekstrak URL 'hapus' dari formulir
+                const dataId = $(this).data('id');
+                const deleteUrl = "{{ route('kegiatanPerkuliahan.destroy', ':id') }}";
+                const newDeleteUrl = deleteUrl.replace(':id', dataId);
 
                 Swal.fire({
                     title: 'Apakah anda yakin?',
@@ -205,11 +218,12 @@
                     cancelButtonText: 'Batal',
                     input: 'text',
                     inputAttributes: {
-                        autocomplete: 'off', // nonaktifkan pelengkapan otomatis
+                        autocomplete: 'off', // menonaktifkan pelengkapan otomatis
                     },
                     inputValidator: (value) => {
                         const trimmedValue = value.trim();
 
+                        // memastikan inputan tidak kosong
                         if (!trimmedValue) {
                             return 'Mohon diisi dengan benar!'
                         } else if (trimmedValue.toLowerCase() === 'hapus data') {

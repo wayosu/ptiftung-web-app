@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('kegiatan');
             $table->string('waktu');
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

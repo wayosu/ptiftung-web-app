@@ -62,6 +62,13 @@ class User extends Authenticatable
         return $this->hasOne(Dosen::class, 'user_id', 'id');
     }
 
+    public function bidangKepakarans()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data BidangKepakaran
+        return $this->hasMany(BidangKepakaran::class, 'created_by', 'id');
+    }
+
     public function saranaKategoris()
     {
         // relasi one to many

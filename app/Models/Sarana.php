@@ -16,6 +16,7 @@ class Sarana extends Model
         'slug',
         'sarana_kategori_id',
         'created_by',
+        'updated_by',
     ];
 
     public function saranaKategori()
@@ -37,5 +38,10 @@ class Sarana extends Model
         // relasi one to one
         // setiap data Sarana dimiliki oleh satu User
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

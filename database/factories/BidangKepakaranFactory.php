@@ -18,7 +18,9 @@ class BidangKepakaranFactory extends Factory
     {
         return [
             'bidang_kepakaran' => $this->faker->word,
-            'slug' => $this->faker->slug
+            'slug' => $this->faker->slug,
+            'created_by' => 1,
+            'updated_by' => null
         ];
     }
 }
