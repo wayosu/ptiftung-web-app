@@ -160,38 +160,48 @@
 
                                 <div id="biografiContainer" class="mb-3">
                                     <p class="text-biografi mb-0">
-                                        {{ Str::limit(Auth::user()->dosen->biografi ?? '', 100) }}
+                                        {{ Auth::user()->dosen ? Str::limit(Auth::user()->dosen->biografi ?? '', 100) : '-' }}
                                     </p>
-                                    <a href="javascript:void(0)" class="text-primary toggle-biografi">
-                                        Lihat Selengkapnya
-                                    </a>
+                                    @if (Auth::user()->dosen && strlen(Auth::user()->dosen->biografi ?? '') > 100)
+                                        <a href="javascript:void(0)" class="text-primary toggle-biografi">
+                                            Lihat Selengkapnya
+                                        </a>
+                                    @endif
                                 </div>
 
                                 <div class="mb-3">
                                     <h1 class="small fw-bolder mb-1">Pendidikan</h1>
-                                    <ul class="ul-pendidikan">
-                                        @foreach (Auth::user()->dosen->pendidikans as $item)
-                                            <li>{{ $item->pendidikan ?? '' }}</li>
-                                        @endforeach
-                                    </ul>
+                                    @if (Auth::user()->dosen && Auth::user()->dosen->pendidikans->count() > 0)
+                                        <ul class="ul-pendidikan">
+                                            @foreach (Auth::user()->dosen->pendidikans as $item)
+                                                <li>{{ $item->pendidikan ?? '' }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        -
+                                    @endif
                                 </div>
 
                                 <div class="mb-3">
                                     <h1 class="small fw-bolder mb-2">Minat Penelitian</h1>
-                                    <p class="mb-0">{{ Auth::user()->dosen->minat_penelitian ?? '' }}</p>
+                                    <p class="mb-0">{{ Auth::user()->dosen->minat_penelitian ?? '-' }}</p>
                                 </div>
 
                                 <div class="mb-3">
                                     <h1 class="small fw-bolder mb-2">Bidang Kepakaran</h1>
                                     <div class="d-flex gap-1 flex-wrap">
-                                        @foreach (Auth::user()->dosen->bidangKepakarans as $index => $item)
-                                            <p class="mb-0">
-                                                {{ $item->bidang_kepakaran ?? '' }}
-                                                @if ($index < count(Auth::user()->dosen->bidangKepakarans) - 1)
-                                                    <span class="comma">,</span>
-                                                @endif
-                                            </p>
-                                        @endforeach
+                                        @if (Auth::user()->dosen && Auth::user()->dosen->bidangKepakarans->count() > 0)
+                                            @foreach (Auth::user()->dosen->bidangKepakarans as $index => $item)
+                                                <p class="mb-0">
+                                                    {{ $item->bidang_kepakaran ?? '' }}
+                                                    @if ($index < count(Auth::user()->dosen->bidangKepakarans) - 1)
+                                                        <span class="comma">,</span>
+                                                    @endif
+                                                </p>
+                                            @endforeach
+                                        @else
+                                            <p class="mb-0">-</p>
+                                        @endif
                                     </div>
                                 </div>
 

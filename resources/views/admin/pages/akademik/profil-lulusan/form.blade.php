@@ -170,6 +170,7 @@
                             </label>
                             <input class="d-none" name="gambar" id="gambarField" type="file"
                                 accept="image/jpg, image/jpeg, image/png" />
+                            <span class="text-xs text-muted">Format JPG, JPEG, PNG max. 2MB</span>
                             @error('gambar')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror

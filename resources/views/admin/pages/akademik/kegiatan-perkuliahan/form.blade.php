@@ -125,6 +125,31 @@
         .btn-overflow-container:hover .scroll-image {
             filter: blur(1px);
         }
+
+        .embed-responsive {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .embed-responsive::before {
+            display: block;
+            content: "";
+            width: 100%;
+            padding-top: 56.25%;
+        }
+
+        .embed-responsive .embed-responsive-item {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 @endpush
 
@@ -164,6 +189,109 @@
                 @method('PUT')
             @endif
 
+            @if (isset($kegiatanPerkuliahan))
+                <div class="col-xl-4">
+                    <div class="card mb-4">
+                        <div class="card-body p-0 overflow-hidden">
+                            <img src="{{ asset('storage/akademik/kegiatan-perkuliahan/thumbnail/' . $kegiatanPerkuliahan->thumbnail) }}"
+                                alt="profil-lulusan-thubmnail" class="img-fluid">
+                            <div class="d-flex border-top flex-column gap-3 p-3">
+                                <div>
+                                    <h1 class="small fw-bolder mb-2">Judul</h1>
+                                    <p class="mb-0">{{ $kegiatanPerkuliahan->judul }}</p>
+                                </div>
+                                <div>
+                                    <h1 class="small fw-bolder mb-2">Deskripsi</h1>
+                                    @if (isset($kegiatanPerkuliahan->deskripsi))
+                                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#modalDeskripsi">
+                                            Baca Selengkapnya
+                                            <i class="fa-solid fa-arrow-up-right-from-square fa-sm ms-1"></i>
+                                        </button>
+                                    @else
+                                        -
+                                    @endif
+                                </div>
+                                <div>
+                                    <h1 class="small fw-bolder mb-2">Tautan Video Dokumentasi</h1>
+                                    @if (isset($kegiatanPerkuliahan->link_video))
+                                        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#modalVideoDokumentasi">
+                                            Lihat Video
+                                            <i class="fa-solid fa-arrow-up-right-from-square fa-sm ms-1"></i>
+                                        </button>
+                                    @else
+                                        -
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal deskripsi -->
+                    <div class="modal fade" id="modalDeskripsi" tabindex="-1" role="dialog"
+                        aria-labelledby="modalDeskripsiTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body text-black">
+                                    {!! $kegiatanPerkuliahan->deskripsi ?? '-' !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal video dokumentasi -->
+                    <div class="modal fade" id="modalVideoDokumentasi" tabindex="-1" role="dialog"
+                        aria-labelledby="modalVideoDokumentasiTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body p-0">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <iframe class="embed-responsive-item" src="{{ $kegiatanPerkuliahan->link_video }}"
+                                            allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (isset($kegiatanPerkuliahan->kegiatanPerkuliahanImages) &&
+                            count($kegiatanPerkuliahan->kegiatanPerkuliahanImages) > 0)
+                        <div class="card">
+                            <div class="card-header">Dokumentasi Kegiatan</div>
+                            <div class="card-body p-2 overflow-hidden">
+
+                                <div class="scroll-container">
+                                    <div class="row g-2 row-cols-2">
+                                        @foreach ($kegiatanPerkuliahan->kegiatanPerkuliahanImages as $image)
+                                            <div class="col">
+                                                <div class="btn-overflow-container">
+                                                    <img src="{{ asset('storage/akademik/kegiatan-perkuliahan/' . $image->gambar) }}"
+                                                        alt="kegiatan-perkuliahan-image-{{ $image->gambar ?? '' }}"
+                                                        class="scroll-image" />
+                                                    <div class="btn-overflow">
+                                                        <a href="{{ asset('storage/akademik/kegiatan-perkuliahan/' . $image->gambar) }}"
+                                                            data-lightbox="image" data-title="{{ $image->gambar ?? '' }}"
+                                                            class="btn btn-sm btn-light rounded-circle px-3 py-3 btn-gambar">
+                                                            <i class="fa-solid fa-expand"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0)" data-gambar-id="{{ $image->id }}"
+                                                            class="btn btn-sm btn-light rounded-circle px-3 py-3 btn-gambar btn-delete-image">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             <div class="col-xl-8">
                 <div class="card">
                     <div class="card-header">Form {{ $title ?? '' }}</div>
@@ -192,8 +320,8 @@
                                 Judul
                                 <span class="text-danger">*</span>
                             </label>
-                            <input class="form-control @error('judul') is-invalid @enderror" name="judul" id="judulField"
-                                type="text" placeholder="Masukkan judul"
+                            <input class="form-control @error('judul') is-invalid @enderror" name="judul"
+                                id="judulField" type="text" placeholder="Masukkan judul"
                                 value="{{ old('judul', $kegiatanPerkuliahan->judul ?? '') }}" />
                             @error('judul')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
@@ -228,6 +356,7 @@
                             </label>
                             <input class="d-none" name="thumbnail" id="thumbnailField" type="file"
                                 accept="image/jpg, image/jpeg, image/png" />
+                            <span class="text-xs text-muted">Format JPG, JPEG, PNG max. 2MB</span>
                             @error('thumbnail')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -245,6 +374,7 @@
                             <input class="form-control @error('link_video') is-invalid @enderror" name="link_video"
                                 id="tautanField" type="text" placeholder="Masukkan tautan video dokumentasi"
                                 value="{{ old('link_video', $kegiatanPerkuliahan->link_video ?? '') }}" />
+                            <span class="text-xs text-muted">Google Drive atau Youtube</span>
                             @error('link_video')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -264,42 +394,6 @@
                     </div>
                 </div>
             </div>
-            @if (isset($kegiatanPerkuliahan->kegiatanPerkuliahanImages) &&
-                    count($kegiatanPerkuliahan->kegiatanPerkuliahanImages) > 0)
-                <div class="col-xl-4">
-                    <div class="card mb-2">
-                        <div class="card-header">Dokumentasi Kegiatan</div>
-                        <div class="card-body p-2 overflow-hidden">
-
-                            <div class="scroll-container">
-                                <div class="row g-2 row-cols-2">
-                                    @foreach ($kegiatanPerkuliahan->kegiatanPerkuliahanImages as $image)
-                                        <div class="col">
-                                            <div class="btn-overflow-container">
-                                                <img src="{{ asset('storage/akademik/kegiatan-perkuliahan/' . $image->gambar) }}"
-                                                    alt="kegiatan-perkuliahan-image-{{ $image->gambar ?? '' }}"
-                                                    class="scroll-image" />
-                                                <div class="btn-overflow">
-                                                    <a href="{{ asset('storage/akademik/kegiatan-perkuliahan/' . $image->gambar) }}"
-                                                        data-lightbox="image" data-title="{{ $image->gambar ?? '' }}"
-                                                        class="btn btn-sm btn-light rounded-circle px-3 py-3 btn-gambar">
-                                                        <i class="fa-solid fa-expand"></i>
-                                                    </a>
-                                                    <a href="javascript:void(0)" data-gambar-id="{{ $image->id }}"
-                                                        class="btn btn-sm btn-light rounded-circle px-3 py-3 btn-gambar btn-delete-image">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            @endif
         </form>
 
         @if (isset($kegiatanPerkuliahan->kegiatanPerkuliahanImages) &&
