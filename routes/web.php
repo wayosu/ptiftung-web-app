@@ -216,6 +216,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/penelitian/{id}', [App\Http\Controllers\PenelitianController::class, 'destroy'])->name('penelitian.destroy');
     // End Penelitian //
 
+    // Start Pengabdian Masyarakat //
+    Route::get('/pengabdian-masyarakat', [App\Http\Controllers\PengabdianMasyarakatController::class, 'index'])->name('pengabdianMasyarakat.index');
+    Route::get('/pengabdian-masyarakat/create', [App\Http\Controllers\PengabdianMasyarakatController::class, 'create'])->name('pengabdianMasyarakat.create');
+    Route::post('/pengabdian-masyarakat', [App\Http\Controllers\PengabdianMasyarakatController::class, 'store'])->name('pengabdianMasyarakat.store');
+    Route::get('/pengabdian-masyarakat/{id}/edit', [App\Http\Controllers\PengabdianMasyarakatController::class, 'edit'])->name('pengabdianMasyarakat.edit');
+    Route::put('/pengabdian-masyarakat/{id}', [App\Http\Controllers\PengabdianMasyarakatController::class, 'update'])->name('pengabdianMasyarakat.update');
+    Route::delete('/pengabdian-masyarakat/{id}', [App\Http\Controllers\PengabdianMasyarakatController::class, 'destroy'])->name('pengabdianMasyarakat.destroy');
+    // End Pengabdian Masyarakat //
+
     // Start Publikasi //
     Route::get('/publikasi', [App\Http\Controllers\PublikasiController::class, 'index'])->name('publikasi.index');
     Route::get('/publikasi/create', [App\Http\Controllers\PublikasiController::class, 'create'])->name('publikasi.create');

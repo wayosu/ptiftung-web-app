@@ -183,7 +183,7 @@
                     <a class="nav-link {{ isset($active) && $active == 'penelitian' ? 'active' : '' }}"
                         href="{{ route('penelitian.index') }}">Penelitian</a>
                     <a class="nav-link {{ isset($active) && $active == 'pengabdian-masyarakat' ? 'active' : '' }}"
-                        href="#">Pengabdian Masyarakat</a>
+                        href="{{ route('pengabdianMasyarakat.index') }}">Pengabdian Masyarakat</a>
                     <a class="nav-link {{ isset($active) && $active == 'publikasi' ? 'active' : '' }}"
                         href="{{ route('publikasi.index') }}">Publikasi</a>
                 </nav>

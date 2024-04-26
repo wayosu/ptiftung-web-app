@@ -62,6 +62,13 @@ class Dosen extends Model
         return $this->hasMany(Penelitian::class);
     }
 
+    public function pengabdianMasyarakats()
+    {
+        // relasi one to many
+        // satu Dosen dapat memiliki banyak data PengabdianMasyarakat.
+        return $this->hasMany(PengabdianMasyarakat::class);
+    }
+
     public function publikasis()
     {
         // relasi one to many
