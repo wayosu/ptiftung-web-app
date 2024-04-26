@@ -182,8 +182,10 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <a class="nav-link {{ isset($active) && $active == 'penelitian' ? 'active' : '' }}"
                         href="{{ route('penelitian.index') }}">Penelitian</a>
-                    <a class="nav-link" href="#">Pengabdian Masyarakat</a>
-                    <a class="nav-link" href="#">Publikasi</a>
+                    <a class="nav-link {{ isset($active) && $active == 'pengabdian-masyarakat' ? 'active' : '' }}"
+                        href="#">Pengabdian Masyarakat</a>
+                    <a class="nav-link {{ isset($active) && $active == 'publikasi' ? 'active' : '' }}"
+                        href="{{ route('publikasi.index') }}">Publikasi</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"

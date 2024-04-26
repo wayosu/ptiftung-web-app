@@ -216,6 +216,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/penelitian/{id}', [App\Http\Controllers\PenelitianController::class, 'destroy'])->name('penelitian.destroy');
     // End Penelitian //
 
+    // Start Publikasi //
+    Route::get('/publikasi', [App\Http\Controllers\PublikasiController::class, 'index'])->name('publikasi.index');
+    Route::get('/publikasi/create', [App\Http\Controllers\PublikasiController::class, 'create'])->name('publikasi.create');
+    Route::post('/publikasi', [App\Http\Controllers\PublikasiController::class, 'store'])->name('publikasi.store');
+    Route::get('/publikasi/{id}/edit', [App\Http\Controllers\PublikasiController::class, 'edit'])->name('publikasi.edit');
+    Route::put('/publikasi/{id}', [App\Http\Controllers\PublikasiController::class, 'update'])->name('publikasi.update');
+    Route::delete('/publikasi/{id}', [App\Http\Controllers\PublikasiController::class, 'destroy'])->name('publikasi.destroy');
+    // End Publikasi //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

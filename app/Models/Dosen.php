@@ -61,4 +61,11 @@ class Dosen extends Model
         // satu Dosen dapat memiliki banyak data Penelitian.
         return $this->hasMany(Penelitian::class);
     }
+
+    public function publikasis()
+    {
+        // relasi one to many
+        // satu Dosen dapat memiliki banyak data Publikasi.
+        return $this->hasMany(Publikasi::class);
+    }
 }

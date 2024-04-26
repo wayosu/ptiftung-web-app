@@ -79,9 +79,9 @@ class PenelitianController extends Controller
             'tahun.required' => 'Tahun harus diisi.',
             'dosen_id.required' => 'Dosen harus dipilih.',
             'jabatan.required' => 'Jabatan harus diisi.',
-            'skim.required' => 'SKIM harus dipilih.',
+            'skim.required' => 'SKIM harus diisi.',
             'judul.required' => 'Judul harus diisi.',
-            'sumber_dana.required' => 'Sumber Dana harus dipilih.',
+            'sumber_dana.required' => 'Sumber Dana harus diisi.',
             'jumlah_dana.required' => 'Jumlah Dana harus diisi.',
         ]);
 
@@ -154,9 +154,9 @@ class PenelitianController extends Controller
         ], [
             'dosen_id.required' => 'Dosen harus dipilih.',
             'jabatan.required' => 'Jabatan harus diisi.',
-            'skim.required' => 'SKIM harus dipilih.',
+            'skim.required' => 'SKIM harus diisi.',
             'judul.required' => 'Judul harus diisi.',
-            'sumber_dana.required' => 'Sumber Dana harus dipilih.',
+            'sumber_dana.required' => 'Sumber Dana harus diisi.',
             'jumlah_dana.required' => 'Jumlah Dana harus diisi.',
         ]);
 
