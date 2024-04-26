@@ -86,10 +86,10 @@
                         <tr>
                             <th>Tahun</th>
                             <th>Nama Dosen</th>
-                            <th>Judul</th>
+                            <th width="30%">Judul</th>
                             <th>Jabatan</th>
                             <th>Sumber Dana</th>
-                            <th>Jumlah Dana (Rp)</th>
+                            <th widh="12%">Jumlah Dana (Rp)</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
