@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Dosen;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -22,6 +22,16 @@ class UserSeeder extends Seeder
         // buat 10 data dummy pengguna dengan role 'dosen'
         User::factory()->count(10)->dosen()->create()->each(function ($user) {
             $user->assignRole('dosen');
+
+            // Create a Dosen model for each user
+            Dosen::factory()->create([
+                'user_id' => $user->id,
+                'slug' => Str::slug($user->name),
+                'jenis_kelamin' => $faker = \Faker\Factory::create(), // Using Faker directly
+                'jenis_kelamin' => $faker->randomElement(['Laki-laki', 'Perempuan']),
+                'umur' => $faker->numberBetween(18, 60),
+                'jafa' => 'Lektor Kepala'
+            ]);
         });
 
         // buat 10 data dummy pengguna dengan role 'mahasiswa'

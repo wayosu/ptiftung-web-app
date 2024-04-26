@@ -54,4 +54,11 @@ class Dosen extends Model
         */
         return $this->belongsToMany(BidangKepakaran::class)->withPivot('dosen_id', 'bidang_kepakaran_id')->as('bidang_kepakarans');
     }
+
+    public function penelitians()
+    {
+        // relasi one to many
+        // satu Dosen dapat memiliki banyak data Penelitian.
+        return $this->hasMany(Penelitian::class);
+    }
 }

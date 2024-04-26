@@ -13,11 +13,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
+Route::get('/', [App\Http\Controllers\FrontPage\BerandaController::class, 'index'])->name('beranda');
+
+Route::group(['as' => 'profil.'], function () {
+    Route::get('/sejarah', [App\Http\Controllers\FrontPage\ProfilController::class, 'sejarah'])->name('sejarah');
+    Route::get('/visi-tujuan-strategi', [App\Http\Controllers\FrontPage\ProfilController::class, 'visiTujuanStrategi'])->name('visiTujuanStrategi');
+    Route::get('/struktur-organisasi', [App\Http\Controllers\FrontPage\ProfilController::class, 'strukturOrganisasi'])->name('strukturOrganisasi');
+    Route::get('/dosen', [App\Http\Controllers\FrontPage\ProfilController::class, 'dosen'])->name('dosen');
+    Route::get('/dosen/{slug}', [App\Http\Controllers\FrontPage\ProfilController::class, 'detailDosen'])->name('detailDosen');
+    Route::get('/dosen/{slug}/{kategori}', [App\Http\Controllers\FrontPage\ProfilController::class, 'penelitianDanPkm'])->name('penelitianDosen');
 });
 
-Auth::routes();
+Route::group(['prefix' => 'fasilitas', 'as' => 'fasilitas.'], function () {
+    Route::get('/', [App\Http\Controllers\FrontPage\ProfilController::class, 'fasilitas'])->name('index');
+    Route::get('/sarana', [App\Http\Controllers\FrontPage\ProfilController::class, 'sarana'])->name('sarana.index');
+    Route::get('/prasarana', [App\Http\Controllers\FrontPage\ProfilController::class, 'prasarana'])->name('prasarana.index');
+    Route::get('/sistem-informasi', [App\Http\Controllers\FrontPage\ProfilController::class, 'sistemInformasi'])->name('sistemInformasi.index');
+});
+
+Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dasbor');
@@ -192,6 +206,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::put('/kegiatan-perkuliahan/{id}', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'update'])->name('kegiatanPerkuliahan.update');
     Route::delete('/kegiatan-perkuliahan/{id}', [App\Http\Controllers\KegiatanPerkuliahanController::class, 'destroy'])->name('kegiatanPerkuliahan.destroy');
     // End Kegiatan Perkuliahan //
+
+    // Start Penelitian //
+    Route::get('/penelitian', [App\Http\Controllers\PenelitianController::class, 'index'])->name('penelitian.index');
+    Route::get('/penelitian/create', [App\Http\Controllers\PenelitianController::class, 'create'])->name('penelitian.create');
+    Route::post('/penelitian', [App\Http\Controllers\PenelitianController::class, 'store'])->name('penelitian.store');
+    Route::get('/penelitian/{id}/edit', [App\Http\Controllers\PenelitianController::class, 'edit'])->name('penelitian.edit');
+    Route::put('/penelitian/{id}', [App\Http\Controllers\PenelitianController::class, 'update'])->name('penelitian.update');
+    Route::delete('/penelitian/{id}', [App\Http\Controllers\PenelitianController::class, 'destroy'])->name('penelitian.destroy');
+    // End Penelitian //
 
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');

@@ -170,15 +170,18 @@
                         href="{{ route('kegiatanPerkuliahan.index') }}">Kegiatan Perkuliahan</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#penelitian" aria-expanded="false" aria-controls="penelitian">
+            <a class="nav-link {{ isset($active) && ($active == 'penelitian' || $active == 'pengabdian-masyarakat' || $active == 'publikasi') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#penelitian"
+                aria-expanded="false" aria-controls="penelitian">
                 <div class="nav-link-icon"><i data-feather="search"></i></div>
                 Penelitian dan PKM
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="penelitian" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'penelitian' || $active == 'pengabdian-masyarakat' || $active == 'publikasi') ? 'show' : '' }}"
+                id="penelitian" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                    <a class="nav-link" href="#">Penelitian</a>
+                    <a class="nav-link {{ isset($active) && $active == 'penelitian' ? 'active' : '' }}"
+                        href="{{ route('penelitian.index') }}">Penelitian</a>
                     <a class="nav-link" href="#">Pengabdian Masyarakat</a>
                     <a class="nav-link" href="#">Publikasi</a>
                 </nav>

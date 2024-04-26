@@ -104,6 +104,13 @@ class User extends Authenticatable
         return $this->hasMany(SistemInformasi::class, 'created_by', 'id');
     }
 
+    public function profilLulusans()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data ProfilLulusan
+        return $this->hasMany(ProfilLulusan::class, 'created_by', 'id');
+    }
+
     public function capaianPembelajarans()
     {
         // relasi one to many
@@ -123,5 +130,26 @@ class User extends Authenticatable
         // relasi one to many
         // satu User dapat memiliki banyak data DokumenKurikulum
         return $this->hasMany(DokumenKurikulum::class, 'created_by', 'id');
+    }
+
+    public function kalenderAkademiks()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data KalenderAkademik
+        return $this->hasMany(KalenderAkademik::class, 'created_by', 'id');
+    }
+
+    public function kegiatanPerkuliahans()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data KegiatanPerkuliahan
+        return $this->hasMany(KegiatanPerkuliahan::class, 'created_by', 'id');
+    }
+
+    public function penelitians()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data Penelitian
+        return $this->hasMany(Penelitian::class, 'created_by', 'id');
     }
 }
