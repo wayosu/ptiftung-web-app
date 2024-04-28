@@ -200,7 +200,8 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <a class="nav-link {{ isset($active) && $active == 'kerja-sama-dalam-negeri' ? 'active' : '' }}"
                         href="{{ route('kerjasamaDalamNegeri.index') }}">Dalam Negeri</a>
-                    <a class="nav-link" href="#">Luar Negeri</a>
+                    <a class="nav-link {{ isset($active) && $active == 'kerja-sama-luar-negeri' ? 'active' : '' }}"
+                        href="{{ route('kerjasamaLuarNegeri.index') }}">Luar Negeri</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
