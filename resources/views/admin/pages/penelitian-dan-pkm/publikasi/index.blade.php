@@ -105,8 +105,6 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
