@@ -188,15 +188,18 @@
                         href="{{ route('publikasi.index') }}">Publikasi</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#kerjasama" aria-expanded="false" aria-controls="kerjasama">
+            <a class="nav-link {{ isset($active) && ($active == 'kerja-sama-dalam-negeri' || $active == 'kerja-sama-luar-negeri') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#kerjasama"
+                aria-expanded="false" aria-controls="kerjasama">
                 <div class="nav-link-icon"><i class="far fa-handshake"></i></div>
                 Kerja Sama
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="kerjasama" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'kerja-sama-dalam-negeri' || $active == 'kerja-sama-luar-negeri') ? 'show' : '' }}"
+                id="kerjasama" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                    <a class="nav-link" href="#">Dalam Negeri</a>
+                    <a class="nav-link {{ isset($active) && $active == 'kerja-sama-dalam-negeri' ? 'active' : '' }}"
+                        href="{{ route('kerjasamaDalamNegeri.index') }}">Dalam Negeri</a>
                     <a class="nav-link" href="#">Luar Negeri</a>
                 </nav>
             </div>

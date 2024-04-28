@@ -234,6 +234,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/publikasi/{id}', [App\Http\Controllers\PublikasiController::class, 'destroy'])->name('publikasi.destroy');
     // End Publikasi //
 
+    // Start Kerja Sama Dalam Negeri //
+    Route::get('/kerja-sama-dalam-negeri', [App\Http\Controllers\KerjasamaDalamNegeriController::class, 'index'])->name('kerjasamaDalamNegeri.index');
+    Route::get('/kerja-sama-dalam-negeri/create', [App\Http\Controllers\KerjasamaDalamNegeriController::class, 'create'])->name('kerjasamaDalamNegeri.create');
+    Route::post('/kerja-sama-dalam-negeri', [App\Http\Controllers\KerjasamaDalamNegeriController::class, 'store'])->name('kerjasamaDalamNegeri.store');
+    Route::get('/kerja-sama-dalam-negeri/{id}/edit', [App\Http\Controllers\KerjasamaDalamNegeriController::class, 'edit'])->name('kerjasamaDalamNegeri.edit');
+    Route::put('/kerja-sama-dalam-negeri/{id}', [App\Http\Controllers\KerjasamaDalamNegeriController::class, 'update'])->name('kerjasamaDalamNegeri.update');
+    Route::delete('/kerja-sama-dalam-negeri/{id}', [App\Http\Controllers\KerjasamaDalamNegeriController::class, 'destroy'])->name('kerjasamaDalamNegeri.destroy');
+    // End Kerja Sama Dalam Negeri //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');
