@@ -14,7 +14,7 @@ class PengabdianMasyarakatController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $pengabdianMasyarakats = PengabdianMasyarakat::with(['dosen.user', 'createdBy'])->orderBy('created_at', 'desc')->get();
+            $pengabdianMasyarakats = PengabdianMasyarakat::with('dosen.user')->orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
             $pengabdianMasyarakats = $pengabdianMasyarakats->transform(function ($item) {

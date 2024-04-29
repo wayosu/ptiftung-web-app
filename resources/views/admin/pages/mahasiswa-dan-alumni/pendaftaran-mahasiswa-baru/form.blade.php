@@ -68,7 +68,7 @@
     <div class="container-xl px-4 mt-4">
         <form
             action="@if (isset($pendaftaranMahasiswaBaru)) {{ route('pendaftaranMahasiswaBaru.update', $pendaftaranMahasiswaBaru->id) }} @else {{ route('pendaftaranMahasiswaBaru.store') }} @endif"
-            method="POST" class="row flex-row-reverse">
+            method="POST" class="row {{ isset($pendaftaranMahasiswaBaru) ? 'flex-row-reverse' : '' }}">
             @csrf
             @if (isset($pendaftaranMahasiswaBaru))
                 @method('PUT')

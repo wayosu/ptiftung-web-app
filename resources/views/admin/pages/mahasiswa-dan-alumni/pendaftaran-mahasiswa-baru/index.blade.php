@@ -86,6 +86,8 @@
                         <tr>
                             <th>Singkatan</th>
                             <th>Kepanjangan</th>
+                            <th>Tanggal Dibuat</th>
+                            <th>Dibuat Oleh</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -126,6 +128,17 @@
                     },
                     {
                         data: 'kepanjangan',
+                    },
+                    {
+                        data: 'created_at',
+                        render: function(data) {
+                            // with locale 'id'
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
+                                ' WITA';
+                        }
+                    },
+                    {
+                        data: 'created_by.name',
                     },
                     {
                         data: 'aksi',

@@ -13,7 +13,7 @@ class KerjasamaDalamNegeriController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $kerjasamaDalamNegeris = KerjasamaDalamNegeri::with('createdBy')->orderBy('created_at', 'desc')->get();
+            $kerjasamaDalamNegeris = KerjasamaDalamNegeri::orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
             $kerjasamaDalamNegeris = $kerjasamaDalamNegeris->transform(function ($item) {

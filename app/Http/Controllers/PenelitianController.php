@@ -14,7 +14,7 @@ class PenelitianController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $penelitians = Penelitian::with(['dosen.user', 'createdBy'])->orderBy('created_at', 'desc')->get();
+            $penelitians = Penelitian::with('dosen.user')->orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
             $penelitians = $penelitians->transform(function ($item) {

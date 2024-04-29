@@ -14,7 +14,7 @@ class PublikasiController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $publikasis = Publikasi::with(['dosen.user', 'createdBy'])->orderBy('created_at', 'desc')->get();
+            $publikasis = Publikasi::with('dosen.user')->orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
             $publikasis = $publikasis->transform(function ($item) {
