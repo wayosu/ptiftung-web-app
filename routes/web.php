@@ -252,6 +252,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/kerja-sama-luar-negeri/{id}', [App\Http\Controllers\KerjasamaLuarNegeriController::class, 'destroy'])->name('kerjasamaLuarNegeri.destroy');
     // End Kerja Sama Luar Negeri //
 
+    // Start Pendaftaran Mahasiswa Baru //
+    Route::get('/pendaftaran-mahasiswa-baru', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'index'])->name('pendaftaranMahasiswaBaru.index');
+    Route::get('/pendaftaran-mahasiswa-baru/create', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'create'])->name('pendaftaranMahasiswaBaru.create');
+    Route::post('/pendaftaran-mahasiswa-baru', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'store'])->name('pendaftaranMahasiswaBaru.store');
+    Route::get('/pendaftaran-mahasiswa-baru/{id}/edit', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'edit'])->name('pendaftaranMahasiswaBaru.edit');
+    Route::put('/pendaftaran-mahasiswa-baru/{id}', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'update'])->name('pendaftaranMahasiswaBaru.update');
+    Route::delete('/pendaftaran-mahasiswa-baru/{id}', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'destroy'])->name('pendaftaranMahasiswaBaru.destroy');
+    // End Pendaftarana Mahasiswa Baru //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

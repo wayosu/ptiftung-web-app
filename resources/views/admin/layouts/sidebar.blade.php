@@ -204,16 +204,20 @@
                         href="{{ route('kerjasamaLuarNegeri.index') }}">Luar Negeri</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#mhsalumni" aria-expanded="false" aria-controls="mhsalumni">
+            <a class="nav-link {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#mhsalumni"
+                aria-expanded="false" aria-controls="mhsalumni">
                 <div class="nav-link-icon"><i class="fas fa-users-rays"></i></div>
                 Mahasiswa dan Alumni
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="mhsalumni" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa') ? 'show' : '' }}"
+                id="mhsalumni" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                    <a class="nav-link" href="#">Pendaftaran Mahasiswa Baru</a>
-                    <a class="nav-link" href="#">Prestasi Mahasiswa</a>
+                    <a class="nav-link {{ isset($active) && $active == 'pendaftaran-mahasiswa-baru' ? 'active' : '' }}"
+                        href="{{ route('pendaftaranMahasiswaBaru.index') }}">Pendaftaran Mahasiswa Baru</a>
+                    <a class="nav-link {{ isset($active) && $active == 'prestasi-mahasiswa' ? 'active' : '' }}"
+                        href="#">Prestasi Mahasiswa</a>
                     <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                         data-bs-target="#peluangmhs" aria-expanded="false" aria-controls="peluangmhs">
                         Peluang Mahasiswa
