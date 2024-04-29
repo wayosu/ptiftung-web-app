@@ -67,9 +67,9 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('kerjasamaDalamNegeri.create') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('prestasiMahasiswa.create') }}">
                             <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Data
+                            Tambah Prestasi Mahasiswa
                         </a>
                     </div>
                 </div>
@@ -84,10 +84,11 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Instansi</th>
-                            <th>Jenis Kegiatan</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Tanggal Berakhir</th>
+                            <th>Nama Mahasiswa</th>
+                            <th>Predikat</th>
+                            <th>Tingkat</th>
+                            <th>Tahun</th>
+                            <th>Kegiatan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -106,8 +107,6 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -122,26 +121,21 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('kerjasamaDalamNegeri.index') }}",
+                ajax: "{{ route('prestasiMahasiswa.index') }}",
                 columns: [{
-                        data: 'instansi'
+                        data: 'nama_mahasiswa',
                     },
                     {
-                        data: 'jenis_kegiatan',
+                        data: 'predikat',
                     },
                     {
-                        data: 'tgl_mulai',
-                        render: function(data) {
-                            // with locale 'id'
-                            return moment(data).locale('id').format('D MMMM YYYY');
-                        }
+                        data: 'tingkat',
                     },
                     {
-                        data: 'tgl_berakhir',
-                        render: function(data) {
-                            // with locale 'id'
-                            return moment(data).locale('id').format('D MMMM YYYY');
-                        }
+                        data: 'tahun',
+                    },
+                    {
+                        data: 'kegiatan',
                     },
                     {
                         data: 'aksi',
@@ -193,7 +187,7 @@
 
                 // mengekstrak URL 'hapus' dari formulir
                 const dataId = $(this).data('id');
-                const deleteUrl = "{{ route('kerjasamaDalamNegeri.destroy', ':id') }}";
+                const deleteUrl = "{{ route('prestasiMahasiswa.destroy', ':id') }}";
                 const newDeleteUrl = deleteUrl.replace(':id', dataId);
 
                 Swal.fire({

@@ -3,7 +3,6 @@
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/admin/libs/select2/css/select2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/admin/libs/select2/css/select2-bootstrap-5-theme.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/admin/libs/yearpicker/yearpicker.css') }}">
 
     <style>
         .select2-container--bootstrap-5 .select2-selection {
@@ -169,7 +168,6 @@
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/yearpicker/yearpicker.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -181,32 +179,6 @@
                 placeholder: "-- Pilih Dosen --",
                 allowClear: true
             });
-
-            $('#tahunField').yearpicker();
-
-            $('#jumlahDanaField').on('keyup', function(e) {
-                // tambahkan 'Rp.' pada saat form di ketik
-                // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
-                $(this).val(formatRupiah($(this).val(), 'Rp. '));
-            });
-
-            /* Fungsi formatRupiah */
-            function formatRupiah(angka, prefix) {
-                var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                    split = number_string.split(','),
-                    sisa = split[0].length % 3,
-                    rupiah = split[0].substr(0, sisa),
-                    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-                // tambahkan titik jika yang di input sudah menjadi angka ribuan
-                if (ribuan) {
-                    separator = sisa ? '.' : '';
-                    rupiah += separator + ribuan.join('.');
-                }
-
-                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-                return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-            }
         });
     </script>
 @endpush

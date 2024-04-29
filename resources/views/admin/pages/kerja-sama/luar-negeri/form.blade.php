@@ -8,7 +8,7 @@
                 <div class="row align-items-center justify-content-between pt-3">
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="{{ $icon ?? '' }}"></i></div>
+                            <div class="page-header-icon"><i class="{{ $icon ?? '' }}"></i></div>
                             {{ $title ?? '' }}
                         </h1>
                         <p class="mb-0 small mt-1">

@@ -252,7 +252,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/kerja-sama-luar-negeri/{id}', [App\Http\Controllers\KerjasamaLuarNegeriController::class, 'destroy'])->name('kerjasamaLuarNegeri.destroy');
     // End Kerja Sama Luar Negeri //
 
-    // Start Pendaftaran Mahasiswa Baru //
+    // Start Pendaftarana Mahasiswa Baru //
     Route::get('/pendaftaran-mahasiswa-baru', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'index'])->name('pendaftaranMahasiswaBaru.index');
     Route::get('/pendaftaran-mahasiswa-baru/create', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'create'])->name('pendaftaranMahasiswaBaru.create');
     Route::post('/pendaftaran-mahasiswa-baru', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'store'])->name('pendaftaranMahasiswaBaru.store');
@@ -260,6 +260,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::put('/pendaftaran-mahasiswa-baru/{id}', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'update'])->name('pendaftaranMahasiswaBaru.update');
     Route::delete('/pendaftaran-mahasiswa-baru/{id}', [App\Http\Controllers\PendaftaranMahasiswaBaruController::class, 'destroy'])->name('pendaftaranMahasiswaBaru.destroy');
     // End Pendaftarana Mahasiswa Baru //
+
+    // Start Prestasi Mahasiswa //
+    Route::get('/prestasi-mahasiswa', [App\Http\Controllers\PrestasiMahasiswaController::class, 'index'])->name('prestasiMahasiswa.index');
+    Route::get('/prestasi-mahasiswa/create', [App\Http\Controllers\PrestasiMahasiswaController::class, 'create'])->name('prestasiMahasiswa.create');
+    Route::post('/prestasi-mahasiswa', [App\Http\Controllers\PrestasiMahasiswaController::class, 'store'])->name('prestasiMahasiswa.store');
+    Route::get('/prestasi-mahasiswa/{id}/edit', [App\Http\Controllers\PrestasiMahasiswaController::class, 'edit'])->name('prestasiMahasiswa.edit');
+    Route::put('/prestasi-mahasiswa/{id}', [App\Http\Controllers\PrestasiMahasiswaController::class, 'update'])->name('prestasiMahasiswa.update');
+    Route::delete('/prestasi-mahasiswa/{id}', [App\Http\Controllers\PrestasiMahasiswaController::class, 'destroy'])->name('prestasiMahasiswa.destroy');
+    // End Prestasi Mahasiswa //
 
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');

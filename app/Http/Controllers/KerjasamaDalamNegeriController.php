@@ -30,7 +30,7 @@ class KerjasamaDalamNegeriController extends Controller
 
         // tampilkan halaman
         return view('admin.pages.kerja-sama.dalam-negeri.index', [
-            'icon' => 'search',
+            'icon' => 'far fa-handshake',
             'title' => 'Kerja Sama Dalam Negeri',
             'subtitle' => 'Daftar Kerja Sama Dalam Negeri',
             'active' => 'kerja-sama-dalam-negeri',
@@ -41,7 +41,7 @@ class KerjasamaDalamNegeriController extends Controller
     {
         // tampilkan halaman
         return view('admin.pages.kerja-sama.dalam-negeri.form', [
-            'icon' => 'plus',
+            'icon' => 'fas fa-plus',
             'title' => 'Kerja Sama Dalam Negeri',
             'subtitle' => 'Tambah Data Kerja Sama Dalam Negeri',
             'active' => 'kerja-sama-dalam-negeri',
@@ -88,7 +88,7 @@ class KerjasamaDalamNegeriController extends Controller
 
             // tampilkan halaman
             return view('admin.pages.kerja-sama.dalam-negeri.form', [
-                'icon' => 'edit',
+                'icon' => 'fas fa-pen-to-square',
                 'title' => 'Kerja Sama Dalam Negeri',
                 'subtitle' => 'Edit Kerja Sama Dalam Negeri',
                 'active' => 'kerja-sama-dalam-negeri',

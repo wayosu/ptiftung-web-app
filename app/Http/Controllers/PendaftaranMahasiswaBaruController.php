@@ -30,7 +30,7 @@ class PendaftaranMahasiswaBaruController extends Controller
 
         // tampilkan halaman
         return view('admin.pages.mahasiswa-dan-alumni.pendaftaran-mahasiswa-baru.index', [
-            'icon' => 'search',
+            'icon' => 'fas fa-users-rays',
             'title' => 'Pendaftaran Mahasiswa Baru',
             'subtitle' => 'Daftar Informasi Pendaftaran Mahasiswa Baru',
             'active' => 'pendaftaran-mahasiswa-baru',
@@ -136,7 +136,7 @@ class PendaftaranMahasiswaBaruController extends Controller
             // ambil data dari model PendaftaranMahasiswaBaru berdasarkan id
             $pendaftaranMahasiswaBaru = PendaftaranMahasiswaBaru::findOrFail($id);
 
-            // hapus data dari table kerjasama_luar_negeris
+            // hapus data dari table pendaftaran_mahasiswa_barus
             $pendaftaranMahasiswaBaru->delete();
 
             return redirect()->route('pendaftaranMahasiswaBaru.index')->with('success', 'Data berhasil dihapus.');

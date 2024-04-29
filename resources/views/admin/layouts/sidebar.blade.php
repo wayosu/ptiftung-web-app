@@ -217,7 +217,7 @@
                     <a class="nav-link {{ isset($active) && $active == 'pendaftaran-mahasiswa-baru' ? 'active' : '' }}"
                         href="{{ route('pendaftaranMahasiswaBaru.index') }}">Pendaftaran Mahasiswa Baru</a>
                     <a class="nav-link {{ isset($active) && $active == 'prestasi-mahasiswa' ? 'active' : '' }}"
-                        href="#">Prestasi Mahasiswa</a>
+                        href="{{ route('prestasiMahasiswa.index') }}">Prestasi Mahasiswa</a>
                     <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
                         data-bs-target="#peluangmhs" aria-expanded="false" aria-controls="peluangmhs">
                         Peluang Mahasiswa

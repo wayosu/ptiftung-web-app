@@ -139,7 +139,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input class="form-control @error('kepanjangan') is-invalid @enderror" name="kepanjangan"
-                                id="kepanjanganField" type="text" placeholder="Masukkan jenis kegiatan"
+                                id="kepanjanganField" type="text" placeholder="Masukkan kepanjangan"
                                 value="{{ old('kepanjangan', $pendaftaranMahasiswaBaru->kepanjangan ?? '') }}"
                                 autocomplete="off" />
                             @error('kepanjangan')

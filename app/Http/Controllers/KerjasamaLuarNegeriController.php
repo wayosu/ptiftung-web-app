@@ -30,7 +30,7 @@ class KerjasamaLuarNegeriController extends Controller
 
         // tampilkan halaman
         return view('admin.pages.kerja-sama.luar-negeri.index', [
-            'icon' => 'search',
+            'icon' => 'far fa-handshake',
             'title' => 'Kerja Sama Luar Negeri',
             'subtitle' => 'Daftar Kerja Sama Luar Negeri',
             'active' => 'kerja-sama-luar-negeri',
@@ -41,7 +41,7 @@ class KerjasamaLuarNegeriController extends Controller
     {
         // tampilkan halaman
         return view('admin.pages.kerja-sama.luar-negeri.form', [
-            'icon' => 'plus',
+            'icon' => 'fas fa-plus',
             'title' => 'Kerja Sama Luar Negeri',
             'subtitle' => 'Tambah Data Kerja Sama Luar Negeri',
             'active' => 'kerja-sama-luar-negeri',
@@ -88,7 +88,7 @@ class KerjasamaLuarNegeriController extends Controller
 
             // tampilkan halaman
             return view('admin.pages.kerja-sama.luar-negeri.form', [
-                'icon' => 'edit',
+                'icon' => 'fas fa-pen-to-square',
                 'title' => 'Kerja Sama Luar Negeri',
                 'subtitle' => 'Edit Kerja Sama Luar Negeri',
                 'active' => 'kerja-sama-luar-negeri',
