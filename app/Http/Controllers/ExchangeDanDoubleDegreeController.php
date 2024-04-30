@@ -2,51 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Beasiswa;
+use App\Models\ExchangeDanDoubleDegree;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
-class BeasiswaController extends Controller
+class ExchangeDanDoubleDegreeController extends Controller
 {
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $beasiswas = Beasiswa::with('createdBy')->orderBy('created_at', 'desc')->get();
+            $edds = ExchangeDanDoubleDegree::with('createdBy')->orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
-            $beasiswas = $beasiswas->transform(function ($item) {
+            $edds = $edds->transform(function ($item) {
                 return $item;
             })->all();
 
             // tampilkan data dalam format DataTables
-            return DataTables::of($beasiswas)
-                ->addColumn('aksi', function ($beasiswas) {
-                    return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.tombol-aksi', compact('beasiswas'));
+            return DataTables::of($edds)
+                ->addColumn('aksi', function ($edds) {
+                    return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.exchange-dan-double-degree.tombol-aksi', compact('edds'));
                 })
                 ->make(true);
         }
 
         // tampilkan halaman
-        return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.index', [
+        return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.exchange-dan-double-degree.index', [
             'icon' => 'fas fa-users-rays',
-            'title' => 'Beasiswa',
-            'subtitle' => 'Daftar Informasi Beasiswa',
-            'active' => 'beasiswa',
+            'title' => 'Exchange dan Double Degree',
+            'subtitle' => 'Daftar Informasi Exchange dan Double Degree',
+            'active' => 'exchange-dan-double-degree',
         ]);
     }
 
     public function create()
     {
         // tampilkan halaman
-        return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.form', [
+        return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.exchange-dan-double-degree.form', [
             'icon' => 'plus',
-            'title' => 'Beasiswa',
-            'subtitle' => 'Tambah Informasi Beasiswa',
-            'active' => 'beasiswa',
+            'title' => 'Exchange dan Double Degree',
+            'subtitle' => 'Tambah Informasi Exchange dan Double Degree',
+            'active' => 'exchange-dan-double-degree',
         ]);
     }
 
@@ -72,11 +72,11 @@ class BeasiswaController extends Controller
                 $nameFile = uniqid() . time() . '.' . $request->file('gambar')->getClientOriginalExtension();
 
                 // simpan file ke storage/penyimpanan
-                $storePath = 'mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa';
+                $storePath = 'mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree/';
                 $request->file('gambar')->storeAs($storePath, $nameFile);
 
                 // simpan data
-                Beasiswa::create([
+                ExchangeDanDoubleDegree::create([
                     'judul' => $request->judul,
                     'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
@@ -84,33 +84,33 @@ class BeasiswaController extends Controller
                     'created_by' => auth()->user()->id,
                 ]);
 
-                return redirect()->route('beasiswa.index')->with('success', 'Data berhasil ditambahkan.');
+                return redirect()->route('edd.index')->with('success', 'Data berhasil ditambahkan.');
             } else {
-                return redirect()->route('beasiswa.index')->with('error', 'Data gagal ditambahkan. File gambar tidak boleh kosong!');
+                return redirect()->route('edd.index')->with('error', 'Data gagal ditambahkan. File gambar tidak boleh kosong!');
             }
         } catch (\Exception $e) { // jika gagal menambahkan data
-            return redirect()->route('beasiswa.index')->with('error', 'Data gagal ditambahkan!');
+            return redirect()->route('edd.index')->with('error', 'Data gagal ditambahkan!');
         }
     }
 
     public function edit($id)
     {
         try { // jika id ditemukan
-             // ambil data dari model Beasiswa berdasarkan id
-            $beasiswa = Beasiswa::findOrFail($id);
+             // ambil data dari model ExchangeDanDoubleDegree berdasarkan id
+            $edd = ExchangeDanDoubleDegree::findOrFail($id);
 
             // tampilkan halaman
-            return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.form', [
+            return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.exchange-dan-double-degree.form', [
                 'icon' => 'edit',
-                'title' => 'Beasiswa',
-                'subtitle' => 'Edit Informasi Beasiswa',
-                'active' => 'beasiswa',
-                'beasiswa' => $beasiswa,
+                'title' => 'Exchange dan Double Degree',
+                'subtitle' => 'Edit Informasi Exchange dan Double Degree',
+                'active' => 'exchange-dan-double-degree',
+                'edd' => $edd,
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('beasiswa.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
+            return redirect()->route('edd.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika bermasalah mengambil data
-            return redirect()->route('beasiswa.index')->with('error', 'Halaman sedang bermasalah!');
+            return redirect()->route('edd.index')->with('error', 'Halaman sedang bermasalah!');
         }
     }
 
@@ -130,21 +130,21 @@ class BeasiswaController extends Controller
         ]);
 
         try { // jika data valid
-            // ambil data dari model Beasiswa berdasarkan id
-            $beasiswa = Beasiswa::findOrFail($id);
+            // ambil data dari model ExchangeDanDoubleDegree berdasarkan id
+            $edd = ExchangeDanDoubleDegree::findOrFail($id);
 
             if ($request->hasFile('gambar')) {
                 // cek apakah ada file yang lama
-                if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar)) {
+                if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree/' . $edd->gambar)) {
                     // hapus file
-                    Storage::delete('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar);
+                    Storage::delete('mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree/' . $edd->gambar);
                 }
 
                 // namakan file
                 $nameFile = uniqid() . time() . '.' . $request->file('gambar')->getClientOriginalExtension();
 
                 // simpan file ke storage/penyimpanan
-                $storePath = 'mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa';
+                $storePath = 'mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree';
                 $request->file('gambar')->storeAs($storePath, $nameFile);
 
                 $data = [
@@ -163,35 +163,35 @@ class BeasiswaController extends Controller
                 ];
             }
 
-            $beasiswa->update($data);
+            $edd->update($data);
 
-            return redirect()->route('beasiswa.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('edd.index')->with('success', 'Data berhasil diperbarui.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('beasiswa.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('edd.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal mengupdate data
-            return redirect()->route('beasiswa.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('edd.index')->with('error', 'Data gagal diperbarui!');
         }
     }
 
     public function destroy($id)
     {
         try { // jika id ditemukan lakukan proses delete
-            // ambil data dari model Beasiswa berdasarkan id
-            $beasiswa = Beasiswa::findOrFail($id);
+            // ambil data dari model ExchangeDanDoubleDegree berdasarkan id
+            $edd = ExchangeDanDoubleDegree::findOrFail($id);
 
             // hapus file dari storage/penyimpanan
-            if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar)) {
-                Storage::delete('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar);
+            if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree/' . $edd->gambar)) {
+                Storage::delete('mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree/' . $edd->gambar);
             }
 
-            // hapus data dari table beasiswa
-            $beasiswa->delete();
+            // hapus data dari table exchange dan double degree
+            $edd->delete();
 
-            return redirect()->route('beasiswa.index')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('edd.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('beasiswa.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('edd.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('beasiswa.index')->with('error', 'Data gagal dihapus!');
+            return redirect()->route('edd.index')->with('error', 'Data gagal dihapus!');
         }
     }
 }

@@ -279,6 +279,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/beasiswa/{id}', [App\Http\Controllers\BeasiswaController::class, 'destroy'])->name('beasiswa.destroy');
     // End Beasiswa //
 
+    // Start Exchange dan Double Degree //
+    Route::get('/exchange-dan-double-degree', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'index'])->name('edd.index');
+    Route::get('/exchange-dan-double-degree/create', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'create'])->name('edd.create');
+    Route::post('/exchange-dan-double-degree', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'store'])->name('edd.store');
+    Route::get('/exchange-dan-double-degree/{id}/edit', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'edit'])->name('edd.edit');
+    Route::put('/exchange-dan-double-degree/{id}', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'update'])->name('edd.update');
+    Route::delete('/exchange-dan-double-degree/{id}', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'destroy'])->name('edd.destroy');
+    // End Exchange dan Double Degree //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

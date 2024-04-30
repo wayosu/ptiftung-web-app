@@ -187,4 +187,11 @@ class User extends Authenticatable
         // satu User dapat memiliki banyak data Beasiswa
         return $this->hasMany(Beasiswa::class, 'created_by', 'id');
     }
+
+    public function exchangeDanDoubleDegrees()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data ExchangeDanDoubleDegree
+        return $this->hasMany(ExchangeDanDoubleDegree::class, 'created_by', 'id');
+    }
 }
