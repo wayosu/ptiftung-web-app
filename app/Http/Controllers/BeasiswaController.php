@@ -2,50 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProfilLulusan;
+use App\Models\Beasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
-class ProfilLulusanController extends Controller
+class BeasiswaController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $profilLulusans = ProfilLulusan::with('createdBy')->orderBy('created_at', 'desc')->get();
+            $beasiswas = Beasiswa::with('createdBy')->orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
-            $profilLulusans = $profilLulusans->transform(function ($item) {
+            $beasiswas = $beasiswas->transform(function ($item) {
                 return $item;
             })->all();
 
             // tampilkan data dalam format DataTables
-            return DataTables::of($profilLulusans)
-                ->addColumn('aksi', function ($profilLulusans) {
-                    return view('admin.pages.akademik.profil-lulusan.tombol-aksi', compact('profilLulusans'));
+            return DataTables::of($beasiswas)
+                ->addColumn('aksi', function ($beasiswas) {
+                    return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.tombol-aksi', compact('beasiswas'));
                 })
                 ->make(true);
         }
 
         // tampilkan halaman
-        return view('admin.pages.akademik.profil-lulusan.index', [
-            'icon' => 'fa-solid fa-graduation-cap',
-            'title' => 'Profil Lulusan',
-            'subtitle' => 'Daftar Profil Lulusan',
-            'active' => 'profil-lulusan',
+        return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.index', [
+            'icon' => 'fas fa-users-rays',
+            'title' => 'Beasiswa',
+            'subtitle' => 'Daftar Informasi Beasiswa',
+            'active' => 'beasiswa',
         ]);
     }
 
     public function create()
     {
         // tampilkan halaman
-        return view('admin.pages.akademik.profil-lulusan.form', [
+        return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.form', [
             'icon' => 'plus',
-            'title' => 'Profil Lulusan',
-            'subtitle' => 'Tambah Profil Lulusan',
-            'active' => 'profil-lulusan',
+            'title' => 'Beasiswa',
+            'subtitle' => 'Tambah Informasi Beasiswa',
+            'active' => 'beasiswa',
         ]);
     }
 
@@ -54,12 +58,10 @@ class ProfilLulusanController extends Controller
         // validasi data yang dikirim
         $request->validate([
             'judul' => 'required',
-            'subjudul' => 'required',
             'deskripsi' => 'required',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'judul.required' => 'Judul harus diisi!',
-            'subjudul.required' => 'Subjudul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
             'gambar.required' => 'Gambar harus diisi!',
             'gambar.image' => 'File harus berupa gambar!',
@@ -73,45 +75,45 @@ class ProfilLulusanController extends Controller
                 $nameFile = uniqid() . time() . '.' . $request->file('gambar')->getClientOriginalExtension();
 
                 // simpan file ke storage/penyimpanan
-                $storePath = 'akademik/profil-lulusan';
+                $storePath = 'mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa';
                 $request->file('gambar')->storeAs($storePath, $nameFile);
 
                 // simpan data
-                ProfilLulusan::create([
+                Beasiswa::create([
                     'judul' => $request->judul,
-                    'subjudul' => $request->subjudul,
+                    'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
                     'created_by' => auth()->user()->id,
                 ]);
 
-                return redirect()->route('profilLulusan.index')->with('success', 'Data berhasil ditambahkan.');
+                return redirect()->route('beasiswa.index')->with('success', 'Data berhasil ditambahkan.');
             } else {
-                return redirect()->route('profilLulusan.index')->with('error', 'Data gagal ditambahkan. File gambar tidak boleh kosong!');
+                return redirect()->route('beasiswa.index')->with('error', 'Data gagal ditambahkan. File gambar tidak boleh kosong!');
             }
         } catch (\Exception $e) { // jika gagal menambahkan data
-            return redirect()->route('profilLulusan.index')->with('error', 'Data gagal ditambahkan!');
+            return redirect()->route('beasiswa.index')->with('error', 'Data gagal ditambahkan!');
         }
     }
 
     public function edit($id)
     {
         try { // jika id ditemukan
-             // ambil data dari model ProfilLulusan berdasarkan id
-            $profilLulusan = ProfilLulusan::findOrFail($id);
+             // ambil data dari model Beasiswa berdasarkan id
+            $beasiswa = Beasiswa::findOrFail($id);
 
             // tampilkan halaman
-            return view('admin.pages.akademik.profil-lulusan.form', [
+            return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.form', [
                 'icon' => 'edit',
-                'title' => 'Profil Lulusan',
-                'subtitle' => 'Edit Profil Lulusan',
-                'active' => 'profil-lulusan',
-                'profilLulusan' => $profilLulusan,
+                'title' => 'Beasiswa',
+                'subtitle' => 'Edit Informasi Beasiswa',
+                'active' => 'beasiswa',
+                'beasiswa' => $beasiswa,
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('profilLulusan.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
+            return redirect()->route('beasiswa.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika bermasalah mengambil data
-            return redirect()->route('profilLulusan.index')->with('error', 'Halaman sedang bermasalah!');
+            return redirect()->route('beasiswa.index')->with('error', 'Halaman sedang bermasalah!');
         }
     }
 
@@ -120,12 +122,10 @@ class ProfilLulusanController extends Controller
         // validasi data yang dikirim
         $request->validate([
             'judul' => 'required',
-            'subjudul' => 'required',
             'deskripsi' => 'required',
             'gambar' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'judul.required' => 'Judul harus diisi!',
-            'subjudul.required' => 'Subjudul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
             'gambar.image' => 'File harus berupa gambar!',
             'gambar.mimes' => 'File harus berupa jpeg, png, jpg!',
@@ -133,26 +133,26 @@ class ProfilLulusanController extends Controller
         ]);
 
         try { // jika data valid
-            // ambil data dari model ProfilLulusan berdasarkan id
-            $profilLulusan = ProfilLulusan::findOrFail($id);
+            // ambil data dari model Beasiswa berdasarkan id
+            $beasiswa = Beasiswa::findOrFail($id);
 
             if ($request->hasFile('gambar')) {
                 // cek apakah ada file yang lama
-                if (Storage::exists('akademik/profil-lulusan/' . $profilLulusan->gambar)) {
+                if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar)) {
                     // hapus file
-                    Storage::delete('akademik/profil-lulusan/' . $profilLulusan->gambar);
+                    Storage::delete('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar);
                 }
 
                 // namakan file
                 $nameFile = uniqid() . time() . '.' . $request->file('gambar')->getClientOriginalExtension();
 
                 // simpan file ke storage/penyimpanan
-                $storePath = 'akademik/profil-lulusan';
+                $storePath = 'mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa';
                 $request->file('gambar')->storeAs($storePath, $nameFile);
 
                 $data = [
                     'judul' => $request->judul,
-                    'subjudul' => $request->subjudul,
+                    'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
                     'updated_by' => auth()->user()->id,
@@ -160,41 +160,41 @@ class ProfilLulusanController extends Controller
             } else {
                 $data = [
                     'judul' => $request->judul,
-                    'subjudul' => $request->subjudul,
+                    'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
                     'updated_by' => auth()->user()->id,
                 ];
             }
 
-            $profilLulusan->update($data);
+            $beasiswa->update($data);
 
-            return redirect()->route('profilLulusan.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('beasiswa.index')->with('success', 'Data berhasil diperbarui.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('profilLulusan.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('beasiswa.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal mengupdate data
-            return redirect()->route('profilLulusan.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('beasiswa.index')->with('error', 'Data gagal diperbarui!');
         }
     }
 
     public function destroy($id)
     {
         try { // jika id ditemukan lakukan proses delete
-            // ambil data dari model ProfilLulusan berdasarkan id
-            $profilLulusan = ProfilLulusan::findOrFail($id);
+            // ambil data dari model Beasiswa berdasarkan id
+            $beasiswa = Beasiswa::findOrFail($id);
 
             // hapus file dari storage/penyimpanan
-            if (Storage::exists('akademik/profil-lulusan/' . $profilLulusan->gambar)) {
-                Storage::delete('akademik/profil-lulusan/' . $profilLulusan->gambar);
+            if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar)) {
+                Storage::delete('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar);
             }
 
-            // hapus data dari table profilLulusan
-            $profilLulusan->delete();
+            // hapus data dari table beasiswa
+            $beasiswa->delete();
 
-            return redirect()->route('profilLulusan.index')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('beasiswa.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('profilLulusan.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('beasiswa.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('profilLulusan.index')->with('error', 'Data gagal dihapus!');
+            return redirect()->route('beasiswa.index')->with('error', 'Data gagal dihapus!');
         }
     }
 }

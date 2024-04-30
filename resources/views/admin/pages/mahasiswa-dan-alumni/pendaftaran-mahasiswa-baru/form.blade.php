@@ -2,7 +2,6 @@
 
 @push('css')
     <link href="{{ asset('assets/admin/libs/summernote/summernote-lite.min.css') }}" rel="stylesheet">
-
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
 
     <style>
@@ -68,33 +67,10 @@
     <div class="container-xl px-4 mt-4">
         <form
             action="@if (isset($pendaftaranMahasiswaBaru)) {{ route('pendaftaranMahasiswaBaru.update', $pendaftaranMahasiswaBaru->id) }} @else {{ route('pendaftaranMahasiswaBaru.store') }} @endif"
-            method="POST" class="row {{ isset($pendaftaranMahasiswaBaru) ? 'flex-row-reverse' : '' }}">
+            method="POST" class="row">
             @csrf
             @if (isset($pendaftaranMahasiswaBaru))
                 @method('PUT')
-            @endif
-
-            @if (isset($pendaftaranMahasiswaBaru))
-                <div class="col-xl-6">
-                    <div class="card mb-4">
-                        <div class="card-body p-0 overflow-hidden">
-                            <div class="d-flex border-top flex-column gap-3 p-3">
-                                <div>
-                                    <h1 class="small fw-bolder mb-2">Singkatan</h1>
-                                    <p class="mb-0">{{ $pendaftaranMahasiswaBaru->singkatan }}</p>
-                                </div>
-                                <div>
-                                    <h1 class="small fw-bolder mb-2">Kepanjangan</h1>
-                                    <p class="mb-0">{{ $pendaftaranMahasiswaBaru->kepanjangan }}</p>
-                                </div>
-                                <div>
-                                    <h1 class="small fw-bolder mb-2">Deskripsi</h1>
-                                    <p class="mb-0">{!! $pendaftaranMahasiswaBaru->deskripsi !!}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             @endif
 
             <div class="col-xl-6">

@@ -270,6 +270,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/prestasi-mahasiswa/{id}', [App\Http\Controllers\PrestasiMahasiswaController::class, 'destroy'])->name('prestasiMahasiswa.destroy');
     // End Prestasi Mahasiswa //
 
+    // Start Beasiswa //
+    Route::get('/beasiswa', [App\Http\Controllers\BeasiswaController::class, 'index'])->name('beasiswa.index');
+    Route::get('/beasiswa/create', [App\Http\Controllers\BeasiswaController::class, 'create'])->name('beasiswa.create');
+    Route::post('/beasiswa', [App\Http\Controllers\BeasiswaController::class, 'store'])->name('beasiswa.store');
+    Route::get('/beasiswa/{id}/edit', [App\Http\Controllers\BeasiswaController::class, 'edit'])->name('beasiswa.edit');
+    Route::put('/beasiswa/{id}', [App\Http\Controllers\BeasiswaController::class, 'update'])->name('beasiswa.update');
+    Route::delete('/beasiswa/{id}', [App\Http\Controllers\BeasiswaController::class, 'destroy'])->name('beasiswa.destroy');
+    // End Beasiswa //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

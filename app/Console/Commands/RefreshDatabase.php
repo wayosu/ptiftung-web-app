@@ -33,6 +33,7 @@ class RefreshDatabase extends Command
         File::cleanDirectory(public_path('storage'));
         File::cleanDirectory(storage_path('app'));
 
+        $this->info('Penyimpanan sudah dibersihkan🍃.');
         $this->info('Oke, Aman. Database sudah di-segarkan🍃.');
     }
 }

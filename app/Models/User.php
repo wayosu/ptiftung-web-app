@@ -180,4 +180,11 @@ class User extends Authenticatable
         // satu User dapat memiliki banyak data PrestasiMahasiswa
         return $this->hasMany(PrestasiMahasiswa::class, 'created_by', 'id');
     }
+
+    public function beasiswas()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data Beasiswa
+        return $this->hasMany(Beasiswa::class, 'created_by', 'id');
+    }
 }

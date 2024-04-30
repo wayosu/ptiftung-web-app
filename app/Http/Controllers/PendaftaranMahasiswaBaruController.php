@@ -86,9 +86,9 @@ class PendaftaranMahasiswaBaruController extends Controller
             // tampilkan halaman
             return view('admin.pages.mahasiswa-dan-alumni.pendaftaran-mahasiswa-baru.form', [
                 'icon' => 'edit',
-                'title' => 'Kerja Sama Luar Negeri',
-                'subtitle' => 'Edit Kerja Sama Luar Negeri',
-                'active' => 'kerja-sama-luar-negeri',
+                'title' => 'Pendaftaran Mahasiswa Baru',
+                'subtitle' => 'Edit Informasi Pendaftaran Mahasiswa Baru',
+                'active' => 'pendaftaran-mahasiswa-baru',
                 'pendaftaranMahasiswaBaru' => $pendaftaranMahasiswaBaru,
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
