@@ -204,36 +204,39 @@
                         href="{{ route('kerjasamaLuarNegeri.index') }}">Luar Negeri</a>
                 </nav>
             </div>
-            <a class="nav-link {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree') ? 'active' : 'collapsed' }}"
+            <a class="nav-link {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja') ? 'active' : 'collapsed' }}"
                 href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#mhsalumni"
                 aria-expanded="false" aria-controls="mhsalumni">
                 <div class="nav-link-icon"><i class="fas fa-users-rays"></i></div>
                 Mahasiswa dan Alumni
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree') ? 'show' : '' }}"
+            <div class="collapse {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja') ? 'show' : '' }}"
                 id="mhsalumni" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                     <a class="nav-link {{ isset($active) && $active == 'pendaftaran-mahasiswa-baru' ? 'active' : '' }}"
                         href="{{ route('pendaftaranMahasiswaBaru.index') }}">Pendaftaran Mahasiswa Baru</a>
                     <a class="nav-link {{ isset($active) && $active == 'prestasi-mahasiswa' ? 'active' : '' }}"
                         href="{{ route('prestasiMahasiswa.index') }}">Prestasi Mahasiswa</a>
-                    <a class="nav-link {{ isset($active) && ($active == 'beasiswa' || $active == 'exchange-dan-double-degree') ? 'active' : 'collapsed' }}"
+                    <a class="nav-link {{ isset($active) && ($active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja') ? 'active' : 'collapsed' }}"
                         href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#peluangmhs"
                         aria-expanded="false" aria-controls="peluangmhs">
                         Peluang Mahasiswa
                         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse {{ isset($active) && ($active == 'beasiswa' || $active == 'exchange-dan-double-degree') ? 'show' : '' }}"
+                    <div class="collapse {{ isset($active) && ($active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja') ? 'show' : '' }}"
                         id="peluangmhs" data-bs-parent="#accordionSidenavAppsMenu">
                         <nav class="sidenav-menu-nested nav">
                             <a class="nav-link {{ isset($active) && $active == 'beasiswa' ? 'active' : '' }}"
                                 href="{{ route('beasiswa.index') }}">Beasiswa</a>
                             <a class="nav-link {{ isset($active) && $active == 'exchange-dan-double-degree' ? 'active' : '' }}"
                                 href="{{ route('edd.index') }}">Exchange dan Double Degree</a>
-                            <a class="nav-link" href="#">Seminar dan Kompetisi</a>
-                            <a class="nav-link" href="#">Magang atau Praktik Industri</a>
-                            <a class="nav-link" href="#">Lowongan Kerja</a>
+                            <a class="nav-link {{ isset($active) && $active == 'seminar-dan-kompetisi' ? 'active' : '' }}"
+                                href="{{ route('seminarDanKompetisi.index') }}">Seminar dan Kompetisi</a>
+                            <a class="nav-link {{ isset($active) && $active == 'magang-atau-praktik-industri' ? 'active' : '' }}"
+                                href="{{ route('mapi.index') }}">Magang atau Praktik Industri</a>
+                            <a class="nav-link {{ isset($active) && $active == 'lowongan-kerja' ? 'active' : '' }}"
+                                href="{{ route('lowonganKerja.index') }}">Lowongan Kerja</a>
                         </nav>
                     </div>
                     <a class="nav-link" href="#">Organisasi Mahasiswa</a>

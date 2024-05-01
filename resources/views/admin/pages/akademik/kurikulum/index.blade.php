@@ -115,7 +115,7 @@
                     [4, 'desc']
                 ],
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
                 },
                 processing: true,
                 serverSide: true,

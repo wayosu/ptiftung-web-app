@@ -5,6 +5,9 @@
     <link href="{{ asset('assets/admin/libs/datatables/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" />
 
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+        integrity="sha512-ZKX+BvQihRJPA8CROKBhDNvoc2aDMOdAlcm7TUQY+35XYtrd3yh95QOOhsPDQY9QnKE0Wqag9y38OIgEvb88cA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         #myDataTables {
@@ -67,7 +70,7 @@
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('kerjasamaLuarNegeri.create') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('lowonganKerja.create') }}">
                             <i class="fa-solid fa-plus me-1"></i>
                             Tambah Data
                         </a>
@@ -84,10 +87,10 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Instansi</th>
-                            <th>Jenis Kegiatan</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Tanggal Berakhir</th>
+                            <th>Judul</th>
+                            <th>Gambar</th>
+                            <th>Tanggal Dibuat</th>
+                            <th>Dibuat Oleh</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -99,6 +102,7 @@
     </div>
 @endsection
 
+
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
@@ -108,6 +112,9 @@
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/moment/moment-with-locales.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"
+        integrity="sha512-k2GFCTbp9rQU412BStrcD/rlwv1PYec9SNrkbQlo6RZCf75l6KcC3UwDY8H5n5hl4v77IDtIPwOk9Dqjs/mMBQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
         $(document).ready(function() {
@@ -115,33 +122,39 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [0, 'desc']
+                    [3, 'desc']
                 ],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('kerjasamaLuarNegeri.index') }}",
+                ajax: "{{ route('lowonganKerja.index') }}",
                 columns: [{
-                        data: 'instansi'
+                        data: 'judul'
                     },
                     {
-                        data: 'jenis_kegiatan',
-                    },
-                    {
-                        data: 'tgl_mulai',
-                        render: function(data) {
-                            // with locale 'id'
-                            return moment(data).locale('id').format('D MMMM YYYY');
+                        data: 'gambar',
+                        render: function(gambar) {
+                            let path =
+                                `{{ asset('storage/mahasiswa-dan-alumni/peluang-mahasiswa/lowongan-kerja/`+ gambar +`') }}`;
+                            return `
+                                <a href="${path}" data-lightbox="image" data-title="${gambar}" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-image"></i>
+                                </a>
+                            `;
                         }
                     },
                     {
-                        data: 'tgl_berakhir',
+                        data: 'created_at',
                         render: function(data) {
                             // with locale 'id'
-                            return moment(data).locale('id').format('D MMMM YYYY');
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
+                                ' WITA';
                         }
+                    },
+                    {
+                        data: 'created_by.name',
                     },
                     {
                         data: 'aksi',
@@ -187,13 +200,13 @@
                 })
             @endif
 
-            // konfirmasi tombol hapus menggunakan swal
+            // konfirmasi hapus dengan swal
             $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
 
-                // mengekstrak URL 'hapus' dari formulir
+                // mengekstrak URL hapus dari formulir
                 const dataId = $(this).data('id');
-                const deleteUrl = "{{ route('kerjasamaLuarNegeri.destroy', ':id') }}";
+                const deleteUrl = "{{ route('lowonganKerja.destroy', ':id') }}";
                 const newDeleteUrl = deleteUrl.replace(':id', dataId);
 
                 Swal.fire({
@@ -212,7 +225,6 @@
                     inputValidator: (value) => {
                         const trimmedValue = value.trim();
 
-                        // memastikan inputan tidak kosong
                         if (!trimmedValue) {
                             return 'Mohon diisi dengan benar!'
                         } else if (trimmedValue.toLowerCase() === 'hapus data') {

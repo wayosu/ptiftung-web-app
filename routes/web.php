@@ -288,6 +288,33 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/exchange-dan-double-degree/{id}', [App\Http\Controllers\ExchangeDanDoubleDegreeController::class, 'destroy'])->name('edd.destroy');
     // End Exchange dan Double Degree //
 
+    // Start Seminar dan Kompetisi //
+    Route::get('/seminar-dan-kompetisi', [App\Http\Controllers\SeminarDanKompetisiController::class, 'index'])->name('seminarDanKompetisi.index');
+    Route::get('/seminar-dan-kompetisi/create', [App\Http\Controllers\SeminarDanKompetisiController::class, 'create'])->name('seminarDanKompetisi.create');
+    Route::post('/seminar-dan-kompetisi', [App\Http\Controllers\SeminarDanKompetisiController::class, 'store'])->name('seminarDanKompetisi.store');
+    Route::get('/seminar-dan-kompetisi/{id}/edit', [App\Http\Controllers\SeminarDanKompetisiController::class, 'edit'])->name('seminarDanKompetisi.edit');
+    Route::put('/seminar-dan-kompetisi/{id}', [App\Http\Controllers\SeminarDanKompetisiController::class, 'update'])->name('seminarDanKompetisi.update');
+    Route::delete('/seminar-dan-kompetisi/{id}', [App\Http\Controllers\SeminarDanKompetisiController::class, 'destroy'])->name('seminarDanKompetisi.destroy');
+    // End Seminar dan Kompetisi //
+
+    // Start Magang atau Praktik Industri //
+    Route::get('/magang-atau-praktik-industri', [App\Http\Controllers\MagangAtauPraktikIndustriController::class, 'index'])->name('mapi.index');
+    Route::get('/magang-atau-praktik-industri/create', [App\Http\Controllers\MagangAtauPraktikIndustriController::class, 'create'])->name('mapi.create');
+    Route::post('/magang-atau-praktik-industri', [App\Http\Controllers\MagangAtauPraktikIndustriController::class, 'store'])->name('mapi.store');
+    Route::get('/magang-atau-praktik-industri/{id}/edit', [App\Http\Controllers\MagangAtauPraktikIndustriController::class, 'edit'])->name('mapi.edit');
+    Route::put('/magang-atau-praktik-industri/{id}', [App\Http\Controllers\MagangAtauPraktikIndustriController::class, 'update'])->name('mapi.update');
+    Route::delete('/magang-atau-praktik-industri/{id}', [App\Http\Controllers\MagangAtauPraktikIndustriController::class, 'destroy'])->name('mapi.destroy');
+    // End Magang atau Praktik Industri //
+
+    // Start Lowongan Kerja //
+    Route::get('/lowongan-kerja', [App\Http\Controllers\LowonganKerjaController::class, 'index'])->name('lowonganKerja.index');
+    Route::get('/lowongan-kerja/create', [App\Http\Controllers\LowonganKerjaController::class, 'create'])->name('lowonganKerja.create');
+    Route::post('/lowongan-kerja', [App\Http\Controllers\LowonganKerjaController::class, 'store'])->name('lowonganKerja.store');
+    Route::get('/lowongan-kerja/{id}/edit', [App\Http\Controllers\LowonganKerjaController::class, 'edit'])->name('lowonganKerja.edit');
+    Route::put('/lowongan-kerja/{id}', [App\Http\Controllers\LowonganKerjaController::class, 'update'])->name('lowonganKerja.update');
+    Route::delete('/lowongan-kerja/{id}', [App\Http\Controllers\LowonganKerjaController::class, 'destroy'])->name('lowonganKerja.destroy');
+    // End Lowongan Kerja //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

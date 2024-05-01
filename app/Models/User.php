@@ -194,4 +194,25 @@ class User extends Authenticatable
         // satu User dapat memiliki banyak data ExchangeDanDoubleDegree
         return $this->hasMany(ExchangeDanDoubleDegree::class, 'created_by', 'id');
     }
+
+    public function seminarDanKompetisis()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data SeminarDanKompetisi
+        return $this->hasMany(SeminarDanKompetisi::class, 'created_by', 'id');
+    }
+
+    public function magangAtauPraktikIndustris()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data MagangAtauPraktikIndustri
+        return $this->hasMany(MagangAtauPraktikIndustri::class, 'created_by', 'id');
+    }
+
+    public function lowonganKerjas()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data LowonganKerja
+        return $this->hasMany(LowonganKerja::class, 'created_by', 'id');
+    }
 }
