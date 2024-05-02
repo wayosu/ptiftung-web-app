@@ -204,14 +204,14 @@
                         href="{{ route('kerjasamaLuarNegeri.index') }}">Luar Negeri</a>
                 </nav>
             </div>
-            <a class="nav-link {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja') ? 'active' : 'collapsed' }}"
+            <a class="nav-link {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja' || $active == 'organisasi-mahasiswa') ? 'active' : 'collapsed' }}"
                 href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#mhsalumni"
                 aria-expanded="false" aria-controls="mhsalumni">
                 <div class="nav-link-icon"><i class="fas fa-users-rays"></i></div>
                 Mahasiswa dan Alumni
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja') ? 'show' : '' }}"
+            <div class="collapse {{ isset($active) && ($active == 'pendaftaran-mahasiswa-baru' || $active == 'prestasi-mahasiswa' || $active == 'beasiswa' || $active == 'exchange-dan-double-degree' || $active == 'seminar-dan-kompetisi' || $active == 'magang-atau-praktik-industri' || $active == 'lowongan-kerja' || $active == 'organisasi-mahasiswa') ? 'show' : '' }}"
                 id="mhsalumni" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                     <a class="nav-link {{ isset($active) && $active == 'pendaftaran-mahasiswa-baru' ? 'active' : '' }}"
@@ -239,8 +239,10 @@
                                 href="{{ route('lowonganKerja.index') }}">Lowongan Kerja</a>
                         </nav>
                     </div>
-                    <a class="nav-link" href="#">Organisasi Mahasiswa</a>
-                    <a class="nav-link" href="#">Alumni</a>
+                    <a class="nav-link {{ isset($active) && $active == 'organisasi-mahasiswa' ? 'active' : '' }}"
+                        href="{{ route('organisasiMahasiswa.index') }}">Organisasi Mahasiswa</a>
+                    <a class="nav-link text-muted disabled" href="#">Alumni <i
+                            class="fas fa-lock fa-xs ms-1"></i></a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"

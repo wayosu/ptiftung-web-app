@@ -215,4 +215,11 @@ class User extends Authenticatable
         // satu User dapat memiliki banyak data LowonganKerja
         return $this->hasMany(LowonganKerja::class, 'created_by', 'id');
     }
+
+    public function organisasiMahasiswas()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data OrganisasiMahasiswa
+        return $this->hasMany(OrganisasiMahasiswa::class, 'created_by', 'id');
+    }
 }
