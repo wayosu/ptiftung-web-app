@@ -14,7 +14,7 @@ class OrganisasiMahasiswaController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $organisasiMahasiswas = OrganisasiMahasiswa::with('createdBy')->orderBy('created_at', 'desc')->get();
+            $organisasiMahasiswas = OrganisasiMahasiswa::orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
             $organisasiMahasiswas = $organisasiMahasiswas->transform(function ($item) {

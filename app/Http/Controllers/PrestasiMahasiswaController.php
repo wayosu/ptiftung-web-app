@@ -13,7 +13,7 @@ class PrestasiMahasiswaController extends Controller
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $prestasiMahasiswas = PrestasiMahasiswa::with('createdBy')->orderBy('created_at', 'desc')->get();
+            $prestasiMahasiswas = PrestasiMahasiswa::orderBy('created_at', 'desc')->get();
 
             // transformasi data ke bentuk array
             $prestasiMahasiswas = $prestasiMahasiswas->transform(function ($item) {

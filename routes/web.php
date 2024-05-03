@@ -324,6 +324,33 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/organisasi-mahasiswa/{id}', [App\Http\Controllers\OrganisasiMahasiswaController::class, 'destroy'])->name('organisasiMahasiswa.destroy');
     // End Organisasi Mahasiswa //
 
+    // Start Dokumen Kebijakan //
+    Route::get('/dokumen-kebijakan', [App\Http\Controllers\DokumenKebijakanController::class, 'index'])->name('dokumenKebijakan.index');
+    Route::get('/dokumen-kebijakan/create', [App\Http\Controllers\DokumenKebijakanController::class, 'create'])->name('dokumenKebijakan.create');
+    Route::post('/dokumen-kebijakan', [App\Http\Controllers\DokumenKebijakanController::class, 'store'])->name('dokumenKebijakan.store');
+    Route::get('/dokumen-kebijakan/{id}/edit', [App\Http\Controllers\DokumenKebijakanController::class, 'edit'])->name('dokumenKebijakan.edit');
+    Route::put('/dokumen-kebijakan/{id}', [App\Http\Controllers\DokumenKebijakanController::class, 'update'])->name('dokumenKebijakan.update');
+    Route::delete('/dokumen-kebijakan/{id}', [App\Http\Controllers\DokumenKebijakanController::class, 'destroy'])->name('dokumenKebijakan.destroy');
+    // End Dokumen Kebijakan //
+
+    // Start Dokumen Lainnya //
+    Route::get('/dokumen-lainnya', [App\Http\Controllers\DokumenLainnyaController::class, 'index'])->name('dokumenLainnya.index');
+    Route::get('/dokumen-lainnya/create', [App\Http\Controllers\DokumenLainnyaController::class, 'create'])->name('dokumenLainnya.create');
+    Route::post('/dokumen-lainnya', [App\Http\Controllers\DokumenLainnyaController::class, 'store'])->name('dokumenLainnya.store');
+    Route::get('/dokumen-lainnya/{id}/edit', [App\Http\Controllers\DokumenLainnyaController::class, 'edit'])->name('dokumenLainnya.edit');
+    Route::put('/dokumen-lainnya/{id}', [App\Http\Controllers\DokumenLainnyaController::class, 'update'])->name('dokumenLainnya.update');
+    Route::delete('/dokumen-lainnya/{id}', [App\Http\Controllers\DokumenLainnyaController::class, 'destroy'])->name('dokumenLainnya.destroy');
+    // End Dokumen Lainnya //
+
+    // Start Data Dukung Akreditasi //
+    Route::get('/data-dukung-akreditasi', [App\Http\Controllers\DataDukungAkreditasiController::class, 'index'])->name('dataDukungAkreditasi.index');
+    Route::get('/data-dukung-akreditasi/create', [App\Http\Controllers\DataDukungAkreditasiController::class, 'create'])->name('dataDukungAkreditasi.create');
+    Route::post('/data-dukung-akreditasi', [App\Http\Controllers\DataDukungAkreditasiController::class, 'store'])->name('dataDukungAkreditasi.store');
+    Route::get('/data-dukung-akreditasi/{id}/edit', [App\Http\Controllers\DataDukungAkreditasiController::class, 'edit'])->name('dataDukungAkreditasi.edit');
+    Route::put('/data-dukung-akreditasi/{id}', [App\Http\Controllers\DataDukungAkreditasiController::class, 'update'])->name('dataDukungAkreditasi.update');
+    Route::delete('/data-dukung-akreditasi/{id}', [App\Http\Controllers\DataDukungAkreditasiController::class, 'destroy'])->name('dataDukungAkreditasi.destroy');
+    // End Data Dukung Akreditasi //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');

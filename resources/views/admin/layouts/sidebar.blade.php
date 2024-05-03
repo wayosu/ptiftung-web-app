@@ -245,17 +245,22 @@
                             class="fas fa-lock fa-xs ms-1"></i></a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#repositori" aria-expanded="false" aria-controls="repositori">
+            <a class="nav-link {{ isset($active) && ($active == 'dokumen-kebijakan' || $active == 'dokumen-lainnya' || $active == 'data-dukung-akreditasi') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#repositori"
+                aria-expanded="false" aria-controls="repositori">
                 <div class="nav-link-icon"><i data-feather="archive"></i></div>
                 Repositori
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="repositori" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'dokumen-kebijakan' || $active == 'dokumen-lainnya' || $active == 'data-dukung-akreditasi') ? 'show' : '' }}"
+                id="repositori" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                    <a class="nav-link" href="#">Dokumen Kebijakan</a>
-                    <a class="nav-link" href="#">Dokumen Lainnya</a>
-                    <a class="nav-link" href="#">Data Dukung Akreditasi 2023</a>
+                    <a class="nav-link {{ isset($active) && $active == 'dokumen-kebijakan' ? 'active' : '' }}"
+                        href="{{ route('dokumenKebijakan.index') }}">Dokumen Kebijakan</a>
+                    <a class="nav-link {{ isset($active) && $active == 'dokumen-lainnya' ? 'active' : '' }}"
+                        href="{{ route('dokumenLainnya.index') }}">Dokumen Lainnya</a>
+                    <a class="nav-link {{ isset($active) && $active == 'data-dukung-akreditasi' ? 'active' : '' }}"
+                        href="{{ route('dataDukungAkreditasi.index') }}">Data Dukung Akreditasi 2023</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"

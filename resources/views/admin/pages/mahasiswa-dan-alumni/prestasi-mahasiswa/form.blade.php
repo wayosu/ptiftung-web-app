@@ -178,7 +178,6 @@
 
 @push('js')
     <script src="{{ asset('assets/admin/libs/jquery/jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/libs/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/yearpicker/yearpicker.js') }}"></script>
 
     <script>
