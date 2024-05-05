@@ -263,18 +263,24 @@
                         href="{{ route('dataDukungAkreditasi.index') }}">Data Dukung Akreditasi 2023</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                data-bs-target="#konten" aria-expanded="false" aria-controls="konten">
+            <a class="nav-link {{ isset($active) && ($active == 'banner' || $active == 'berita' || $active == 'agenda' || $active == 'jurnal') ? 'active' : 'collapsed' }}"
+                href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#konten" aria-expanded="false"
+                aria-controls="konten">
                 <div class="nav-link-icon"><i data-feather="layout"></i></div>
                 Konten
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="konten" data-bs-parent="#accordionSidenav">
+            <div class="collapse {{ isset($active) && ($active == 'banner' || $active == 'berita' || $active == 'agenda' || $active == 'jurnal') ? 'show' : '' }}"
+                id="konten" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                    <a class="nav-link" href="#">Banner</a>
-                    <a class="nav-link" href="#">Berita</a>
-                    <a class="nav-link" href="#">Agenda</a>
-                    <a class="nav-link" href="#">Jurnal</a>
+                    <a class="nav-link {{ isset($active) && $active == 'banner' ? 'active' : '' }}"
+                        href="{{ route('banner.index') }}">Banner</a>
+                    <a class="nav-link {{ isset($active) && $active == 'berita' ? 'active' : '' }}"
+                        href="#">Berita</a>
+                    <a class="nav-link {{ isset($active) && $active == 'agenda' ? 'active' : '' }}"
+                        href="#">Agenda</a>
+                    <a class="nav-link {{ isset($active) && $active == 'jurnal' ? 'active' : '' }}"
+                        href="#">Jurnal</a>
                 </nav>
             </div>
 

@@ -95,50 +95,59 @@
             <div class="col-xl-8">
                 <div class="card">
                     <div class="card-body overflow-hidden">
-                        <div class="d-flex flex-column gap-3 w-100">
-                            @foreach ($dokumenKurikulums as $dokumenKurikulum)
-                                <div
-                                    class="d-flex flex-column flex-lg-row gap-4 align-items-start align-items-lg-center justify-content-between w-100 border border-2 border-muted rounded-2 p-3">
-                                    <div class="w-auto">
-                                        <div class="d-flex gap-3 align-items-center">
-                                            <span class="text-xs text-muted">
-                                                <i class="fa-solid fa-calendar fa-xs"></i>
-                                                {{ \Carbon\Carbon::parse($dokumenKurikulum->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}</span>
-                                            <span class="text-xs text-muted">
-                                                <i class="fa-solid fa-user fa-xs"></i>
-                                                {{ $dokumenKurikulum->createdBy->name }}
-                                            </span>
+                        @if (count($dokumenKurikulums) > 0)
+                            <div class="d-flex flex-column gap-3 w-100">
+                                @foreach ($dokumenKurikulums as $dokumenKurikulum)
+                                    <div
+                                        class="d-flex flex-column flex-lg-row gap-4 align-items-start align-items-lg-center justify-content-between w-100 border border-2 border-muted rounded-2 p-3">
+                                        <div class="w-auto">
+                                            <div class="d-flex gap-3 align-items-center">
+                                                <span class="text-xs text-muted">
+                                                    <i class="fa-solid fa-calendar fa-xs"></i>
+                                                    {{ \Carbon\Carbon::parse($dokumenKurikulum->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}</span>
+                                                <span class="text-xs text-muted">
+                                                    <i class="fa-solid fa-user fa-xs"></i>
+                                                    {{ $dokumenKurikulum->createdBy->name }}
+                                                </span>
+                                            </div>
+                                            <h6 class="fw-bolder mt-2 mb-1">Keterangan</h6>
+                                            <p class="text-justify mb-0">
+                                                {{ $dokumenKurikulum->keterangan }}
+                                            </p>
                                         </div>
-                                        <h6 class="fw-bolder mt-2 mb-1">Keterangan</h6>
-                                        <p class="text-justify mb-0">
-                                            {{ $dokumenKurikulum->keterangan }}
-                                        </p>
-                                    </div>
-                                    <div class="w-auto">
-                                        <div class="d-flex gap-2 align-items-center">
-                                            <input type="checkbox" {{ $dokumenKurikulum->active ? 'checked' : '' }}
-                                                data-toggle="toggle" data-onlabel="Aktif" data-offlabel="Tidak Aktif"
-                                                data-onstyle="success" data-offstyle="danger" data-size="xs"
-                                                data-id="{{ $dokumenKurikulum->id }}" class="toggle-status">
-                                            <a href="{{ $dokumenKurikulum->link_gdrive }}"
-                                                class="btn btn-datatable btn-icon btn-transparent-dark text-primary"
-                                                target="_blank">
-                                                <i class="fa-solid fa-file-lines fa-xl"></i>
-                                            </a>
-                                            <a href="javascript:void(0)" title="Hapus"
-                                                class="btn btn-datatable btn-icon btn-transparent-dark text-danger tombol-hapus"
-                                                data-id="{{ $dokumenKurikulum->id }}">
-                                                <i class="fa-solid fa-trash fa-xl"></i>
-                                            </a>
+                                        <div class="w-auto">
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <input type="checkbox" {{ $dokumenKurikulum->active ? 'checked' : '' }}
+                                                    data-toggle="toggle" data-onlabel="Aktif" data-offlabel="Tidak Aktif"
+                                                    data-onstyle="success" data-offstyle="danger" data-size="xs"
+                                                    data-id="{{ $dokumenKurikulum->id }}" class="toggle-status">
+                                                <a href="{{ $dokumenKurikulum->link_gdrive }}"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark text-primary"
+                                                    target="_blank">
+                                                    <i class="fa-solid fa-file-lines fa-xl"></i>
+                                                </a>
+                                                <a href="javascript:void(0)" title="Hapus"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark text-danger tombol-hapus"
+                                                    data-id="{{ $dokumenKurikulum->id }}">
+                                                    <i class="fa-solid fa-trash fa-xl"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
-                            <form id="deleteForm" class="d-none" method="POST">
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                        </div>
+                                @endforeach
+                                <form id="deleteForm" class="d-none" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </div>
+                        @else
+                            <div class="p-3 border border-2 border-muted rounded-2">
+                                <h6 class="text-center text-muted mb-0">
+                                    <i class="fa-solid fa-triangle-exclamation fa-sm"></i>
+                                    Tidak ada data yang ditemukan. Silahkan tambahkan data dokumen.
+                                </h6>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

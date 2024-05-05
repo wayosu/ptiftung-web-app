@@ -351,6 +351,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/data-dukung-akreditasi/{id}', [App\Http\Controllers\DataDukungAkreditasiController::class, 'destroy'])->name('dataDukungAkreditasi.destroy');
     // End Data Dukung Akreditasi //
 
+    // Start Banner //
+    Route::get('/banner', [App\Http\Controllers\BannerController::class, 'index'])->name('banner.index');
+    Route::post('/banner', [App\Http\Controllers\BannerController::class, 'store'])->name('banner.store');
+    Route::delete('/banner/{id}', [App\Http\Controllers\BannerController::class, 'destroy'])->name('banner.destroy');
+    // End Banners //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');
