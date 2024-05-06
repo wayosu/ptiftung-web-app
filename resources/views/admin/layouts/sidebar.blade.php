@@ -276,7 +276,7 @@
                     <a class="nav-link {{ isset($active) && $active == 'banner' ? 'active' : '' }}"
                         href="{{ route('banner.index') }}">Banner</a>
                     <a class="nav-link {{ isset($active) && $active == 'berita' ? 'active' : '' }}"
-                        href="#">Berita</a>
+                        href="{{ route('berita.index') }}">Berita</a>
                     <a class="nav-link {{ isset($active) && $active == 'agenda' ? 'active' : '' }}"
                         href="#">Agenda</a>
                     <a class="nav-link {{ isset($active) && $active == 'jurnal' ? 'active' : '' }}"

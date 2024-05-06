@@ -357,6 +357,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/banner/{id}', [App\Http\Controllers\BannerController::class, 'destroy'])->name('banner.destroy');
     // End Banners //
 
+    // Start Berita //
+    Route::get('/berita', [App\Http\Controllers\BeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/create', [App\Http\Controllers\BeritaController::class, 'create'])->name('berita.create');
+    Route::post('/berita', [App\Http\Controllers\BeritaController::class, 'store'])->name('berita.store');
+    Route::get('/berita/{id}/edit', [App\Http\Controllers\BeritaController::class, 'edit'])->name('berita.edit');
+    Route::put('/berita/{id}', [App\Http\Controllers\BeritaController::class, 'update'])->name('berita.update');
+    Route::delete('/berita/{id}', [App\Http\Controllers\BeritaController::class, 'destroy'])->name('berita.destroy');
+    // End Berita //
+
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
     Route::put('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'updateInformasiAkun'])->name('informasiAkun.update');
