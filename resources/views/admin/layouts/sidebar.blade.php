@@ -70,14 +70,14 @@
             </div>
 
             <div class="sidenav-menu-heading">Informasi</div>
-            <a class="nav-link {{ isset($active) && ($active == 'sejarah' || $active == 'visi-keilmuan-tujuan-strategi' || $active == 'struktur-organisasi' || $active == 'kontak-lokasi') ? 'active' : 'collapsed' }}"
+            <a class="nav-link {{ isset($active) && ($active == 'sejarah' || $active == 'visi-keilmuan-tujuan-strategi' || $active == 'struktur-organisasi' || $active == 'kontak-lokasi' || $active == 'video-profil') ? 'active' : 'collapsed' }}"
                 href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
                 aria-expanded="false" aria-controls="collapseLayouts">
                 <div class="nav-link-icon"><i class="fa-solid fa-landmark"></i></div>
                 Profil Program Studi
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse {{ isset($active) && ($active == 'sejarah' || $active == 'visi-keilmuan-tujuan-strategi' || $active == 'struktur-organisasi' || $active == 'kontak-lokasi') ? 'show' : '' }}"
+            <div class="collapse {{ isset($active) && ($active == 'sejarah' || $active == 'visi-keilmuan-tujuan-strategi' || $active == 'struktur-organisasi' || $active == 'kontak-lokasi' || $active == 'video-profil') ? 'show' : '' }}"
                 id="collapseLayouts" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                     <a class="nav-link {{ isset($active) && $active == 'sejarah' ? 'active' : '' }}"
@@ -89,6 +89,8 @@
                         href="{{ route('strukturOrganisasi.index') }}">Struktur Organisasi</a>
                     <a class="nav-link {{ isset($active) && $active == 'kontak-lokasi' ? 'active' : '' }}"
                         href="{{ route('kontakLokasi.index') }}">Kontak dan Lokasi</a>
+                    <a class="nav-link {{ isset($active) && $active == 'video-profil' ? 'active' : '' }}"
+                        href="{{ route('videoProfil.index') }}">Video Profil</a>
                 </nav>
             </div>
             <a class="nav-link {{ isset($active) && ($active == 'sarana' || $active == 'kategori-sarana' || $active == 'prasarana' || $active == 'kategori-prasarana' || $active == 'sistem-informasi') ? 'active' : 'collapsed' }}"
@@ -278,9 +280,9 @@
                     <a class="nav-link {{ isset($active) && $active == 'berita' ? 'active' : '' }}"
                         href="{{ route('berita.index') }}">Berita</a>
                     <a class="nav-link {{ isset($active) && $active == 'agenda' ? 'active' : '' }}"
-                        href="#">Agenda</a>
+                        href="{{ route('agenda.index') }}">Agenda</a>
                     <a class="nav-link {{ isset($active) && $active == 'jurnal' ? 'active' : '' }}"
-                        href="#">Jurnal</a>
+                        href="{{ route('jurnal.index') }}">Jurnal</a>
                 </nav>
             </div>
 

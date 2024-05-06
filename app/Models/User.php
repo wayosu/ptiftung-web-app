@@ -257,4 +257,18 @@ class User extends Authenticatable
         // satu User dapat memiliki banyak data Berita
         return $this->hasMany(Berita::class, 'created_by', 'id');
     }
+
+    public function agendas()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data Agenda
+        return $this->hasMany(Agenda::class, 'created_by', 'id');
+    }
+
+    public function jurnals()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data Journal
+        return $this->hasMany(Jurnal::class, 'created_by', 'id');
+    }
 }

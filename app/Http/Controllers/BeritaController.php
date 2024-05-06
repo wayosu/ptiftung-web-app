@@ -113,7 +113,7 @@ class BeritaController extends Controller
                 'icon' => 'edit',
                 'title' => 'Berita',
                 'subtitle' => 'Edit Berita',
-                'active' => 'berita4',
+                'active' => 'berita',
                 'berita' => $berita,
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
@@ -129,7 +129,7 @@ class BeritaController extends Controller
         $request->validate([
             'judul' => 'required',
             'deskripsi' => 'required',
-            'gambar' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'thumbnail' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'judul.required' => 'Judul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
@@ -179,6 +179,7 @@ class BeritaController extends Controller
             $berita->slug = Str::slug($request->judul);
             $berita->deskripsi = $request->deskripsi;
             $berita->status = $status;
+            $berita->updated_by = auth()->user()->id;
             $berita->save();
 
             return redirect()->route('berita.index')->with('success', 'Data berhasil diperbarui.');

@@ -252,4 +252,53 @@ class ProfilProgramStudiController extends Controller
             return redirect()->route('kontakLokasi.index')->with('error', 'Data gagal diperbarui!');
         }
     }
+
+    public function videoProfil()
+    {
+        // ambil data (hanya nama_program_studi dan link embed video profil)
+        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
+            'nama_program_studi', 
+            'link_embed_video_profil', 
+            'updated_by', 
+            'updated_at'
+        ]);
+
+        // tampilkan halaman
+        return view('admin.pages.profil.video-profil', [
+            'icon' => 'fa-solid fa-landmark',
+            'title' => 'Video Profil',
+            'subtitle' => 'Video Profil Program Studi ' . $profil->nama_program_studi,
+            'active' => 'video-profil',
+            'videoProfil' => $profil->link_embed_video_profil,
+            'updatedBy' => $profil->updatedBy->name ?? null,
+            'updatedAt' => $profil->updated_at
+        ]);
+    }
+
+    public function updateVideoProfil(Request $request)
+    {
+        // validasi request data yang dikirim
+        $request->validate([
+            'link_embed_video_profil' => 'required',
+        ], [
+            'link_embed_video_profil.required' => 'Link Embed Video Profil harus diisi',
+        ]);
+
+        try { // jika id ditemukan lakukan update
+            // ambil data
+            $videoProfil = ProfilProgramStudi::findOrFail(1);
+
+            // update data
+            $videoProfil->update([
+                'link_embed_video_profil' => $request->link_embed_video_profil,
+                'updated_by' => auth()->user()->id
+            ]);
+
+            return redirect()->route('videoProfil.index')->with('success', 'Data berhasil diperbarui.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
+            return redirect()->route('videoProfil.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+        } catch (\Exception $e) { // jika gagal menghapus data
+            return redirect()->route('videoProfil.index')->with('error', 'Data gagal diperbarui!');
+        }
+    }
 }

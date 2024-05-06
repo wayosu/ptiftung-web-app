@@ -259,7 +259,7 @@
             $('#summernote').summernote({
                 lang: 'id-ID',
                 placeholder: '...',
-                height: 600,
+                height: 400,
                 focus: true,
                 toolbar: [
                     ['style', ['bold', 'italic', 'underline', 'clear']],

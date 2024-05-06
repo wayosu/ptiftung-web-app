@@ -3,6 +3,9 @@
 @push('css')
     <link href="{{ asset('assets/admin/libs/summernote/summernote-lite.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+        integrity="sha512-ZKX+BvQihRJPA8CROKBhDNvoc2aDMOdAlcm7TUQY+35XYtrd3yh95QOOhsPDQY9QnKE0Wqag9y38OIgEvb88cA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         .note-editor .note-editing-area,
@@ -35,7 +38,7 @@
             margin-right: 5px;
         }
 
-        .btn-hapus-gambar {
+        .btn-hapus-thumbnail {
             display: flex;
             align-items: center;
             background: none !important;
@@ -77,7 +80,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('edd.index') }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('agenda.index') }}">
                             <i class="fa-solid fa-arrow-left me-1"></i>
                             Kembali
                         </a>
@@ -89,42 +92,30 @@
 
     <div class="container-xl px-4 mt-4">
         <form
-            action="@if (isset($edd)) {{ route('edd.update', $edd->id) }} @else {{ route('edd.store') }} @endif"
+            action="@if (isset($agenda)) {{ route('agenda.update', $agenda->id) }} @else {{ route('agenda.store') }} @endif"
             method="POST" class="row" enctype="multipart/form-data">
             @csrf
-            @if (isset($edd))
+            @if (isset($agenda))
                 @method('PUT')
             @endif
 
-            @if (isset($edd))
-                <div class="col-xl-4">
-                    <div class="card mb-4">
-                        <div class="card-header">Gambar</div>
-                        <div class="card-body p-0 overflow-hidden text-center">
-                            <img src="{{ asset('storage/mahasiswa-dan-alumni/peluang-mahasiswa/exchange-dan-double-degree/' . $edd->gambar) }}"
-                                alt="profil-lulusan-image" class="img-fluid">
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            <div class="{{ isset($edd) ? 'col-xl-8' : 'col-xl-6' }}">
+            <div class="col-xl-8">
                 <div class="card mb-4">
                     <div class="card-header">Form {{ $title ?? '' }}</div>
-                    @if (isset($edd) && $edd->createdBy)
+                    @if (isset($agenda) && $agenda->createdBy)
                         <div class="card-header bg-white">
                             <div
                                 class="d-flex flex-column flex-md-row-reverse align-items-start align-items-md-center justify-content-between">
                                 <div class="text-xs text-muted">
                                     <i class="fa-solid fa-user fa-xs me-1"></i>
                                     <span>
-                                        {{ $edd->createdBy->name }}
+                                        {{ $agenda->createdBy->name }}
                                     </span>
                                 </div>
                                 <div class="text-xs text-muted">
                                     <i class="fa-solid fa-calendar fa-xs me-1"></i>
                                     <span>
-                                        {{ \Carbon\Carbon::parse($edd->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}
+                                        {{ \Carbon\Carbon::parse($agenda->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}
                                     </span>
                                 </div>
                             </div>
@@ -138,7 +129,7 @@
                             </label>
                             <input class="form-control @error('judul') is-invalid @enderror" name="judul" id="judulField"
                                 type="text" placeholder="Masukkan judul"
-                                value="{{ old('judul', $edd->judul ?? '') }}" />
+                                value="{{ old('judul', $agenda->judul ?? '') }}" />
                             @error('judul')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -148,31 +139,78 @@
                                 Deskripsi
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea id="summernote" name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror">{{ old('deskripsi', $edd->deskripsi ?? '') }}</textarea>
+                            <textarea id="summernote" name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror">{{ old('deskripsi', $agenda->deskripsi ?? '') }}</textarea>
                             @error('deskripsi')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="small mb-1">
-                                Gambar
-                                @if (!isset($edd))
-                                    <span class="text-danger">*</span>
+                            <label class="small mb-1" for="penyelenggaraField">
+                                Penyelenggara
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input class="form-control @error('penyelenggara') is-invalid @enderror" name="penyelenggara"
+                                id="penyelenggaraField" type="text" placeholder="Masukkan penyelenggara"
+                                value="{{ old('penyelenggara', $agenda->penyelenggara ?? '') }}" />
+                            @error('penyelenggara')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-4">
+                                <label class="small mb-1" for="tglKegiatanField">Tanggal Kegiatan</label>
+                                <input type="date" id="tglKegiatanField" name="tanggal_kegiatan"
+                                    class="form-control @error('tanggal_kegiatan') is-invalid @enderror"
+                                    value="{{ old('tanggal_kegiatan', $agenda->tanggal_kegiatan ?? '') }}">
+                                @error('tanggal_kegiatan')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="small mb-1" for="dariJamField">Dari Jam</label>
+                                <input type="time" id="dariJamField" name="dari_jam"
+                                    class="form-control @error('dari_jam') is-invalid @enderror"
+                                    value="{{ old('dari_jam', date('H:i', strtotime($agenda->dari_jam ?? '00:00'))) }}">
+                                @error('dari_jam')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="small mb-1" for="sampaiJamField">Sampai Jam</label>
+                                <input type="time" id="sampaiJamField" name="sampai_jam"
+                                    class="form-control @error('sampai_jam') is-invalid @enderror"
+                                    value="{{ old('sampai_jam', date('H:i', strtotime($agenda->sampai_jam ?? '00:00'))) }}">
+                                @error('sampai_jam')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="d-flex justify-content-between align-items-center small mb-1">
+                                <div>
+                                    Thumbnail
+                                </div>
+                                @if (isset($agenda) && $agenda->thumbnail)
+                                    <a href="/storage/konten/agenda/{{ $agenda->thumbnail }}" data-lightbox="image"
+                                        data-title="{{ $agenda->thumbnail }}">
+                                        Lihat Thumbnail
+                                    </a>
                                 @endif
                             </label>
-                            <label id="gambarLabel" class="custom-btn-upload" for="gambarField">
+                            <label id="thumbnailLabel" class="custom-btn-upload" for="thumbnailField">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="fa-solid fa-upload"></i>
-                                    <span id="gambatText">Unggah Gambar</span>
+                                    <span id="thumbnailText">Unggah Thumbnail</span>
                                 </div>
-                                <button type="button" role="button" id="btnHapusGambar" class="btn-hapus-gambar d-none">
+                                <button type="button" role="button" id="btnHapusThumbnail"
+                                    class="btn-hapus-thumbnail d-none">
                                     <i class="fa-solid fa-xmark fa-lg"></i>
                                 </button>
                             </label>
-                            <input class="d-none" name="gambar" id="gambarField" type="file"
+                            <input class="d-none" name="thumbnail" id="thumbnailField" type="file"
                                 accept="image/jpg, image/jpeg, image/png" />
                             <span class="text-xs text-muted">Format JPG, JPEG, PNG max. 2MB</span>
-                            @error('gambar')
+                            @error('thumbnail')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
@@ -182,14 +220,14 @@
                         </button>
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-floppy-disk me-1"></i>
-                            @if (isset($edd))
+                            @if (isset($agenda))
                                 Perbarui
                             @else
                                 Simpan
                             @endif
                         </button>
                     </div>
-                    @if (isset($edd) && $edd->updatedBy)
+                    @if (isset($agenda) && $agenda->updatedBy)
                         <div class="card-footer p-2 bg-white">
                             <div
                                 class="d-flex gap-3 py-2 align-items-center text-start bg-white text-muted text-xs overflow-hidden">
@@ -199,15 +237,15 @@
                                 <div>
                                     Terakhir diperbarui oleh
                                     <span class="fw-bolder">
-                                        {{ $edd->updatedBy->name }}
+                                        {{ $agenda->updatedBy->name }}
                                     </span>
                                     pada
                                     <span class="fw-bolder">
-                                        {{ \Carbon\Carbon::parse($edd->updated_at)->isoFormat('dddd, D MMMM Y') }}
+                                        {{ \Carbon\Carbon::parse($agenda->updated_at)->isoFormat('dddd, D MMMM Y') }}
                                     </span>
                                     pukul
                                     <span class="fw-bolder">
-                                        {{ \Carbon\Carbon::parse($edd->updated_at)->isoFormat('H:mm') }}
+                                        {{ \Carbon\Carbon::parse($agenda->updated_at)->isoFormat('H:mm') }}
                                     </span>
                                 </div>
                             </div>
@@ -224,6 +262,9 @@
     <script src="{{ asset('assets/admin/libs/summernote/summernote-lite.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/summernote/lang/summernote-id-ID.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"
+        integrity="sha512-k2GFCTbp9rQU412BStrcD/rlwv1PYec9SNrkbQlo6RZCf75l6KcC3UwDY8H5n5hl4v77IDtIPwOk9Dqjs/mMBQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
         $(document).ready(function() {
@@ -280,8 +321,8 @@
             });
 
             // event upload gambar
-            $('#gambarField').change(function() {
-                const label = $('#gambarLabel');
+            $('#thumbnailField').change(function() {
+                const label = $('#thumbnailLabel');
                 const file = this.files[0];
                 const fileName = file.name;
                 const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
@@ -295,8 +336,8 @@
                     });
 
                     $(this).val(''); // reset nilai file input
-                    label.find('span').text('Unggah Gambar'); // kembalikan teks label
-                    $('#btnHapusGambar').addClass('d-none'); // sembunyikan tombol hapus
+                    label.find('span').text('Unggah Thumbnail'); // kembalikan teks label
+                    $('#btnHapusThumbnail').addClass('d-none'); // sembunyikan tombol hapus
 
                     return false;
                 }
@@ -310,22 +351,22 @@
                     });
 
                     $(this).val(''); // reset nilai file input
-                    label.find('span').text('Unggah Gambar'); // kembalikan teks label
-                    $('#btnHapusGambar').addClass('d-none'); // sembunyikan tombol hapus
+                    label.find('span').text('Unggah Thumbnail'); // kembalikan teks label
+                    $('#btnHapusThumbnail').addClass('d-none'); // sembunyikan tombol hapus
 
                     return false;
                 }
 
                 label.find('span').text(fileName); // mengubah teks span di dalam label
-                $('#btnHapusGambar').removeClass('d-none'); // tampilkan tombol hapus
+                $('#btnHapusThumbnail').removeClass('d-none'); // tampilkan tombol hapus
             });
 
             // event hapus gambar
-            $('#btnHapusGambar').click(function() {
-                const label = $('#gambarLabel');
-                label.find('span').text('Unggah Gambar'); // mengatur kembali teks span di dalam label
-                $('#btnHapusGambar').addClass('d-none'); // sembunyikan tombol hapus
-                $('#gambarField').val(''); // kosongkan nilai file input
+            $('#btnHapusThumbnail').click(function() {
+                const label = $('#thumbnailLabel');
+                label.find('span').text('Unggah Thumbnail'); // mengatur kembali teks span di dalam label
+                $('#btnHapusThumbnail').addClass('d-none'); // sembunyikan tombol hapus
+                $('#thumbnailField').val(''); // kosongkan nilai file input
             });
         });
     </script>

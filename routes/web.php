@@ -95,6 +95,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::put('/kontak-lokasi', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateKontakLokasi'])->name('kontakLokasi.update');
     // End Kontak dan Lokasi //
 
+    // Start Video Profil //
+    Route::get('/video-profil', [App\Http\Controllers\ProfilProgramStudiController::class, 'videoProfil'])->name('videoProfil.index');
+    Route::put('/video-profil', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateVideoProfil'])->name('videoProfil.update');
+    // End Video Profil //
+
     // Start Kategori Sarana //
     Route::get('/kategori-sarana', [App\Http\Controllers\SaranaKategoriController::class, 'index'])->name('kategoriSarana.index');
     Route::get('/kategori-sarana/create', [App\Http\Controllers\SaranaKategoriController::class, 'create'])->name('kategoriSarana.create');
@@ -355,7 +360,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::get('/banner', [App\Http\Controllers\BannerController::class, 'index'])->name('banner.index');
     Route::post('/banner', [App\Http\Controllers\BannerController::class, 'store'])->name('banner.store');
     Route::delete('/banner/{id}', [App\Http\Controllers\BannerController::class, 'destroy'])->name('banner.destroy');
-    // End Banners //
+    // End Banner //
 
     // Start Berita //
     Route::get('/berita', [App\Http\Controllers\BeritaController::class, 'index'])->name('berita.index');
@@ -365,6 +370,21 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::put('/berita/{id}', [App\Http\Controllers\BeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [App\Http\Controllers\BeritaController::class, 'destroy'])->name('berita.destroy');
     // End Berita //
+
+    // Start Agenda //
+    Route::get('/agenda', [App\Http\Controllers\AgendaCOntroller::class, 'index'])->name('agenda.index');
+    Route::get('/agenda/create', [App\Http\Controllers\AgendaCOntroller::class, 'create'])->name('agenda.create');
+    Route::post('/agenda', [App\Http\Controllers\AgendaCOntroller::class, 'store'])->name('agenda.store');
+    Route::get('/agenda/{id}/edit', [App\Http\Controllers\AgendaCOntroller::class, 'edit'])->name('agenda.edit');
+    Route::put('/agenda/{id}', [App\Http\Controllers\AgendaCOntroller::class, 'update'])->name('agenda.update');
+    Route::delete('/agenda/{id}', [App\Http\Controllers\AgendaCOntroller::class, 'destroy'])->name('agenda.destroy');
+    // End Agenda //
+
+    // Start Jurnal //
+    Route::get('/jurnal', [App\Http\Controllers\JurnalController::class, 'index'])->name('jurnal.index');
+    Route::post('/jurnal', [App\Http\Controllers\JurnalController::class, 'store'])->name('jurnal.store');
+    Route::delete('/jurnal/{id}', [App\Http\Controllers\JurnalController::class, 'destroy'])->name('jurnal.destroy');
+    // End Jurnal //
 
     // Start Pengaturan Akun //
     Route::get('/pengaturan-akun', [App\Http\Controllers\PengaturanController::class, 'pengaturanAkun'])->name('pengaturanAkun');
