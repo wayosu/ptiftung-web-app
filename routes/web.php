@@ -75,6 +75,20 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dasbor'], function () {
     Route::delete('/bidang-kepakaran/{id}', [App\Http\Controllers\BidangKepakaranController::class, 'destroy'])->name('bidangKepakaran.destroy');
     // End Bidang Kepakaran //
 
+    // Start Kegiatan Mahasiswa //
+    Route::get('/kegiatan-mahasiswa', [App\Http\Controllers\KegiatanMahasiswaController::class, 'index'])->name('kegiatanMahasiswa.index');
+    Route::get('/kegiatan-mahasiswa/create', [App\Http\Controllers\KegiatanMahasiswaController::class, 'create'])->name('kegiatanMahasiswa.create');
+    Route::post('/kegiatan-mahasiswa', [App\Http\Controllers\KegiatanMahasiswaController::class, 'store'])->name('kegiatanMahasiswa.store');
+    Route::get('/kegiatan-mahasiswa/{id}/edit', [App\Http\Controllers\KegiatanMahasiswaController::class, 'edit'])->name('kegiatanMahasiswa.edit');
+    Route::put('/kegiatan-mahasiswa/{id}', [App\Http\Controllers\KegiatanMahasiswaController::class, 'update'])->name('kegiatanMahasiswa.update');
+    Route::delete('/kegiatan-mahasiswa/{id}', [App\Http\Controllers\KegiatanMahasiswaController::class, 'destroy'])->name('kegiatanMahasiswa.destroy');
+    // End Kegiatan Mahasiswa //
+
+    // Start Laporan Akhir Kegiatan Mahasiswa //
+    // MAIN TASK: Start from 07.05.2024 to 10.05.2024 //
+    // Komentar Baru Cek
+    // End Laporan Akhir Kegiatan Mahasiswa //
+
     // Start Sejarah //
     Route::get('/sejarah', [App\Http\Controllers\ProfilProgramStudiController::class, 'sejarah'])->name('sejarah.index');
     Route::put('/sejarah', [App\Http\Controllers\ProfilProgramStudiController::class, 'updateSejarah'])->name('sejarah.update');
