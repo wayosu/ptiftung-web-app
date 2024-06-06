@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('agendas', function (Blueprint $table) {
             $table->id();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('judul');
             $table->string('slug');
             $table->text('deskripsi');

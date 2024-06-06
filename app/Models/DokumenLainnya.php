@@ -12,6 +12,7 @@ class DokumenLainnya extends Model
     protected $table = 'dokumen_lainnyas';
 
     protected $fillable = [
+        'program_studi',
         'keterangan',
         'dokumen',
         'link_dokumen',

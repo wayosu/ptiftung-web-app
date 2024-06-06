@@ -4,16 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Models\PrestasiMahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class PrestasiMahasiswaController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+
+    private function checkDosen()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Dosen');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $prestasiMahasiswas = PrestasiMahasiswa::orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $prestasiMahasiswas = PrestasiMahasiswa::orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                $prestasiMahasiswas = PrestasiMahasiswa::where('program_studi', Auth::user()->dosen->program_studi)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $prestasiMahasiswas = $prestasiMahasiswas->transform(function ($item) {
@@ -71,27 +94,45 @@ class PrestasiMahasiswaController extends Controller
             'UNG' => 'UNG',
         ];
 
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'nama_mahasiswa' => 'required',
             'predikat' => 'required',
             'tingkat' => 'required|in:' . implode(',', array_keys($tingkats)),
             'tahun' => 'required',
             'kegiatan' => 'required',
-        ], [
+        ];
+    
+        $validationMessages = [
             'nama_mahasiswa.required' => 'Nama Mahasiswa harus diisi.',
             'predikat.required' => 'Predikat harus diisi.',
             'tingkat.required' => 'Tingkat harus dipilih.',
             'tingkat.in' => 'Tingkat yang dipilih tidak valid.',
             'tahun.required' => 'Tahun harus diisi.',
             'kegiatan.required' => 'Kegiatan harus diisi.',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('prestasiMahasiswa.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses menambahkan data
-
             // simpan data
             PrestasiMahasiswa::create([
                 'nama_mahasiswa' => $request->nama_mahasiswa,
+                'program_studi' => $program_studi,
                 'predikat' => $request->predikat,
                 'tingkat' => $request->tingkat,
                 'tahun' => $request->tahun,
@@ -101,7 +142,7 @@ class PrestasiMahasiswaController extends Controller
 
             return redirect()->route('prestasiMahasiswa.index')->with('success', 'Data berhasil ditambahkan.');
         } catch (\Exception $e) { // jika gagal menambahkan data
-            return redirect()->route('prestasiMahasiswa.index')->with('error', 'Data gagal ditambahkan!');
+            return redirect()->route('prestasiMahasiswa.index')->with('error', 'Data gagal ditambahkan.');
         }
     }
 
@@ -109,7 +150,13 @@ class PrestasiMahasiswaController extends Controller
     {
         try { // jika id ditemukan
             // ambil data dari model PrestasiMahasiswa berdasarkan id
-            $prestasiMahasiswa = PrestasiMahasiswa::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $prestasiMahasiswa = PrestasiMahasiswa::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $prestasiMahasiswa = PrestasiMahasiswa::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            } else {
+                return redirect()->route('prestasiMahasiswa.index')->with('error', 'Halaman bermasalah!. Anda tidak mempunyai hak akses.');
+            }
 
             // data tingkat dalam array
             $tingkats = [
@@ -149,23 +196,45 @@ class PrestasiMahasiswaController extends Controller
             'UNG' => 'UNG',
         ];
 
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'nama_mahasiswa' => 'required',
             'predikat' => 'required',
             'tingkat' => 'required|in:' . implode(',', array_keys($tingkats)),
             'kegiatan' => 'required',
-        ], [
+        ];
+    
+        $validationMessages = [
             'nama_mahasiswa.required' => 'Nama Mahasiswa harus diisi.',
             'predikat.required' => 'Predikat harus diisi.',
             'tingkat.required' => 'Tingkat harus dipilih.',
             'tingkat.in' => 'Tingkat yang dipilih tidak valid.',
             'kegiatan.required' => 'Kegiatan harus diisi.',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('prestasiMahasiswa.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika id ditemukan
             // ambil data dari model PrestasiMahasiswa berdasarkan id
-            $prestasiMahasiswa = PrestasiMahasiswa::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $prestasiMahasiswa = PrestasiMahasiswa::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $prestasiMahasiswa = PrestasiMahasiswa::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             $tahun = $request->tahun;
             $tahun_lama = $request->tahun_lama;
@@ -202,7 +271,11 @@ class PrestasiMahasiswaController extends Controller
     {
         try { // jika id ditemukan lakukan proses delete
             // ambil data dari model PrestasiMahasiswa berdasarkan id
-            $prestasiMahasiswa = PrestasiMahasiswa::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $prestasiMahasiswa = PrestasiMahasiswa::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $prestasiMahasiswa = PrestasiMahasiswa::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus data dari table prestasi_mahasiswas
             $prestasiMahasiswa->delete();

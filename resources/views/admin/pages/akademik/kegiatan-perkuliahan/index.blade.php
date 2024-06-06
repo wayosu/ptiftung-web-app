@@ -65,7 +65,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -88,6 +88,9 @@
                         <tr>
                             <th>Judul</th>
                             <th>Thumbnail</th>
+                            @role('Superadmin|Admin|Kajur')
+                                <th>Program Studi</th>
+                            @endrole
                             <th width="25%">Tanggal Dibuat</th>
                             <th width="15%">Dibuat Oleh</th>
                             <th width="10%">Aksi</th>
@@ -128,9 +131,8 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('kegiatanPerkuliahan.index') }}",
-                columns: [{
-                        data: 'judul'
-                    },
+                columns: [
+                    { data: 'judul' },
                     {
                         data: 'thumbnail',
                         render: function(data) {
@@ -143,6 +145,9 @@
                             `;
                         }
                     },
+                    @role('Superadmin|Admin|Kajur')
+                    { data: 'program_studi' },
+                    @endrole
                     {
                         data: 'created_at',
                         render: function(data) {
@@ -151,15 +156,18 @@
                                 ' WITA';
                         }
                     },
-                    {
-                        data: 'created_by.name',
-                    },
+                    { data: 'created_by.name', },
                     {
                         data: 'aksi',
                         orderable: false,
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

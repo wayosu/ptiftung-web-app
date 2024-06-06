@@ -71,6 +71,27 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+                        @role('Superadmin|Admin|Kajur')
+                            <div class="mb-3">
+                                <label class="small mb-1" for="prodiField">
+                                    Program Studi
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select name="program_studi" id="prodiField"
+                                    class="form-select @error('program_studi') is-invalid @enderror">
+                                    <option value="" selected hidden>-- Pilih Program Studi --</option>
+                                    <option value="SISTEM INFORMASI" @if (isset($kerjasamaDalamNegeri) && $kerjasamaDalamNegeri->program_studi == 'SISTEM INFORMASI') selected @endif>
+                                        SISTEM INFORMASI
+                                    </option>
+                                    <option value="PEND. TEKNOLOGI INFORMASI" @if (isset($kerjasamaDalamNegeri) && $kerjasamaDalamNegeri->program_studi == 'PEND. TEKNOLOGI INFORMASI') selected @endif>
+                                        PEND. TEKNOLOGI INFORMASI
+                                    </option>
+                                </select>
+                                @error('program_studi')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endrole
                         <div class="mb-3">
                             <label class="small mb-1" for="jenisKegiatanField">
                                 Jenis Kegiatan

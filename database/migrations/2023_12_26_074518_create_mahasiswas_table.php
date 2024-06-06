@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('program_studi')->nullable();
-            $table->integer('angkatan')->nullable();
+            $table->string('nim')->nullable()->unique();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
+            $table->unsignedInteger('angkatan')->nullable();
             $table->timestamps();
         });
     }

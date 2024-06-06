@@ -18,9 +18,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->string('nim')->nullable()->unique();
-            $table->string('nip')->nullable()->unique();
-            $table->string('hak_istimewa')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
         });

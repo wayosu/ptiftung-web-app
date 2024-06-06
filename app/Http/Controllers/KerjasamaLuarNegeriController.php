@@ -4,16 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Models\KerjasamaLuarNegeri;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class KerjasamaLuarNegeriController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+
+    private function checkDosen()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Dosen');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $kerjasamaLuarNegeris = KerjasamaLuarNegeri::orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $kerjasamaLuarNegeris = KerjasamaLuarNegeri::orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                $kerjasamaLuarNegeris = KerjasamaLuarNegeri::where('program_studi', Auth::user()->dosen->program_studi)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $kerjasamaLuarNegeris = $kerjasamaLuarNegeris->transform(function ($item) {
@@ -50,18 +73,36 @@ class KerjasamaLuarNegeriController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'instansi' => 'required',
             'jenis_kegiatan' => 'required',
             'tanggal_mulai' => 'required',
             'tanggal_berakhir' => 'required',
-        ], [
-            'instansi.required' => 'Instansi harus diisi.',
-            'jenis_kegiatan.required' => 'Jenis Kegiatan harus diisi.',
-            'tanggal_mulai.required' => 'Tanggal Mulai harus diisi.',
-            'tanggal_berakhir.required' => 'Tanggal Berakhir harus diisi.',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'instansi.required' => 'Instansi harus diisi!',
+            'jenis_kegiatan.required' => 'Jenis Kegiatan harus diisi!',
+            'tanggal_mulai.required' => 'Tanggal Mulai harus diisi!',
+            'tanggal_berakhir.required' => 'Tanggal Berakhir harus diisi!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('kerjasamaLuarNegeri.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses menambahkan data
 
@@ -71,7 +112,8 @@ class KerjasamaLuarNegeriController extends Controller
                 'jenis_kegiatan' => $request->jenis_kegiatan,
                 'tgl_mulai' => $request->tanggal_mulai,
                 'tgl_berakhir' => $request->tanggal_berakhir,
-                'created_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'created_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('kerjasamaLuarNegeri.index')->with('success', 'Data berhasil ditambahkan.');
@@ -84,7 +126,13 @@ class KerjasamaLuarNegeriController extends Controller
     {
         try { // jika id ditemukan
             // ambil data dari model KerjasamaLuarNegeri berdasarkan id
-            $kerjasamaLuarNegeri = KerjasamaLuarNegeri::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $kerjasamaLuarNegeri = KerjasamaLuarNegeri::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $kerjasamaLuarNegeri = KerjasamaLuarNegeri::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            } else {
+                return redirect()->route('kerjasamaLuarNegeri.index')->with('error', 'Halaman bermasalah!. Anda tidak mempunyai hak akses.');
+            }
 
             // tampilkan halaman
             return view('admin.pages.kerja-sama.luar-negeri.form', [
@@ -103,29 +151,52 @@ class KerjasamaLuarNegeriController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'instansi' => 'required',
             'jenis_kegiatan' => 'required',
             'tanggal_mulai' => 'required',
             'tanggal_berakhir' => 'required',
-        ], [
-            'instansi.required' => 'Instansi harus diisi.',
-            'jenis_kegiatan.required' => 'Jenis Kegiatan harus diisi.',
-            'tanggal_mulai.required' => 'Tanggal Mulai harus diisi.',
-            'tanggal_berakhir.required' => 'Tanggal Berakhir harus diisi.',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'instansi.required' => 'Instansi harus diisi!',
+            'jenis_kegiatan.required' => 'Jenis Kegiatan harus diisi!',
+            'tanggal_mulai.required' => 'Tanggal Mulai harus diisi!',
+            'tanggal_berakhir.required' => 'Tanggal Berakhir harus diisi!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('kerjasamaLuarNegeri.index')->with('error', 'Data gagal diperbarui!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika id ditemukan
             // ambil data dari model KerjasamaLuarNegeri berdasarkan id
-            $kerjasamaLuarNegeri = KerjasamaLuarNegeri::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $kerjasamaLuarNegeri = KerjasamaLuarNegeri::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $kerjasamaLuarNegeri = KerjasamaLuarNegeri::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             $kerjasamaLuarNegeri->update([
                 'instansi' => $request->instansi,
                 'jenis_kegiatan' => $request->jenis_kegiatan,
                 'tgl_mulai' => $request->tanggal_mulai,
                 'tgl_berakhir' => $request->tanggal_berakhir,
-                'updated_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'updated_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('kerjasamaLuarNegeri.index')->with('success', 'Data berhasil diperbarui.');
@@ -140,7 +211,11 @@ class KerjasamaLuarNegeriController extends Controller
     {
         try { // jika id ditemukan lakukan proses delete
             // ambil data dari model KerjasamaLuarNegeri berdasarkan id
-            $kerjasamaLuarNegeri = KerjasamaLuarNegeri::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $kerjasamaLuarNegeri = KerjasamaLuarNegeri::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $kerjasamaLuarNegeri = KerjasamaLuarNegeri::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus data dari table kerjasama_luar_negeris
             $kerjasamaLuarNegeri->delete();

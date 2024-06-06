@@ -97,7 +97,7 @@
                         </div>
                     @endif
                     <div class="card-body overflow-hidden">
-                        <form id="formUpdate" action="{{ route('videoProfil.update') }}" method="POST">
+                        <form id="formUpdate" action="{{ route('videoProfil.update', $activeForm) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <label class="small mb-1" for="linkEmbedField">

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.konten-deskripsi {
+    @apply text-lg text-gray-800 font-body
+}
+
+.konten-deskripsi p {
+    @apply text-justify
+}
+
+.konten-deskripsi ol {
+    @apply list-decimal ps-4
+}
+
+.konten-deskripsi ul {
+    @apply list-disc ps-6
+}

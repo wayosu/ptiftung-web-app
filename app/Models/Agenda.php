@@ -12,6 +12,7 @@ class Agenda extends Model
     protected $table = 'agendas';
 
     protected $fillable = [
+        'program_studi',
         'judul',
         'slug',
         'deskripsi',

@@ -66,7 +66,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -90,7 +90,9 @@
                             <th>Judul</th>
                             <th>Gambar</th>
                             <th>Tanggal Dibuat</th>
-                            <th>Dibuat Oleh</th>
+                            @role('Superadmin|Admin|Kajur')
+                                <th>Dibuat Oleh</th>
+                            @endrole
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -122,7 +124,7 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [3, 'desc']
+                    [2, 'desc']
                 ],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
@@ -153,15 +155,20 @@
                                 ' WITA';
                         }
                     },
-                    {
-                        data: 'created_by.name',
-                    },
+                    @role('Superadmin|Admin|Kajur')
+                    { data: 'created_by.name', },
+                    @endrole 
                     {
                         data: 'aksi',
                         orderable: false,
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

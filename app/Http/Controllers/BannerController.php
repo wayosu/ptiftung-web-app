@@ -4,17 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Banner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class BannerController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $banners = Banner::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $banners = Banner::with('createdBy')->orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi()) {
+                $banners = Banner::with('createdBy')->where('program_studi', Auth::user()->dosen->program_studi)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $banners = $banners->transform(function ($item) {
@@ -40,15 +57,33 @@ class BannerController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'banner' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
+        ];
+    
+        $validationMessages = [
             'banner.required' => 'Banner harus diisi!',
             'banner.image' => 'File Banner harus berupa gambar!',
             'banner.mimes' => 'File Banner harus berupa jpeg, png, jpg!',
             'banner.max' => 'File Banner tidak boleh lebih dari 2 MB!',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('banner.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika data valid
             if ($request->hasFile('banner')) {
@@ -62,6 +97,7 @@ class BannerController extends Controller
                 // simpan data
                 Banner::create([
                     'gambar' => $nameFile,
+                    'program_studi' => $program_studi,
                     'created_by' => auth()->user()->id,
                 ]);
 
@@ -78,7 +114,11 @@ class BannerController extends Controller
     {
         try { // jika id ditemukan lakukan proses delete
             // ambil data dari model Banner berdasarkan id
-            $banner = Banner::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $banner = Banner::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $banner = Banner::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus file dari storage/penyimpanan
             if (Storage::exists('konten/banner/' . $banner->gambar)) {

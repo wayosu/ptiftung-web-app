@@ -78,7 +78,7 @@
                         </div>
                     @endif
                     <div class="card-body overflow-hidden">
-                        <form id="formUpdate" action="{{ route('strukturOrganisasi.update') }}" method="POST"
+                        <form id="formUpdate" action="{{ route('strukturOrganisasi.update', $activeForm) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT')

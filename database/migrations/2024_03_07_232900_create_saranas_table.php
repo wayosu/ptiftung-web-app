@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('keterangan');
             $table->string('slug')->unique();
             $table->foreignId('sarana_kategori_id')->references('id')->on('sarana_kategoris')->onDelete('cascade');
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->default(null)->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

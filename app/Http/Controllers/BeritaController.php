@@ -7,15 +7,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class BeritaController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+
+    private function checkDosen()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Dosen');
+    }
+
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $beritas = Berita::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur() || $this->checkKaprodi()) {
+                $beritas = Berita::with('createdBy')->orderBy('created_at', 'desc')->get();
+            } else if ($this->checkDosen()) {
+                $beritas = Berita::where('created_by', auth()->user()->id)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $beritas = $beritas->transform(function ($item) {
@@ -105,8 +128,13 @@ class BeritaController extends Controller
     public function edit($id)
     {
         try { // jika id ditemukan
-             // ambil data dari model Berita berdasarkan id
-            $berita = Berita::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur() || $this->checkKaprodi()) {
+                // ambil data dari model Berita berdasarkan id
+                $berita = Berita::findOrFail($id);
+            } else if ($this->checkDosen()) {
+                // ambil data dari model Berita berdasarkan id dan created_by
+                $berita = Berita::where('id', $id)->where('created_by', auth()->user()->id)->firstOrFail();
+            }
 
             // tampilkan halaman
             return view('admin.pages.konten.berita.form', [
@@ -139,8 +167,13 @@ class BeritaController extends Controller
         ]);
 
         try { // jika data valid
-            // ambil data dari model Berita berdasarkan id
-            $berita = Berita::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur() || $this->checkKaprodi()) {
+                // ambil data dari model Berita berdasarkan id
+                $berita = Berita::findOrFail($id);
+            } else if ($this->checkDosen()) {
+                // ambil data dari model Berita berdasarkan id dan created_by
+                $berita = Berita::where('id', $id)->where('created_by', auth()->user()->id)->firstOrFail();
+            }
 
             // Tetapkan status berita
             $status = $berita->status;
@@ -193,8 +226,13 @@ class BeritaController extends Controller
     public function destroy($id)
     {
         try { // jika id ditemukan lakukan proses delete
-            // ambil data dari model Berita berdasarkan id
-            $berita = Berita::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur() || $this->checkKaprodi()) {
+                // ambil data dari model Berita berdasarkan id
+                $berita = Berita::findOrFail($id);
+            } else if ($this->checkDosen()) {
+                // ambil data dari model Berita berdasarkan id dan created_by
+                $berita = Berita::where('id', $id)->where('created_by', auth()->user()->id)->firstOrFail();
+            }
 
             // hapus file dari storage/penyimpanan
             if (Storage::exists('konten/berita/' . $berita->thumbnail)) {

@@ -22,9 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'nim',
-        'nip',
-        'hak_akses_khusus',
         'foto',
     ];
 
@@ -48,6 +45,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function memilikiPeran($role)
+    {
+        return $this->roles->contains('name', $role);
+    }
+
     public function mahasiswa()
     {
         // relasi one to one
@@ -67,6 +69,13 @@ class User extends Authenticatable
         // relasi one to many
         // satu User dapat memiliki banyak data BidangKepakaran
         return $this->hasMany(BidangKepakaran::class, 'created_by', 'id');
+    }
+
+    public function kegiatanMahasiswas()
+    {
+        // relasi one to many
+        // satu User dapat memiliki banyak data KegiatanMahasiswa
+        return $this->hasMany(KegiatanMahasiswa::class, 'created_by', 'id');
     }
 
     public function saranaKategoris()

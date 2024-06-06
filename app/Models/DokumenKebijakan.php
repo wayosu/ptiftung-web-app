@@ -12,6 +12,7 @@ class DokumenKebijakan extends Model
     protected $table = 'dokumen_kebijakans';
 
     protected $fillable = [
+        'program_studi',
         'keterangan',
         'kategori',
         'dokumen',

@@ -55,14 +55,16 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('kalenderAkademik.create') }}">
-                            <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Kegiatan
-                        </a>
+                        @role('Superadmin|Admin|Kajur')
+                            <a class="btn btn-sm btn-light text-primary" href="{{ route('kalenderAkademik.create') }}">
+                                <i class="fa-solid fa-plus me-1"></i>
+                                Tambah Kegiatan
+                            </a>
+                        @endrole
                     </div>
                 </div>
             </div>
@@ -139,6 +141,11 @@
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

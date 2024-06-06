@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('prestasi_mahasiswas', function (Blueprint $table) {
             $table->id();
             $table->string('nama_mahasiswa');
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('predikat');
             $table->string('tingkat');
             $table->string('tahun');

@@ -37,7 +37,7 @@
 
             <div class="col-xl-6">
                 <div class="card mb-4">
-                    <div class="card-header">Form Bidang Kepakaran</div>
+                    <div class="card-header">Form {{ $title ?? '' }}</div>
                     @if (isset($bidangKepakaran) && $bidangKepakaran->createdBy)
                         <div class="card-header bg-white">
                             <div

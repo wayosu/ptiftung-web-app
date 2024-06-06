@@ -16,6 +16,7 @@ class ProfilLulusan extends Model
         'subjudul',
         'deskripsi',
         'gambar',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

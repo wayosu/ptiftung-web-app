@@ -12,6 +12,7 @@ class DataDukungAkreditasi extends Model
     protected $table = 'data_dukung_akreditasis';
 
     protected $fillable = [
+        'program_studi',
         'nomor_butir',
         'keterangan',
         'kategori',

@@ -4,17 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Models\DokumenLainnya;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class DokumenLainnyaController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+
+    private function checkDosen()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Dosen');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $dokumenLainnyas = DokumenLainnya::orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $dokumenLainnyas = DokumenLainnya::orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                $dokumenLainnyas = DokumenLainnya::where('program_studi', Auth::user()->dosen->program_studi)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $dokumenLainnyas = $dokumenLainnyas->transform(function ($item) {
@@ -51,17 +74,35 @@ class DokumenLainnyaController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'keterangan' => 'required',
             'dokumen' => 'sometimes|nullable|mimes:doc,docx,pdf,xls,xlsx|max:4096',
             'link_dokumen' => 'nullable|url',
-        ], [
+        ];
+    
+        $validationMessages = [
             'keterangan.required' => 'Keterangan harus diisi!',
             'dokumen.mimes' => 'Dokumen harus berupa doc, docx, pdf, xls, xlsx!',
             'dokumen.max' => 'Dokumen tidak boleh lebih dari 4 MB!',
             'link_dokumen.url' => 'Link dokumen harus berupa URL yang valid',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('dokumenLainnya.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika data valid
             // Jika menggunakan file dokumen
@@ -88,10 +129,11 @@ class DokumenLainnyaController extends Controller
 
             // Simpan data
             DokumenLainnya::create([
+                'program_studi' => $program_studi,
                 'keterangan' => $request->keterangan,
                 'dokumen' => $nameFile,
                 'link_dokumen' => $linkDokumen,
-                'created_by' => auth()->user()->id,
+                'created_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('dokumenLainnya.index')->with('success', 'Data berhasil ditambahkan.');
@@ -104,7 +146,13 @@ class DokumenLainnyaController extends Controller
     {
         try { // jika id ditemukan
             // ambil data dari model DokumenLainnya berdasarkan id
-            $dokumenLainnya = DokumenLainnya::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $dokumenLainnya = DokumenLainnya::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $dokumenLainnya = DokumenLainnya::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            } else {
+                return redirect()->route('dokumenLainnya.index')->with('error', 'Halaman bermasalah!. Anda tidak mempunyai hak akses.');
+            }
 
             // tampilkan halaman
             return view('admin.pages.repositori.dokumen-lainnya.form', [
@@ -123,25 +171,48 @@ class DokumenLainnyaController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'keterangan' => 'required',
             'dokumen' => 'sometimes|nullable|mimes:doc,docx,pdf,xls,xlsx|max:4096',
             'link_dokumen' => 'nullable|url',
-        ], [
+        ];
+    
+        $validationMessages = [
             'keterangan.required' => 'Keterangan harus diisi!',
             'dokumen.mimes' => 'Dokumen harus berupa doc, docx, pdf, xls, xlsx!',
             'dokumen.max' => 'Dokumen tidak boleh lebih dari 4 MB!',
             'link_dokumen.url' => 'Link dokumen harus berupa URL yang valid',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('dokumenLainnya.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika data valid
-            // Ambil data dari model DokumenLainnya berdasarkan id
-            $dokumenLainnya = DokumenLainnya::findOrFail($id);
+            // ambil data dari model DokumenLainnya berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $dokumenLainnya = DokumenLainnya::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $dokumenLainnya = DokumenLainnya::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // Perbarui data dengan nilai yang dikirim dari formulir
+            $dokumenLainnya->program_studi = $program_studi;
             $dokumenLainnya->keterangan = $request->keterangan;
-            $dokumenLainnya->updated_by = auth()->user()->id;
+            $dokumenLainnya->updated_by = Auth::user()->id;
 
             // Perbarui dokumen jika ada
             if ($request->hasFile('dokumen')) {
@@ -186,7 +257,11 @@ class DokumenLainnyaController extends Controller
     {
         try { // jika id ditemukan lakukan proses delete
             // ambil data dari model DokumenLainnya berdasarkan id
-            $dokumenLainnya = DokumenLainnya::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $dokumenLainnya = DokumenLainnya::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $dokumenLainnya = DokumenLainnya::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus file dari storage/penyimpanan
             if ($dokumenLainnya->dokumen) {

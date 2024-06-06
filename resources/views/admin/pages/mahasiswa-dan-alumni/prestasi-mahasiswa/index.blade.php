@@ -1,10 +1,11 @@
 @extends('admin.layouts.app')
 
 @push('css')
+    <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/admin/libs/datatables/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/admin/libs/datatables/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" />
-
-    <link href="{{ asset('assets/admin/libs/sweetalert2/css/sweetalert2.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/admin/libs/datatables/css/buttons.bootstrap5.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/admin/libs/datatables/css/buttons.dataTables.min.css') }}" rel="stylesheet" />
 
     <style>
         #myDataTables {
@@ -63,14 +64,16 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="{{ route('prestasiMahasiswa.create') }}">
-                            <i class="fa-solid fa-plus me-1"></i>
-                            Tambah Prestasi Mahasiswa
-                        </a>
+                        @role('Superadmin|Admin|Kajur|Kaprodi')
+                            <a class="btn btn-sm btn-light text-primary" href="{{ route('prestasiMahasiswa.create') }}">
+                                <i class="fa-solid fa-plus me-1"></i>
+                                Tambah Prestasi Mahasiswa
+                            </a>
+                        @endrole
                     </div>
                 </div>
             </div>
@@ -81,20 +84,27 @@
     <div class="container-fluid px-4">
         <div class="card">
             <div class="card-body overflow-hidden">
-                <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Nama Mahasiswa</th>
-                            <th>Predikat</th>
-                            <th>Tingkat</th>
-                            <th>Tahun</th>
-                            <th>Kegiatan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table id="myDataTables" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Nama Mahasiswa</th>
+                                @role('Superadmin|Admin|Kajur')
+                                    <th>Program Studi</th>
+                                @endrole
+                                <th>Predikat</th>
+                                <th>Tingkat</th>
+                                <th>Tahun</th>
+                                <th>Kegiatan</th>
+                                @role('Superadmin|Admin|Kajur|Kaprodi')
+                                    <th>Aksi</th>
+                                @endrole
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -106,11 +116,24 @@
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/datatables/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/buttons.bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/jszip.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/libs/datatables/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/admin/libs/sweetalert2/js/sweetalert2.all.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
             // inisialisasi datatables
+            @role('Superadmin|Admin|Kajur')
+                const dataArrayForDataTables = [0, 1, 2, 3, 4, 5];
+            @endrole
+            @role('Kaprodi|Dosen')
+                const dataArrayForDataTables = [0, 1, 2, 3, 4];
+            @endif
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
@@ -122,27 +145,76 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('prestasiMahasiswa.index') }}",
-                columns: [{
-                        data: 'nama_mahasiswa',
-                    },
-                    {
-                        data: 'predikat',
-                    },
-                    {
-                        data: 'tingkat',
-                    },
-                    {
-                        data: 'tahun',
-                    },
-                    {
-                        data: 'kegiatan',
-                    },
+                columns: [
+                    { data: 'nama_mahasiswa', },
+                    @role('Superadmin|Admin|Kajur')
+                    { data: 'program_studi' },
+                    @endrole
+                    { data: 'predikat', },
+                    { data: 'tingkat', },
+                    { data: 'tahun', },
+                    { data: 'kegiatan', },
+                    @role('Superadmin|Admin|Kajur|Kaprodi')
                     {
                         data: 'aksi',
                         orderable: false,
                         searchable: false
                     },
+                    @endrole
+                ],
+                dom: '<"d-flex flex-wrap justify-content-between align-items-center gap-1 gap-md-2"B<"d-flex flex-wrap align-items-center justify-content-center gap-2 gap-md-3"fl>>rtip',
+                buttons: [
+                    { 
+                        extend: 'copy', 
+                        className: 'btn btn-sm btn-dark border',
+                        exportOptions: {
+                            columns: dataArrayForDataTables
+                        }
+                    },
+                    { 
+                        extend: 'csv', 
+                        className: 'btn btn-sm btn-dark border',
+                        exportOptions: {
+                            columns: dataArrayForDataTables
+                        }
+                    },
+                    { 
+                        extend: 'excel', 
+                        className: 'btn btn-sm btn-dark border',
+                        exportOptions: {
+                            columns: dataArrayForDataTables,
+                        },
+                    },
+                    { 
+                        extend: 'pdf', 
+                        className: 'btn btn-sm btn-dark border',
+                        exportOptions: {
+                            columns: dataArrayForDataTables
+                        },
+                        customize: function(doc) {
+                            // Mengatur lebar kolom menjadi proporsi yang sama
+                            doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                            
+                            // Mengatur margin menjadi nol untuk membuat tabel menjadi full width
+                            doc.content[1].margin = [0, 0, 0, 0]; 
+                            
+                            // Mengatur orientasi PDF menjadi landscape
+                            doc.content[1].layout = 'landscape';
+                        }
+                    },
+                    { 
+                        extend: 'print', 
+                        className: 'btn btn-sm btn-dark border',
+                        exportOptions: {
+                            columns: dataArrayForDataTables
+                        }
+                    }
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

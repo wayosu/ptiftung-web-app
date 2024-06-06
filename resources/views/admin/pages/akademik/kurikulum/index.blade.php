@@ -55,7 +55,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -83,8 +83,9 @@
                             <th>Semester</th>
                             <th>Prasyarat</th>
                             <th>Tuatan Dokumen</th>
-                            <th>Tanggal Dibuat</th>
-                            <th>Dibuat Oleh</th>
+                            @role('Superadmin|Admin|Kajur')
+                                <th>Program Studi</th>
+                            @endrole
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -120,21 +121,12 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('kurikulum.index') }}",
-                columns: [{
-                        data: 'kode_mk'
-                    },
-                    {
-                        data: 'nama_mk'
-                    },
-                    {
-                        data: 'sks'
-                    },
-                    {
-                        data: 'sifat'
-                    },
-                    {
-                        data: 'semester'
-                    },
+                columns: [
+                    { data: 'kode_mk' },
+                    { data: 'nama_mk' },
+                    { data: 'sks' },
+                    { data: 'sifat' },
+                    { data: 'semester' },
                     {
                         data: 'prasyarat',
                         render: function(data) {
@@ -156,23 +148,20 @@
                             }
                         }
                     },
-                    {
-                        data: 'created_at',
-                        render: function(data) {
-                            // with locale 'id'
-                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
-                                ' WITA';
-                        }
-                    },
-                    {
-                        data: 'created_by.name',
-                    },
+                    @role('Superadmin|Admin|Kajur')
+                    { data: 'program_studi' },
+                    @endrole
                     {
                         data: 'aksi',
                         orderable: false,
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

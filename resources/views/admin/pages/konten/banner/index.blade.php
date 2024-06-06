@@ -97,7 +97,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -115,25 +115,49 @@
                     enctype="multipart/form-data">
                     @csrf
                     <div class="col-12">
-                        <label class="small mb-1">
-                            Banner
-                            <span class="text-danger">*</span>
-                        </label>
-                        <label id="bannerLabel" class="custom-btn-upload" for="bannerField">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="fa-solid fa-upload"></i>
-                                <span id="bannerText">Unggah Banner</span>
+                        <div>
+                            <label class="small mb-1">
+                                Banner
+                                <span class="text-danger">*</span>
+                            </label>
+                            <label id="bannerLabel" class="custom-btn-upload @error('program_studi') border-danger @enderror" for="bannerField">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <span id="bannerText">Unggah Banner</span>
+                                </div>
+                                <button type="button" role="button" id="btnHapusBanner" class="btn-hapus-banner d-none">
+                                    <i class="fa-solid fa-xmark fa-lg"></i>
+                                </button>
+                            </label>
+                            <input class="d-none" name="banner" id="bannerField" type="file"
+                                accept="image/jpg, image/jpeg, image/png" />
+                            <span class="text-xs text-muted">Format JPG, JPEG, PNG max. 2MB. Rekomendasi 5002 x 1928</span>
+                            @error('banner')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        @role('Superadmin|Admin|Kajur')
+                            <div class="mt-3">
+                                <label class="small mb-1" for="prodiField">
+                                    Program Studi
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control @error('program_studi') is-invalid @enderror" name="program_studi"
+                                    id="prodiField">
+                                    <option value="" selected hidden>-- Pilih Program Studi --</option>
+                                    <option value="SISTEM INFORMASI">
+                                        SISTEM INFORMASI
+                                    </option>
+                                    <option value="PEND. TEKNOLOGI INFORMASI">
+                                        PEND. TEKNOLOGI INFORMASI
+                                    </option>
+                                </select>
+                                @error('program_studi')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <button type="button" role="button" id="btnHapusBanner" class="btn-hapus-banner d-none">
-                                <i class="fa-solid fa-xmark fa-lg"></i>
-                            </button>
-                        </label>
-                        <input class="d-none" name="banner" id="bannerField" type="file"
-                            accept="image/jpg, image/jpeg, image/png" />
-                        <span class="text-xs text-muted">Format JPG, JPEG, PNG max. 2MB</span>
-                        @error('banner')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                        @endrole
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary w-100">
@@ -150,6 +174,9 @@
                     <thead>
                         <tr>
                             <th>Banner</th>
+                            @role('Superadmin|Admin|Kajur')
+                                <th>Program Studi</th>
+                            @endrole
                             <th>Tanggal Dibuat</th>
                             <th>Dibuat Oleh</th>
                             <th>Aksi</th>
@@ -201,6 +228,9 @@
                             `;
                         }
                     },
+                    @role('Superadmin|Admin|Kajur')
+                    { data: 'program_studi' },
+                    @endrole
                     {
                         data: 'created_at',
                         render: function(data) {
@@ -218,6 +248,11 @@
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

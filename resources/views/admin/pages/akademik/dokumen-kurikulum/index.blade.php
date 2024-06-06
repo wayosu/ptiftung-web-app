@@ -54,6 +54,27 @@
                     <div class="card-body">
                         <form action="{{ route('dokumenKurikulum.store') }}" method="POST">
                             @csrf
+                            @role('Superadmin|Admin|Kajur')
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="prodiField">
+                                        Program Studi
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="program_studi" id="prodiField"
+                                        class="form-select @error('program_studi') is-invalid @enderror">
+                                        <option value="" selected hidden>-- Pilih Program Studi --</option>
+                                        <option value="SISTEM INFORMASI">
+                                            SISTEM INFORMASI
+                                        </option>
+                                        <option value="PEND. TEKNOLOGI INFORMASI">
+                                            PEND. TEKNOLOGI INFORMASI
+                                        </option>
+                                    </select>
+                                    @error('program_studi')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endrole
                             <div class="mb-3">
                                 <label class="small mb-1" for="keteranganField">
                                     Keterangan
@@ -97,11 +118,16 @@
                     <div class="card-body overflow-hidden">
                         @if (count($dokumenKurikulums) > 0)
                             <div class="d-flex flex-column gap-3 w-100">
-                                @foreach ($dokumenKurikulums as $dokumenKurikulum)
+                                @foreach ($dokumenKurikulums->where('program_studi', 'SISTEM INFORMASI') as $dokumenKurikulum)
                                     <div
                                         class="d-flex flex-column flex-lg-row gap-4 align-items-start align-items-lg-center justify-content-between w-100 border border-2 border-muted rounded-2 p-3">
                                         <div class="w-auto">
                                             <div class="d-flex gap-3 align-items-center">
+                                                @role('Superadmin|Admin|Kajur')
+                                                    <span class="text-xs text-primary border border-primary rounded px-2">
+                                                        {{ $dokumenKurikulum->program_studi }}
+                                                    </span>
+                                                @endrole
                                                 <span class="text-xs text-muted">
                                                     <i class="fa-solid fa-calendar fa-xs"></i>
                                                     {{ \Carbon\Carbon::parse($dokumenKurikulum->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}</span>
@@ -121,6 +147,49 @@
                                                     data-toggle="toggle" data-onlabel="Aktif" data-offlabel="Tidak Aktif"
                                                     data-onstyle="success" data-offstyle="danger" data-size="xs"
                                                     data-id="{{ $dokumenKurikulum->id }}" class="toggle-status">
+                                                <a href="{{ $dokumenKurikulum->link_gdrive }}"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark text-primary"
+                                                    target="_blank">
+                                                    <i class="fa-solid fa-file-lines fa-xl"></i>
+                                                </a>
+                                                <a href="javascript:void(0)" title="Hapus"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark text-danger tombol-hapus"
+                                                    data-id="{{ $dokumenKurikulum->id }}">
+                                                    <i class="fa-solid fa-trash fa-xl"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                @foreach ($dokumenKurikulums->where('program_studi', 'PEND. TEKNOLOGI INFORMASI') as $dokumenKurikulum)
+                                    <div
+                                        class="d-flex flex-column flex-lg-row gap-4 align-items-start align-items-lg-center justify-content-between w-100 border border-2 border-muted rounded-2 p-3">
+                                        <div class="w-auto">
+                                            <div class="d-flex gap-3 align-items-center">
+                                                @role('Superadmin|Admin|Kajur')
+                                                <span class="text-xs text-primary border border-primary rounded px-2">
+                                                    {{ $dokumenKurikulum->program_studi }}
+                                                </span>
+                                                @endrole
+                                                <span class="text-xs text-muted">
+                                                    <i class="fa-solid fa-calendar fa-xs"></i>
+                                                    {{ \Carbon\Carbon::parse($dokumenKurikulum->created_at)->isoFormat('dddd, D MMMM Y H:mm') }}</span>
+                                                <span class="text-xs text-muted">
+                                                    <i class="fa-solid fa-user fa-xs"></i>
+                                                    {{ $dokumenKurikulum->createdBy->name }}
+                                                </span>
+                                            </div>
+                                            <h6 class="fw-bolder mt-2 mb-1">Keterangan</h6>
+                                            <p class="text-justify mb-0">
+                                                {{ $dokumenKurikulum->keterangan }}
+                                            </p>
+                                        </div>
+                                        <div class="w-auto">
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <input type="checkbox" {{ $dokumenKurikulum->active ? 'checked' : '' }}
+                                                    data-toggle="toggle" data-onlabel="Aktif" data-offlabel="Tidak Aktif"
+                                                    data-onstyle="success" data-offstyle="danger" data-size="xs"
+                                                    data-id="{{ $dokumenKurikulum->id }}" class="toggle-status-pti">
                                                 <a href="{{ $dokumenKurikulum->link_gdrive }}"
                                                     class="btn btn-datatable btn-icon btn-transparent-dark text-primary"
                                                     target="_blank">
@@ -210,6 +279,48 @@
                     // Jika toggle sedang diaktifkan
                     // Nonaktifkan toggle lainnya
                     $('.toggle-status').not(this).each(function() {
+                        if ($(this).prop('checked')) {
+                            $(this).bootstrapToggle('off');
+                        }
+                    });
+                }
+
+                // Kirim request AJAX untuk memperbarui status di backend
+                $.ajax({
+                    url: "{{ route('dokumenKurikulum.updateStatus') }}", // Ganti dengan URL rute yang sesuai
+                    method: 'POST',
+                    data: {
+                        id: id,
+                        status: status,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Handle respons dari backend (jika diperlukan)
+                        // console.log(response);
+
+                        // Nonaktifkan toggle lainnya
+                        // Panggil fungsi untuk menangani respons success
+                        handleSuccess(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error (jika diperlukan)
+                        // console.error(xhr.responseText);
+
+                        // Panggil fungsi untuk menangani respons error
+                        handleError(xhr);
+                    }
+                });
+            });
+
+            $('.toggle-status-pti').change(function() {
+                var id = $(this).data('id');
+                var status = $(this).prop('checked') ? 1 : 0;
+
+                // Cek apakah toggle sedang diaktifkan atau dinonaktifkan
+                if (status == 1) {
+                    // Jika toggle sedang diaktifkan
+                    // Nonaktifkan toggle lainnya
+                    $('.toggle-status-pti').not(this).each(function() {
                         if ($(this).prop('checked')) {
                             $(this).bootstrapToggle('off');
                         }

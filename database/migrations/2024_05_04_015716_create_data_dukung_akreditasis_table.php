@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('data_dukung_akreditasis', function (Blueprint $table) {
             $table->id();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('nomor_butir');
             $table->string('keterangan');
             $table->string('kategori');

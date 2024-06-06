@@ -13,6 +13,7 @@ class CapaianPembelajaran extends Model
 
     protected $fillable = [
         'capaian_pembelajaran',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

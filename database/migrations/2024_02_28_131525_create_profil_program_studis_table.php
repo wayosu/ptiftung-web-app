@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_program_studi')->nullable();
             $table->string('nama_dasbor')->nullable();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('logo')->nullable();
             $table->text('link_embed_video_profil')->nullable();
             $table->text('sejarah')->nullable();

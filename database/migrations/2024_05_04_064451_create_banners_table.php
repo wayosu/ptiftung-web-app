@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('gambar');
             $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

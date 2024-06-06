@@ -4,15 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\DokumenKurikulum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DokumenKurikulumController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->	memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+    
     public function index()
     {
-        $dokumenKurikulums = DokumenKurikulum::with('createdBy')->orderBy('created_at', 'desc')->get();
+        // ambil data
+        if ($this->checkSuperadminAdminKajur()) {
+            $dokumenKurikulums = DokumenKurikulum::with('createdBy')
+                ->orderBy('created_at', 'desc')->get();
+        } else if ($this->checkKaprodi()) {
+            $dokumenKurikulums = DokumenKurikulum::with('createdBy')
+                ->where('program_studi', Auth::user()->dosen->program_studi)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         // tampilkan halaman
         return view('admin.pages.akademik.dokumen-kurikulum.index', [
@@ -26,23 +45,42 @@ class DokumenKurikulumController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'keterangan' => 'required|string|max:255',
             'link_gdrive' => 'required',
-        ], [
-            'keterangan.required' => 'Keterangan harus diisi',
-            'keterangan.string' => 'Keterangan harus berupa string',
-            'keterangan.max' => 'Keterangan maksimal 255 karakter',
-            'link_gdrive.required' => 'Dokumen harus diisi',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'keterangan.required' => 'Keterangan harus diisi!',
+            'keterangan.string' => 'Keterangan harus berupa string!',
+            'keterangan.max' => 'Keterangan maksimal 255 karakter!',
+            'link_gdrive.required' => 'Dokumen harus diisi!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('dokumenKurikulum.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses menambahkan data
             DokumenKurikulum::create([
                 'keterangan' => $request->keterangan,
                 'link_gdrive' => $request->link_gdrive,
                 'active' => 0,
-                'created_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'created_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('dokumenKurikulum.index')->with('success', 'Data berhasil ditambahkan.');
@@ -75,8 +113,12 @@ class DokumenKurikulumController extends Controller
     public function destroy($id)
     {
         try { // jika sukses hapus data
-            // ambil data
-            $dokumenKurikulum = DokumenKurikulum::findOrFail($id);
+            // ambil data dari model DokumenKurikulum berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $dokumenKurikulum = DokumenKurikulum::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $dokumenKurikulum = DokumenKurikulum::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus data
             $dokumenKurikulum->delete();

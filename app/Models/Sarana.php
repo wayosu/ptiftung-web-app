@@ -15,6 +15,7 @@ class Sarana extends Model
         'keterangan',
         'slug',
         'sarana_kategori_id',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

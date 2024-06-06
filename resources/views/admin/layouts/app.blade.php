@@ -5,9 +5,29 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
+    <meta name="description" content="Dasbor WEB PTI - SI" />
     <meta name="author" content="" />
-    <title>{{ $title . ' | Dasbor WEB PTI' ?? '' }}</title>
+    <title>
+        @if (isset($title))
+            @role('Superadmin|Admin|Kajur')
+                {{ $title . ' | Dasbor WEB PTI - SI' ?? '' }}
+            @endrole
+            @role('Kaprodi|Dosen')
+                @php
+                    $dosenTitleProdi = Auth::user()->dosen->program_studi == "PEND. TEKNOLOGI INFORMASI" ? "PTI" : "SI";
+                @endphp
+                {{ $title . ' | Dasbor WEB ' . $dosenTitleProdi ?? '' }}
+            @endrole
+            @role('Mahasiswa')
+                @php
+                    $mahasiswaTitleProdi = Auth::user()->mahasiswa->program_studi == "PEND. TEKNOLOGI INFORMASI" ? "PTI" : "SI";
+                @endphp
+                {{ $title . ' | Dasbor WEB ' . $mahasiswaTitleProdi ?? '' }}
+            @endrole
+        @else
+            Dasbor WEB
+        @endif
+    </title>
 
     @stack('css')
 

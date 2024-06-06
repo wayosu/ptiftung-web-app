@@ -15,6 +15,7 @@ class DokumenKurikulum extends Model
         'keterangan',
         'link_gdrive',
         'active',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

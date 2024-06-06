@@ -55,7 +55,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0);" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -123,7 +123,7 @@
             $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [2, 'desc']
+                    [2, 'asc'], // Kolom role yang diurutkan
                 ],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
@@ -135,24 +135,41 @@
                         data: 'name'
                     },
                     {
-                        data: 'role_name',
-                        render: function(data) {
-                            if (data == 'Admin') {
-                                return '<span class="badge bg-blue-soft text-blue">' + data +
-                                    '</span>';
-                            } else if (data == 'Dosen') {
-                                return '<span class="badge bg-green-soft text-green">' + data +
-                                    '</span>';
-                            } else if (data == 'Mahasiswa') {
-                                return '<span class="badge bg-yellow-soft text-yellow">' + data +
-                                    '</span>';
+                        data: 'role_names',
+                        render: function(data, type, row) {
+                            let roleName = '';
+                            let badge = '';
+                            switch (data) {
+                                case 'Admin':
+                                    roleName = 'Admin';
+                                    badge = 'badge bg-dark';
+                                    break;
+                                case 'Kajur':
+                                    roleName = 'Kepala Jurusan Infomatika'; // Perbaikan nama role jika perlu
+                                    badge = 'badge bg-indigo';
+                                    break;
+                                case 'Kaprodi':
+                                    roleName = 'Kepala Program Studi ' + (row.dosen.program_studi === 'SISTEM INFORMASI' ? 'SI' : 'PTI'); // Menyesuaikan dengan program studi
+                                    badge = 'badge bg-pink';
+                                    break;
+                                case 'Dosen':
+                                    roleName = 'Dosen';
+                                    badge = 'badge bg-cyan';
+                                    break;
+                                case 'Mahasiswa':
+                                    roleName = 'Mahasiswa';
+                                    badge = 'badge bg-teal';
+                                    break;
+                                default:
+                                    roleName = '-';
                             }
+
+                            return '<span class="' + badge + '"><i class="fa-solid fa-shield fa-xs me-1"></i>' + roleName + '</span>';
                         }
                     },
                     {
                         data: 'created_at',
                         render: function(data) {
-                            // with locale 'id'
                             return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
                                 ' WITA';
                         }
@@ -161,7 +178,7 @@
                         data: 'aksi',
                         orderable: false,
                         searchable: false
-                    },
+                    }
                 ]
             });
 
@@ -200,6 +217,11 @@
                     text: '{{ Session::get('error') }}'
                 })
             @endif
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
+            });
 
             // confirm delete with swal
             $('body').on('click', '.tombol-hapus', function(e) {

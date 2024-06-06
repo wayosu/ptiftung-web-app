@@ -75,24 +75,26 @@
                         </div>
                     @endif
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label class="small mb-1" for="dosenField">
-                                Dosen
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select name="dosen_id" id="dosenField"
-                                class="form-select select2 @error('dosen_id') is-invalid @enderror">
-                                <option></option>
-                                @foreach ($namaDosen as $item)
-                                    <option value="{{ $item['id'] }}"
-                                        {{ old('dosen_id', $publikasi->dosen_id ?? '') == $item['id'] ? 'selected' : '' }}>
-                                        {{ $item['name'] }}</option>
-                                @endforeach
-                            </select>
-                            @error('dosen_id')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @if (Auth::user()->memilikiPeran('Superadmin') || Auth::user()->memilikiPeran('Admin') || Auth::user()->memilikiPeran('Kajur') || Auth::user()->memilikiperan('Kaprodi'))
+                            <div class="mb-3">
+                                <label class="small mb-1" for="dosenField">
+                                    Dosen
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select name="dosen_id" id="dosenField"
+                                    class="form-select select2 @error('dosen_id') is-invalid @enderror">
+                                    <option></option>
+                                    @foreach ($namaDosen as $item)
+                                        <option value="{{ $item['id'] }}"
+                                            {{ old('dosen_id', $publikasi->dosen_id ?? '') == $item['id'] ? 'selected' : '' }}>
+                                            {{ $item['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('dosen_id')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <div class="mb-3">
                             <label class="small mb-1" for="judulField">
                                 Judul

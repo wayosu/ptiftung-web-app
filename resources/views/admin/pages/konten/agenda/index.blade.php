@@ -66,7 +66,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -87,6 +87,9 @@
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
+                            @role('Superadmin|Admin|Kajur')
+                                <th>Program Studi</th>
+                            @endrole
                             <th>Judul</th>
                             <th>Thumbnail</th>
                             <th>Penyelenggara</th>
@@ -132,9 +135,11 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('agenda.index') }}",
-                columns: [{
-                        data: 'judul'
-                    },
+                columns: [
+                    @role('Superadmin|Admin|Kajur')
+                    { data: 'program_studi' },
+                    @endrole    
+                    { data: 'judul' },
                     {
                         data: 'thumbnail',
                         render: function(thumbnail) {
@@ -151,9 +156,7 @@
                             }
                         }
                     },
-                    {
-                        data: 'penyelenggara',
-                    },
+                    { data: 'penyelenggara', },
                     {
                         data: 'tanggal_kegiatan',
                         render: function(data) {
@@ -195,6 +198,11 @@
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('dokumen_kebijakans', function (Blueprint $table) {
             $table->id();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('keterangan');
             $table->string('kategori');
             $table->string('dokumen')->nullable();

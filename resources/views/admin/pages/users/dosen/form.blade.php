@@ -86,7 +86,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ URL::previous() }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.byDosen') }}">
                             <i class="fa-solid fa-arrow-left me-1"></i>
                             Kembali
                         </a>
@@ -101,7 +101,7 @@
     </header>
 
     <div class="container-xl px-4 mt-4">
-        <form
+        <form id="thisForm"
             action="@if (isset($user)) {{ route('users.updateDosen', $user->id) }} @else {{ route('users.storeDosen') }} @endif"
             method="POST" class="row gap-4" enctype="multipart/form-data">
             @csrf
@@ -244,18 +244,49 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="mb-3">
+                                <label class="small mb-1" for="prodiField">
+                                    Program Studi
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control @error('program_studi') is-invalid @enderror" name="program_studi"
+                                    id="prodiField">
+                                    <option value="" selected hidden>-- Pilih Program Studi --</option>
+                                    <option value="SISTEM INFORMASI" @if (isset($user) && $user->dosen->program_studi == 'SISTEM INFORMASI') selected @endif>
+                                        SISTEM INFORMASI
+                                    </option>
+                                    <option value="PEND. TEKNOLOGI INFORMASI" @if (isset($user) && $user->dosen->program_studi == 'PEND. TEKNOLOGI INFORMASI') selected @endif>
+                                        PEND. TEKNOLOGI INFORMASI
+                                    </option>
+                                </select>
+                                @error('program_studi')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
                         @else
+                            <div class="mb-3">
+                                <label class="small mb-1" for="nameField">
+                                    Nama Lengkap
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control @error('name') is-invalid @enderror" name="name"
+                                    id="nameField" type="text" placeholder="Masukkan nama lengkap dosen"
+                                    value="{{ old('name', $user->name ?? '') }}" />
+                                @error('name')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label class="small mb-1" for="nameField">
-                                            Nama Lengkap
+                                        <label class="small mb-1" for="jafaField">
+                                            JAFA (Jabatan Fungsional/Akademik Dosen)
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input class="form-control @error('name') is-invalid @enderror" name="name"
-                                            id="nameField" type="text" placeholder="Masukkan nama lengkap dosen"
-                                            value="{{ old('name', $user->name ?? '') }}" />
-                                        @error('name')
+                                        <input class="form-control @error('jafa') is-invalid @enderror" name="jafa"
+                                            id="jafaField" type="text" placeholder="Masukkan jafa dosen"
+                                            value="{{ old('jafa', $user->dosen->jafa ?? '') }}" />
+                                        @error('jafa')
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -295,25 +326,13 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label class="small mb-1" for="jafaField">
-                                            JAFA (Jabatan Fungsional/Akademik Dosen)
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <input class="form-control @error('jafa') is-invalid @enderror" name="jafa"
-                                            id="jafaField" type="text" placeholder="Masukkan jafa dosen"
-                                            value="{{ old('jafa', $user->dosen->jafa ?? '') }}" />
-                                        @error('jafa')
-                                            <div class="text-danger small mt-1">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <div class="mb-3">
                                         <label class="small mb-1" for="nipField">
                                             NIP
                                             <span class="text-danger">*</span>
                                         </label>
                                         <input class="form-control @error('nip') is-invalid @enderror" name="nip"
                                             id="nipField" type="nip" placeholder="Masukkan nip dosen"
-                                            value="{{ old('nip', $user->nip ?? '') }}" autocomplete="off" />
+                                            value="{{ old('nip', $user->dosen->nip ?? '') }}" autocomplete="off" />
                                         @error('nip')
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
@@ -327,6 +346,25 @@
                                             id="emailField" type="email" placeholder="Masukkan email dosen"
                                             value="{{ old('email', $user->email ?? '') }}" autocomplete="off" />
                                         @error('email')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="prodiField">
+                                            Program Studi
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control @error('program_studi') is-invalid @enderror" name="program_studi"
+                                            id="prodiField">
+                                            <option value="" selected hidden>-- Pilih Program Studi --</option>
+                                            <option value="SISTEM INFORMASI" @if (isset($user) && $user->dosen->program_studi == 'SISTEM INFORMASI') selected @endif>
+                                                SISTEM INFORMASI
+                                            </option>
+                                            <option value="PEND. TEKNOLOGI INFORMASI" @if (isset($user) && $user->dosen->program_studi == 'PEND. TEKNOLOGI INFORMASI') selected @endif>
+                                                PEND. TEKNOLOGI INFORMASI
+                                            </option>
+                                        </select>
+                                        @error('program_studi')
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -459,7 +497,7 @@
                             <i class="fa-solid fa-rotate-left me-1"></i>
                             Atur Ulang
                         </button>
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn btn-primary" type="submit" onclick="return onSubmit()">
                             <i class="fa-solid fa-floppy-disk me-1"></i>
                             @if (isset($user))
                                 Perbarui
@@ -586,6 +624,26 @@
                 // memuat gambar dari input file
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        // fungsi konfirmasi submit form
+        function onSubmit() {
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                html: 'Jika anda yakin, silahkan klik tombol <b>Yakin</b> di bawah ini. Jika tidak, klik tombol <b>Batal</b>.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#00ac69',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yakin',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#thisForm').submit();
+                }
+            });
+
+            return false;
         }
     </script>
 @endpush

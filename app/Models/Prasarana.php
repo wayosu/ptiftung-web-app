@@ -15,6 +15,7 @@ class Prasarana extends Model
         'keterangan',
         'slug',
         'prasarana_kategori_id',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

@@ -21,22 +21,43 @@
     <!-- Start Konten Halaman Utama -->
     <section id="kontenUtama">
         <div class="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 xl:gap-12 py-8">
-                <a href="{{ route('profil.detailDosen', 'dr-arip-mulyanto-skom-mkom-mce') }}"
-                    class="group text-center p-4 border rounded-xl hover:shadow transition-all duration-300">
-                    <img class="rounded-xl sm:size-48 lg:size-60 mx-auto"
-                        src="{{ asset('assets/frontpage/img/aripmulyanto.jpeg') }}" alt="dosen-image">
-                    <div class="mt-2 sm:mt-4">
-                        <h3
-                            class="text-sm font-body font-semibold text-gray-800 sm:text-base lg:text-lg group-hover:text-blue-800">
-                            Dr. Arip Mulyanto, S.Kom., M.Kom., MCE
-                        </h3>
-                        <p class="text-xs font-body text-gray-600 sm:text-sm lg:text-base">
-                            Lektor Kepala
-                        </p>
-                    </div>
-                </a>
-            </div>
+            @if (isset($dosens) && count($dosens) > 0)
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 xl:gap-12 py-8">
+                    @foreach ($dosens as $dosen)
+                        <a href="{{ route('profil.detailDosen', $dosen['slug'] ?? '') }}"
+                            class="group text-center p-4 border rounded-xl hover:shadow transition-all duration-300">
+                            @if (isset($dosen['foto']))
+                                <img class="rounded-xl sm:size-48 lg:size-60 mx-auto"
+                                    src="{{ asset('storage/usersProfile/' . $dosen['foto']) }}" alt="dosen-image">
+                            @else
+                                <img class="rounded-xl sm:size-48 lg:size-60 mx-auto"
+                                    src="{{ asset('assets/admin/img/user-placeholder.svg') }}" alt="dosen-image">
+                            @endif
+                            <div class="mt-2 sm:mt-4">
+                                <h3
+                                    class="text-sm font-body font-semibold text-gray-800 sm:text-base lg:text-lg group-hover:text-blue-800">
+                                    {{ $dosen['name'] ?? '' }}
+                                </h3>
+                                <h4
+                                    class="text-sm font-body font-normal text-gray-800 sm:text-base lg:text-base group-hover:text-blue-800">
+                                    {{ $dosen['nip'] ?? '' }}
+                                </h4>
+                                <p class="text-xs font-body text-gray-600 sm:text-sm lg:text-base">
+                                    {{ $dosen['jafa'] ?? '' }}
+                                </p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+
+                <div class="mb-8">
+                    {{ $pagination->links('vendor.pagination.simple-tailwind') }}
+                </div>
+            @else
+                <div class="py-40">
+                    <p class="text-center text-gray-600 font-body font-semibold border rounded py-4">Tidak ada data dosen yang tersedia.</p>
+                </div>
+            @endif
         </div>
     </section>
     <!-- End Konten Halaman Utama -->

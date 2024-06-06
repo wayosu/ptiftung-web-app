@@ -4,16 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\CapaianPembelajaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class CapaianPembelajaranController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->	memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $capaianPembelajarans = CapaianPembelajaran::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $capaianPembelajarans = CapaianPembelajaran::with('createdBy')->orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi()) {
+                $capaianPembelajarans = CapaianPembelajaran::with('createdBy')
+                    ->where('program_studi', Auth::user()->dosen->program_studi)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }
 
             // transformasi data ke bentuk array
             $capaianPembelajarans = $capaianPembelajarans->transform(function ($item) {
@@ -50,17 +70,36 @@ class CapaianPembelajaranController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'capaian_pembelajaran' => 'required',
-        ], [
-            'capaian_pembelajaran.required' => 'Capaian Pembelajaran harus diisi.',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'capaian_pembelajaran.required' => 'Capaian Pembelajaran harus diisi!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('capaianPembelajaran.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses menambahkan data
             CapaianPembelajaran::create([
                 'capaian_pembelajaran' => $request->capaian_pembelajaran,
-                'created_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'created_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('capaianPembelajaran.index')->with('success', 'Data berhasil ditambahkan.');
@@ -72,8 +111,12 @@ class CapaianPembelajaranController extends Controller
     public function edit($id)
     {
         try { // jika sukses mengambil data
-            // cari dan ambil data
-            $capaianPembelajaran = CapaianPembelajaran::findOrFail($id);
+            // ambil data dari model CapaianPembelajaran berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $capaianPembelajaran = CapaianPembelajaran::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $capaianPembelajaran = CapaianPembelajaran::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // tampilkan halaman
             return view('admin.pages.akademik.capaian-pembelajaran.form', [
@@ -92,20 +135,43 @@ class CapaianPembelajaranController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'capaian_pembelajaran' => 'required',
-        ], [
-            'capaian_pembelajaran.required' => 'Kategori sarana harus diisi.',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'capaian_pembelajaran.required' => 'Capaian Pembelajaran harus diisi!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('capaianPembelajaran.index')->with('error', 'Data gagal diperbarui!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses update data
-            // cari data
-            $capaianPembelajaran = CapaianPembelajaran::findOrFail($id);
+            // ambil data dari model CapaianPembelajaran berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $capaianPembelajaran = CapaianPembelajaran::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $capaianPembelajaran = CapaianPembelajaran::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             $capaianPembelajaran->update([
                 'capaian_pembelajaran' => $request->capaian_pembelajaran,
-                'updated_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'updated_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('capaianPembelajaran.index')->with('success', 'Data berhasil diperbarui.');
@@ -119,8 +185,12 @@ class CapaianPembelajaranController extends Controller
     public function destroy($id)
     {
         try { // jika sukses hapus data
-            // ambil data
-            $capaianPembelajaran = CapaianPembelajaran::findOrFail($id);
+            // ambil data dari model CapaianPembelajaran berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $capaianPembelajaran = CapaianPembelajaran::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $capaianPembelajaran = CapaianPembelajaran::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus data
             $capaianPembelajaran->delete();

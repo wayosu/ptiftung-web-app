@@ -4,17 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\Kurikulum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class KurikulumController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->	memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+    
     public function index(Request $request)
     {
         
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $kurikulum = Kurikulum::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $kurikulum = Kurikulum::orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi()) {
+                $kurikulum = Kurikulum::where('program_studi', Auth::user()->dosen->program_studi)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }
 
             // transformasi data ke bentuk array
             $kurikulum = $kurikulum->transform(function ($item) {
@@ -51,20 +70,38 @@ class KurikulumController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'kode_mk' => 'required',
             'nama_mk' => 'required',
             'sks' => 'required',
             'sifat' => 'required',
             'semester' => 'required',
-        ], [
-            'kode_mk.required' => 'Kode Mata Kuliah harus diisi',
-            'nama_mk.required' => 'Nama Mata Kuliah harus diisi',
-            'sks.required' => 'SKS harus diisi',
-            'sifat.required' => 'Sifat harus dipilih',
-            'semester.required' => 'Semester harus dipilih',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'kode_mk.required' => 'Kode Mata Kuliah harus diisi!',
+            'nama_mk.required' => 'Nama Mata Kuliah harus diisi!',
+            'sks.required' => 'SKS harus diisi!',
+            'sifat.required' => 'Sifat harus dipilih!',
+            'semester.required' => 'Semester harus dipilih!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('kurikulum.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses menambahkan data
             Kurikulum::create([
@@ -75,7 +112,8 @@ class KurikulumController extends Controller
                 'semester' => $request->semester,
                 'prasyarat' => $request->prasyarat,
                 'link_gdrive' => $request->link_gdrive,
-                'created_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'created_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('kurikulum.index')->with('success', 'Data berhasil ditambahkan.');
@@ -87,8 +125,12 @@ class KurikulumController extends Controller
     public function edit($id)
     {
         try { // jika sukses mengambil data
-            // cari dan ambil data
-            $kurikulum = Kurikulum::findOrFail($id);
+            // ambil data dari model Kurikulum berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $kurikulum = Kurikulum::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $kurikulum = Kurikulum::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // tampilkan halaman
             return view('admin.pages.akademik.kurikulum.form', [
@@ -107,24 +149,46 @@ class KurikulumController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'kode_mk' => 'required',
             'nama_mk' => 'required',
             'sks' => 'required',
             'sifat' => 'required',
             'semester' => 'required',
-        ], [
-            'kode_mk.required' => 'Kode Mata Kuliah harus diisi',
-            'nama_mk.required' => 'Nama Mata Kuliah harus diisi',
-            'sks.required' => 'SKS harus diisi',
-            'sifat.required' => 'Sifat harus dipilih',
-            'semester.required' => 'Semester harus dipilih',
-        ]);
+        ];
+    
+        $validationMessages = [
+            'kode_mk.required' => 'Kode Mata Kuliah harus diisi!',
+            'nama_mk.required' => 'Nama Mata Kuliah harus diisi!',
+            'sks.required' => 'SKS harus diisi!',
+            'sifat.required' => 'Sifat harus dipilih!',
+            'semester.required' => 'Semester harus dipilih!',
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('kurikulum.index')->with('error', 'Data gagal diperbarui!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika sukses update data
-            // cari data
-            $kurikulum = Kurikulum::findOrFail($id);
+            // ambil data dari model Kurikulum berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $kurikulum = Kurikulum::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $kurikulum = Kurikulum::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             $kurikulum->update([
                 'kode_mk' => $request->kode_mk,
@@ -134,7 +198,8 @@ class KurikulumController extends Controller
                 'semester' => $request->semester,
                 'prasyarat' => $request->prasyarat,
                 'link_gdrive' => $request->link_gdrive,
-                'updated_by' => auth()->user()->id,
+                'program_studi' => $program_studi,
+                'updated_by' => Auth::user()->id,
             ]);
 
             return redirect()->route('kurikulum.index')->with('success', 'Data berhasil diperbarui.');
@@ -148,8 +213,12 @@ class KurikulumController extends Controller
     public function destroy($id)
     {
         try { // jika sukses hapus data
-            // ambil data
-            $kurikulum = Kurikulum::findOrFail($id);
+            // ambil data dari model Kurikulum berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $kurikulum = Kurikulum::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $kurikulum = Kurikulum::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus data
             $kurikulum->delete();

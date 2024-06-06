@@ -132,12 +132,12 @@
                                     alt="profile-image">
                                 <div class="text-center text-xl-start">
                                     <h1 class="fw-bolder mb-2 text-white">{{ Auth::user()->name ?? '' }}</h1>
-                                    @role('admin')
+                                    @role('Superadmin|Admin')
                                         <h2 class="text-lg text-white mb-0">{{ Auth::user()->email ?? '' }}</h2>
                                     @endrole
-                                    @role('dosen')
+                                    @role('Kajur|Kaprodi|Dosen')
                                         <h2 class="text-lg text-white mb-2">
-                                            {{ Auth::user()->nip ?? '' }} -
+                                            {{ Auth::user()->dosen->nip ?? '' }} -
                                             <span class="text-uppercase">{{ Auth::user()->dosen->jafa ?? '' }}</span>
                                         </h2>
                                         <h3 class="text-sm fw-300 text-white mb-0">
@@ -145,10 +145,26 @@
                                             {{ Auth::user()->dosen->umur ?? '' }} Tahun
                                         </h3>
                                     @endrole
+                                    @role('Mahasiswa')
+                                        <h2 class="text-lg text-white mb-2">
+                                            Mahasiswa - 
+                                            {{ Auth::user()->mahasiswa->nim ?? '' }}
+                                        </h2>
+                                        @php
+                                            $namaProdi = Auth::user()->mahasiswa->program_studi;
+
+                                            if ($namaProdi == "PEND. TEKNOLOGI INFORMASI") {
+                                                $namaProdi = "PTI";
+                                            } else {
+                                                $namaProdi = "SI";
+                                            }
+                                        @endphp
+                                        <span class="badge bg-light text-primary">{{ $namaProdi }} - {{ Auth::user()->mahasiswa->angkatan ?? '' }}</span>
+                                    @endrole
                                 </div>
                             </div>
                         </div>
-                        @role('dosen')
+                        @role('Kajur|Kaprodi|Dosen')
                             <div class="p-4">
                                 <div class="d-flex align-items-center mb-3">
                                     <h1 class="fw-bolder small text-uppercase mb-0">Detail Informasi Dosen</h1>
@@ -249,7 +265,7 @@
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    @role('admin')
+                                    @role('Superadmin|Admin')
                                         <div class="mb-3">
                                             <label class="small mb-1" for="emailField">
                                                 Email
@@ -263,7 +279,7 @@
                                             @enderror
                                         </div>
                                     @endrole
-                                    @role('dosen')
+                                    @role('Kajur|Kaprodi|Dosen')
                                         <div class="mb-3">
                                             <label class="small mb-1" for="nipField">
                                                 NIP
@@ -271,7 +287,7 @@
                                             </label>
                                             <input class="form-control @error('nip') is-invalid @enderror" name="nip"
                                                 id="nipField" type="text" placeholder="Masukkan nip anda"
-                                                value="{{ old('nip', Auth::user()->nip ?? '') }}" />
+                                                value="{{ old('nip', Auth::user()->dosen->nip ?? '') }}" />
                                             @error('nip')
                                                 <div class="text-danger small mt-1">{{ $message }}</div>
                                             @enderror

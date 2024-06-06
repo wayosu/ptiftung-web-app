@@ -4,18 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class AgendaController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $agendas = Agenda::orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $agendas = Agenda::orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi()) {
+                $agendas = Agenda::where('program_studi', Auth::user()->dosen->program_studi)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $agendas = $agendas->transform(function ($item) {
@@ -52,8 +69,8 @@ class AgendaController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'judul' => 'required',
             'deskripsi' => 'required',
             'penyelenggara' => 'required',
@@ -61,7 +78,9 @@ class AgendaController extends Controller
             'dari_jam' => 'nullable|date_format:H:i',
             'sampai_jam' => 'nullable|date_format:H:i',
             'thumbnail' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
+        ];
+    
+        $validationMessages = [
             'judul.required' => 'Judul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
             'penyelenggara.required' => 'Penyelenggara harus diisi!',
@@ -71,7 +90,23 @@ class AgendaController extends Controller
             'thumbnail.image' => 'File harus berupa gambar!',
             'thumbnail.mimes' => 'File harus berupa jpeg, png, jpg!',
             'thumbnail.max' => 'File tidak boleh lebih dari 2 MB!',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('agenda.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try {
             // Jika ada file thumbnail yang diunggah, simpan ke penyimpanan
@@ -88,6 +123,7 @@ class AgendaController extends Controller
     
             // Buat agenda baru dan simpan ke database
             Agenda::create([
+                'program_studi' => $program_studi,
                 'judul' => $request->judul,
                 'slug' => Str::slug($request->judul),
                 'deskripsi' => $request->deskripsi,
@@ -96,7 +132,7 @@ class AgendaController extends Controller
                 'dari_jam' => $request->dari_jam ? $request->dari_jam : null,
                 'sampai_jam' => $request->sampai_jam ? $request->sampai_jam : null,
                 'thumbnail' => $nameFile,
-                'created_by' => auth()->user()->id
+                'created_by' => Auth::user()->id
             ]);
     
             return redirect()->route('agenda.index')->with('success', 'Data berhasil ditambahkan.');
@@ -109,7 +145,13 @@ class AgendaController extends Controller
     {
         try { // jika id ditemukan
             // ambil data dari model Agenda berdasarkan id
-            $agenda = Agenda::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $agenda = Agenda::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $agenda = Agenda::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            } else {
+                return redirect()->route('agenda.index')->with('error', 'Halaman bermasalah!. Anda tidak mempunyai hak akses.');
+            }
 
             // tampilkan halaman
             return view('admin.pages.konten.agenda.form', [
@@ -128,8 +170,8 @@ class AgendaController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'judul' => 'required',
             'deskripsi' => 'required',
             'penyelenggara' => 'required',
@@ -137,7 +179,9 @@ class AgendaController extends Controller
             'dari_jam' => 'nullable|date_format:H:i',
             'sampai_jam' => 'nullable|date_format:H:i',
             'thumbnail' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
+        ];
+    
+        $validationMessages = [
             'judul.required' => 'Judul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
             'penyelenggara.required' => 'Penyelenggara harus diisi!',
@@ -147,7 +191,23 @@ class AgendaController extends Controller
             'thumbnail.image' => 'File harus berupa gambar!',
             'thumbnail.mimes' => 'File harus berupa jpeg, png, jpg!',
             'thumbnail.max' => 'File tidak boleh lebih dari 2 MB!',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('agenda.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika id ditemukan
             // ambil data dari model Agenda berdasarkan id
@@ -176,6 +236,7 @@ class AgendaController extends Controller
             }
 
             // Perbarui data agenda
+            $agenda->program_studi = $program_studi;
             $agenda->judul = $request->judul;
             $agenda->slug = Str::slug($request->judul);
             $agenda->deskripsi = $request->deskripsi;
@@ -183,7 +244,7 @@ class AgendaController extends Controller
             $agenda->tanggal_kegiatan = $request->tanggal_kegiatan ? $request->tanggal_kegiatan : null;
             $agenda->dari_jam = $request->dari_jam ? $request->dari_jam : null;
             $agenda->sampai_jam = $request->sampai_jam ? $request->sampai_jam : null;
-            $agenda->updated_by = auth()->user()->id;
+            $agenda->updated_by = Auth::user()->id;
             $agenda->save();
 
             return redirect()->route('agenda.index')->with('success', 'Data berhasil diperbarui.');
@@ -196,7 +257,11 @@ class AgendaController extends Controller
     {
         try { // jika id ditemukan lakukan proses delete
             // ambil data dari model Agenda berdasarkan id
-            $agenda = Agenda::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $agenda = Agenda::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $agenda = Agenda::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus file dari storage/penyimpanan
             if (Storage::exists('konten/agenda/' . $agenda->thumbnail)) {

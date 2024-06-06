@@ -48,7 +48,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ URL::previous() }}">
+                        <a class="btn btn-sm btn-light text-primary" href="{{ route('users.byMahasiswa') }}">
                             <i class="fa-solid fa-arrow-left me-1"></i>
                             Kembali
                         </a>
@@ -60,9 +60,7 @@
 
     <!-- Konten Halaman Utama -->
     <div class="container-xl px-4 mt-4">
-        <form
-            action="@if (isset($user)) {{ route('users.updateMahasiswa', $user->id) }} @else {{ route('users.storeMahasiswa') }} @endif"
-            method="POST" class="row" enctype="multipart/form-data">
+        <form id="thisForm" action="@if (isset($user)) {{ route('users.updateMahasiswa', $user->id) }} @else {{ route('users.storeMahasiswa') }} @endif" method="POST" class="row" enctype="multipart/form-data">
             @csrf
             @if (isset($user))
                 @method('PUT')
@@ -117,12 +115,11 @@
                             <select class="form-control @error('program_studi') is-invalid @enderror" name="program_studi"
                                 id="prodiField">
                                 <option value="" selected hidden>-- Pilih Program Studi --</option>
-                                <option value="Sistem Informasi" @if (isset($user) && $user->mahasiswa->program_studi == 'Sistem Informasi') selected @endif>
-                                    Sistem Informasi
+                                <option value="SISTEM INFORMASI" @if (isset($user) && $user->mahasiswa->program_studi == 'SISTEM INFORMASI') selected @endif>
+                                    SISTEM INFORMASI
                                 </option>
-                                <option value="Pendidikan Teknologi Informasi"
-                                    @if (isset($user) && $user->mahasiswa->program_studi == 'Pendidikan Teknologi Informasi') selected @endif>
-                                    Pendidikan Teknologi Informasi
+                                <option value="PEND. TEKNOLOGI INFORMASI" @if (isset($user) && $user->mahasiswa->program_studi == 'PEND. TEKNOLOGI INFORMASI') selected @endif>
+                                    PEND. TEKNOLOGI INFORMASI
                                 </option>
                             </select>
                             @error('program_studi')
@@ -149,36 +146,48 @@
                             </label>
                             <input class="form-control @error('nim') is-invalid @enderror" name="nim" id="nimField"
                                 type="nim" placeholder="Masukkan nim mahasiswa"
-                                value="{{ old('nim', $user->nim ?? '') }}" autocomplete="off" />
+                                value="{{ old('nim', $user->mahasiswa->nim ?? '') }}" autocomplete="off" />
                             @error('nim')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label class="small mb-1 w-100" for="passwordField">
-                                Password
-                                @if (!isset($user))
-                                    <span class="text-danger">*</span>
-                                @endif
+                            <label class="small mb-1" for="emailField">
+                                Email
+                                <span class="text-danger">*</span>
                             </label>
-                            <div class="position-relative">
-                                <input class="form-control @error('password') is-invalid @enderror" name="password"
-                                    id="passwordField" type="password" placeholder="Masukkan password mahasiswa"
-                                    value="{{ old('password') }}" />
-                                <span id="togglePassword"
-                                    class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
-                                    data-feather="eye-off">
-                                </span>
-                            </div>
-                            @error('password')
+                            <input class="form-control @error('email') is-invalid @enderror" name="email" id="emailField"
+                                type="email" placeholder="Masukkan nama lengkap mahasiswa"
+                                value="{{ old('email', $user->email ?? '') }}" />
+                            @error('email')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+                        @if (!isset($user))
+                            <div class="mb-3">
+                                <label class="small mb-1 w-100" for="passwordField">
+                                    Password
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <input class="form-control @error('password') is-invalid @enderror" name="password"
+                                        id="passwordField" type="password" placeholder="Masukkan password mahasiswa"
+                                        value="{{ old('password') }}" />
+                                    <span id="togglePassword"
+                                        class="position-absolute top-50 end-0 translate-middle-y me-3 d-flex"
+                                        data-feather="eye-off">
+                                    </span>
+                                </div>
+                                @error('password')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <button class="btn btn-light" type="reset">
                             <i class="fa-solid fa-rotate-left me-1"></i>
                             Atur Ulang
                         </button>
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn btn-primary" type="submit" onclick="return onSubmit()">
                             <i class="fa-solid fa-floppy-disk me-1"></i>
                             @if (isset($user))
                                 Perbarui
@@ -274,6 +283,26 @@
                 // Memuat gambar dari input file
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        // fungsi konfirmasi submit form
+        function onSubmit() {
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                html: 'Jika anda yakin, silahkan klik tombol <b>Yakin</b> di bawah ini. Jika tidak, klik tombol <b>Batal</b>.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#00ac69',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yakin',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#thisForm').submit();
+                }
+            });
+
+            return false;
         }
     </script>
 @endpush

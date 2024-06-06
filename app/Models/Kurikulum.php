@@ -19,6 +19,7 @@ class Kurikulum extends Model
         'semester',
         'prasyarat',
         'link_gdrive',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

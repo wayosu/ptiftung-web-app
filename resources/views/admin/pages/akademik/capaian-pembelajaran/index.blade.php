@@ -55,7 +55,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0);" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -77,6 +77,9 @@
                     <thead>
                         <tr>
                             <th>Capaian Pembelajaran</th>
+                            @role ('Superadmin|Admin|Kajur')
+                                <th>Program Studi</th>
+                            @endrole
                             <th>Tanggal Dibuat</th>
                             <th>Dibuat Oleh</th>
                             <th>Aksi</th>
@@ -115,9 +118,11 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('capaianPembelajaran.index') }}",
-                columns: [{
-                        data: 'capaian_pembelajaran'
-                    },
+                columns: [
+                    { data: 'capaian_pembelajaran' },
+                    @role ('Superadmin|Admin|Kajur')
+                        { data: 'program_studi' },
+                    @endrole
                     {
                         data: 'created_at',
                         render: function(data) {
@@ -135,6 +140,11 @@
                         searchable: false
                     },
                 ]
+            });
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
             });
 
             // toast konfigurasi

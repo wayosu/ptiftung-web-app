@@ -16,6 +16,7 @@ class KerjasamaDalamNegeri extends Model
         'jenis_kegiatan',
         'tgl_mulai',
         'tgl_berakhir',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

@@ -20,9 +20,17 @@
                 <a href="#" class="text-sm font-body font-light hover:underline">
                     Kerja Sama
                 </a>
-                <a href="{{ route('login') }}" class="text-sm font-body font-light hover:underline">
-                    Login
-                </a>
+                @auth
+                    <a href="{{ route('dasbor') }}" class="text-sm font-body font-light hover:underline">
+                        Dasbor
+                        <i class="ri-arrow-right-s-line"></i>
+                    </a>
+                @endauth
+                @guest                    
+                    <a href="{{ route('login') }}" class="text-sm font-body font-light hover:underline">
+                        Login
+                    </a>
+                @endguest
                 <a href="#" class="flex items-center gap-2 text-sm font-body font-light hover:underline">
                     <img src="{{ asset('assets/frontpage/img/flag/id.svg') }}" alt="id-flag" class="w-4">
                     <span>ID</span>

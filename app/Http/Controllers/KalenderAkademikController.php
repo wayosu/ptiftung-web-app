@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\KalenderAkademik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class KalenderAkademikController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->	memilikiperan('Kajur'); 
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
@@ -39,13 +46,17 @@ class KalenderAkademikController extends Controller
 
     public function create()
     {
-        // tampilkan halaman
-        return view('admin.pages.akademik.kalender-akademik.form', [
-            'icon' => 'plus',
-            'title' => 'Kalender Akademik',
-            'subtitle' => 'Tambah Kegiatan',
-            'active' => 'kalender-akademik',
-        ]);
+        if ($this->checkSuperadminAdminKajur()) {
+            // tampilkan halaman
+            return view('admin.pages.akademik.kalender-akademik.form', [
+                'icon' => 'plus',
+                'title' => 'Kalender Akademik',
+                'subtitle' => 'Tambah Kegiatan',
+                'active' => 'kalender-akademik',
+            ]);
+        } else {
+            return redirect()->route('kalenderAkademik.index')->with('error', 'Anda tidak punya akses.');
+        }
     }
 
     public function store(Request $request)
@@ -74,22 +85,26 @@ class KalenderAkademikController extends Controller
 
     public function edit($id)
     {
-        try { // jika sukses mengambil data
-            // cari dan ambil data
-            $kalenderAkademik = KalenderAkademik::findOrFail($id);
+        if ($this->checkSuperadminAdminKajur()) {
+            try { // jika sukses mengambil data
+                // cari dan ambil data
+                $kalenderAkademik = KalenderAkademik::findOrFail($id);
 
-            // tampilkan halaman
-            return view('admin.pages.akademik.kalender-akademik.form', [
-                'icon' => 'edit',
-                'title' => 'Kalender Akademik',
-                'subtitle' => 'Edit Kegiatan',
-                'active' => 'kalender-akademik',
-                'kalenderAkademik' => $kalenderAkademik,
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('kalenderAkademik.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
-        } catch (\Exception $e) { // jika bermasalah mengambil data
-            return redirect()->route('kalenderAkademik.index')->with('error', 'Halaman sedang bermasalah!');
+                // tampilkan halaman
+                return view('admin.pages.akademik.kalender-akademik.form', [
+                    'icon' => 'edit',
+                    'title' => 'Kalender Akademik',
+                    'subtitle' => 'Edit Kegiatan',
+                    'active' => 'kalender-akademik',
+                    'kalenderAkademik' => $kalenderAkademik,
+                ]);
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
+                return redirect()->route('kalenderAkademik.index')->with('error', 'Halaman bermasalah. Data tidak ditemukan!');
+            } catch (\Exception $e) { // jika bermasalah mengambil data
+                return redirect()->route('kalenderAkademik.index')->with('error', 'Halaman sedang bermasalah!');
+            }
+        } else {
+            return redirect()->route('kalenderAkademik.index')->with('error', 'Anda tidak punya akses.');
         }
     }
 
@@ -124,18 +139,22 @@ class KalenderAkademikController extends Controller
 
     public function destroy($id)
     {
-        try { // jika sukses hapus data
-            // ambil data
-            $kalenderAkademik = KalenderAkademik::findOrFail($id);
+        if ($this->checkSuperadminAdminKajur()) {
+            try { // jika sukses hapus data
+                // ambil data
+                $kalenderAkademik = KalenderAkademik::findOrFail($id);
 
-            // hapus data
-            $kalenderAkademik->delete();
+                // hapus data
+                $kalenderAkademik->delete();
 
-            return redirect()->route('kalenderAkademik.index')->with('success', 'Data berhasil dihapus.');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('kalenderAkademik.index')->with('error', 'Data gagal dihapus. Data tidak ditemukan!');
-        } catch (\Exception $e) { // jika gagal hapus data
-            return redirect()->route('kalenderAkademik.index')->with('error', 'Data gagal dihapus!');
+                return redirect()->route('kalenderAkademik.index')->with('success', 'Data berhasil dihapus.');
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
+                return redirect()->route('kalenderAkademik.index')->with('error', 'Data gagal dihapus. Data tidak ditemukan!');
+            } catch (\Exception $e) { // jika gagal hapus data
+                return redirect()->route('kalenderAkademik.index')->with('error', 'Data gagal dihapus!');
+            }
+        } else {
+            return redirect()->route('kalenderAkademik.index')->with('error', 'Anda tidak punya akses.');
         }
     }
 }

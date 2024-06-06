@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('dosens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('nip')->nullable()->unique();
+            $table->enum('program_studi', ['SISTEM INFORMASI', 'PEND. TEKNOLOGI INFORMASI'])->default('SISTEM INFORMASI');
             $table->string('slug')->nullable()->unique();
             $table->string('jenis_kelamin')->nullable();
             $table->string('umur')->nullable();

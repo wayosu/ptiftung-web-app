@@ -4,34 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfilProgramStudi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ProfilProgramStudiController extends Controller
 {
-    public function sejarah()
+    public function sejarah($prodi)
     {
-        // ambil data (hanya nama_program_studi dan sejarah)
-        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
-            'nama_program_studi', 
-            'sejarah', 
-            'updated_by', 
-            'updated_at'
-        ]);
+        if (Auth::user()->memilikiPeran('Kaprodi')) {
+            if ($prodi === 'pti' && Auth::user()->dosen->program_studi === 'PEND. TEKNOLOGI INFORMASI') {
+                // ambil data (hanya nama_program_studi dan sejarah)
+                $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first([
+                    'nama_program_studi', 
+                    'sejarah', 
+                    'updated_by', 
+                    'updated_at'
+                ]);
+            } else if ($prodi === 'si' && Auth::user()->dosen->program_studi === 'SISTEM INFORMASI') {
+                // ambil data (hanya nama_program_studi dan sejarah)
+                $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'SISTEM INFORMASI')->first([
+                    'nama_program_studi', 
+                    'sejarah', 
+                    'updated_by', 
+                    'updated_at'
+                ]);
+            } else {
+                abort(404);
+            }
+        } else {
+            if ($prodi === 'pti') {
+                // ambil data (hanya nama_program_studi dan sejarah)
+                $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first([
+                    'nama_program_studi', 
+                    'sejarah', 
+                    'updated_by', 
+                    'updated_at'
+                ]);
+            } else if ($prodi === 'si') {
+                // ambil data (hanya nama_program_studi dan sejarah)
+                $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'SISTEM INFORMASI')->first([
+                    'nama_program_studi', 
+                    'sejarah', 
+                    'updated_by', 
+                    'updated_at'
+                ]);
+            } else {
+                abort(404);
+            }
+        }
 
         // tampilkan halaman
         return view('admin.pages.profil.sejarah', [
             'icon' => 'fa-solid fa-landmark',
             'title' => 'Sejarah',
             'subtitle' => 'Sejarah Program Studi ' . $profil->nama_program_studi,
-            'active' => 'sejarah',
+            'active' => 'sejarah-' . $prodi,
+            'activeForm' => $prodi,
             'sejarah' => $profil->sejarah,
             'updatedBy' => $profil->updatedBy->name ?? null,
             'updatedAt' => $profil->updated_at
         ]);
     }
 
-    public function updateSejarah(Request $request)
+    public function updateSejarah(Request $request, $prodi)
     {
         // validasi request data yang dikirim
         $request->validate([
@@ -42,7 +78,13 @@ class ProfilProgramStudiController extends Controller
 
         try { // jika id ditemukan lakukan update
             // ambil data
-            $sejarah = ProfilProgramStudi::findOrFail(1);
+            if ($prodi === 'pti') {
+                $sejarah = ProfilProgramStudi::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first();
+            } else if ($prodi === 'si') {
+                $sejarah = ProfilProgramStudi::where('program_studi', 'SISTEM INFORMASI')->first();
+            } else {
+                abort(404);
+            }
 
             // update data
             $sejarah->update([
@@ -50,32 +92,46 @@ class ProfilProgramStudiController extends Controller
                 'updated_by' => auth()->user()->id
             ]);
 
-            return redirect()->route('sejarah.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('sejarah.index', $prodi)->with('success', 'Data berhasil diperbarui.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('sejarah.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('sejarah.index', $prodi)->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('sejarah.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('sejarah.index', $prodi)->with('error', 'Data gagal diperbarui!');
         }
     }
 
-    public function visiKeilmuanTujuanStrategi()
+    public function visiKeilmuanTujuanStrategi($prodi)
     {
         // ambil data (hanya nama_program_studi, visi_keilmuan, tujuan, dan strategi)
-        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
-            'nama_program_studi',
-            'visi_keilmuan',
-            'tujuan',
-            'strategi',
-            'updated_by',
-            'updated_at'
-        ]);
+        if ($prodi === 'pti') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first([
+                'nama_program_studi',
+                'visi_keilmuan',
+                'tujuan',
+                'strategi',
+                'updated_by',
+                'updated_at'
+            ]);
+        } else if ($prodi === 'si') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'SISTEM INFORMASI')->first([
+                'nama_program_studi',
+                'visi_keilmuan',
+                'tujuan',
+                'strategi',
+                'updated_by',
+                'updated_at'
+            ]);
+        } else {
+            abort(404);
+        }
 
         // tampilkan halaman
         return view('admin.pages.profil.visi-tujuan-strategi', [
             'icon' => 'fa-solid fa-landmark',
             'title' => 'Visi Keilmuan, Tujuan, dan Strategi',
             'subtitle' => 'Visi Keilmuan, Tujuan, dan Strategi Program Studi ' . $profil->nama_program_studi,
-            'active' => 'visi-keilmuan-tujuan-strategi',
+            'active' => 'visi-keilmuan-tujuan-strategi-' . $prodi,
+            'activeForm' => $prodi,
             'visiKeilmuan' => $profil->visi_keilmuan,
             'tujuan' => $profil->tujuan,
             'strategi' => $profil->strategi,
@@ -84,7 +140,7 @@ class ProfilProgramStudiController extends Controller
         ]);
     }
 
-    public function updateVisiKeilmuanTujuanStrategi(Request $request)
+    public function updateVisiKeilmuanTujuanStrategi(Request $request, $prodi)
     {
         // validasi request data yang dikirim
         $request->validate([
@@ -99,7 +155,13 @@ class ProfilProgramStudiController extends Controller
 
         try { // jika id ditemukan lakukan update
             // ambil data
-            $visiKeilmuanTujuanStrategi = ProfilProgramStudi::findOrFail(1);
+            if ($prodi === 'pti') {
+                $visiKeilmuanTujuanStrategi = ProfilProgramStudi::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first();
+            } else if ($prodi === 'si') {
+                $visiKeilmuanTujuanStrategi = ProfilProgramStudi::where('program_studi', 'SISTEM INFORMASI')->first();
+            } else {
+                abort(404);
+            }
 
             // update data
             $visiKeilmuanTujuanStrategi->update([
@@ -109,37 +171,49 @@ class ProfilProgramStudiController extends Controller
                 'updated_by' => auth()->user()->id
             ]);
 
-            return redirect()->route('visiKeilmuanTujuanStrategi.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('visiKeilmuanTujuanStrategi.index', $prodi)->with('success', 'Data berhasil diperbarui.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('visiKeilmuanTujuanStrategi.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('visiKeilmuanTujuanStrategi.index', $prodi)->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('visiKeilmuanTujuanStrategi.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('visiKeilmuanTujuanStrategi.index', $prodi)->with('error', 'Data gagal diperbarui!');
         }
     }
 
-    public function strukturOrganisasi()
+    public function strukturOrganisasi($prodi)
     {
         // ambil data (hanya nama_program_studi dan struktur_organisasi)
-        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
-            'nama_program_studi', 
-            'struktur_organisasi',
-            'updated_by',
-            'updated_at'
-        ]);
+        if ($prodi === 'pti') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first([
+                'nama_program_studi', 
+                'struktur_organisasi',
+                'updated_by',
+                'updated_at'
+            ]);
+        } else if ($prodi === 'si') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'SISTEM INFORMASI')->first([
+                'nama_program_studi', 
+                'struktur_organisasi',
+                'updated_by',
+                'updated_at'
+            ]);
+        } else {
+            abort(404);
+        }
 
         // tampilkan halaman
         return view('admin.pages.profil.struktur-organisasi', [
             'icon' => 'fa-solid fa-landmark',
             'title' => 'Struktur Organisasi',
             'subtitle' => 'Struktur Organisasi Program Studi ' . $profil->nama_program_studi,
-            'active' => 'struktur-organisasi',
+            'active' => 'struktur-organisasi-' . $prodi,
+            'activeForm' => $prodi,
             'strukturOrganisasi' => $profil->struktur_organisasi,
             'updatedBy' => $profil->updatedBy->name ?? null,
             'updatedAt' => $profil->updated_at
         ]);
     }
 
-    public function updateStrukturOrganisasi(Request $request)
+    public function updateStrukturOrganisasi(Request $request, $prodi)
     {
         // validasi request data yang dikirim
         $request->validate([
@@ -152,7 +226,14 @@ class ProfilProgramStudiController extends Controller
         ]);
 
         try { // jika id ditemukan lakukan update
-            $strukturOrganisasi = ProfilProgramStudi::findOrFail(1);
+            // ambil data
+            if ($prodi === 'pti') {
+                $strukturOrganisasi = ProfilProgramStudi::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first();
+            } else if ($prodi === 'si') {
+                $strukturOrganisasi = ProfilProgramStudi::where('program_studi', 'SISTEM INFORMASI')->first();
+            } else {
+                abort(404);
+            }
 
             // jika ada gambar
             if ($request->hasFile('gambar')) {
@@ -174,38 +255,55 @@ class ProfilProgramStudiController extends Controller
                     'updated_by' => auth()->user()->id
                 ]);
 
-                return redirect()->route('strukturOrganisasi.index')->with('success', 'Data berhasil diperbarui.');
+                return redirect()->route('strukturOrganisasi.index', $prodi)->with('success', 'Data berhasil diperbarui.');
             } else {
-                return redirect()->route('strukturOrganisasi.index')->with('error', 'Data gagal diperbarui. Gambar harus diisi!');
+                return redirect()->route('strukturOrganisasi.index', $prodi)->with('error', 'Data gagal diperbarui. Gambar harus diisi!');
             }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('strukturOrganisasi.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('strukturOrganisasi.index', $prodi)->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('strukturOrganisasi.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('strukturOrganisasi.index', $prodi)->with('error', 'Data gagal diperbarui!');
         }
     }
 
-    public function kontakLokasi()
+    public function kontakLokasi($prodi)
     {
         // ambil data (hanya nama_program_studi, alamat, link_embed_gmaps, nomor_telepon, email, link_facebook, link_instagram)
-        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
-            'nama_program_studi',
-            'alamat',
-            'link_embed_gmaps',
-            'nomor_telepon',
-            'email',
-            'link_facebook',
-            'link_instagram',
-            'updated_by',
-            'updated_at'
-        ]);
+        if ($prodi === 'pti') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first([
+                'nama_program_studi',
+                'alamat',
+                'link_embed_gmaps',
+                'nomor_telepon',
+                'email',
+                'link_facebook',
+                'link_instagram',
+                'updated_by',
+                'updated_at'
+            ]);
+        } else if ($prodi === 'si') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'SISTEM INFORMASI')->first([
+                'nama_program_studi',
+                'alamat',
+                'link_embed_gmaps',
+                'nomor_telepon',
+                'email',
+                'link_facebook',
+                'link_instagram',
+                'updated_by',
+                'updated_at'
+            ]);
+        } else {
+            abort(404);
+        }
 
         // tampilkan halaman
         return view('admin.pages.profil.kontak-lokasi', [
             'icon' => 'fa-solid fa-landmark',
             'title' => 'Kontak dan Lokasi',
             'subtitle' => 'Kontak dan Lokasi Program Studi ' . $profil->nama_program_studi,
-            'active' => 'kontak-lokasi',
+            'active' => 'kontak-lokasi-' . $prodi,
+            'activeForm' => $prodi,
             'nomorTelepon' => $profil->nomor_telepon,
             'email' => $profil->email,
             'linkFacebook' => $profil->link_facebook,
@@ -217,7 +315,7 @@ class ProfilProgramStudiController extends Controller
         ]);
     }
 
-    public function updateKontakLokasi(Request $request)
+    public function updateKontakLokasi(Request $request, $prodi)
     {
         // validasi request data yang dikirim
         $request->validate([
@@ -232,7 +330,14 @@ class ProfilProgramStudiController extends Controller
         ]);
 
         try { // jika id ditemukan lakukan update
-            $kontakLokasi = ProfilProgramStudi::findOrFail(1);
+            // ambil data
+            if ($prodi === 'pti') {
+                $kontakLokasi = ProfilProgramStudi::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first();
+            } else if ($prodi === 'si') {
+                $kontakLokasi = ProfilProgramStudi::where('program_studi', 'SISTEM INFORMASI')->first();
+            } else {
+                abort(404);
+            }
 
             // update data
             $kontakLokasi->update([
@@ -245,37 +350,49 @@ class ProfilProgramStudiController extends Controller
                 'updated_by' => auth()->user()->id
             ]);
 
-            return redirect()->route('kontakLokasi.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('kontakLokasi.index', $prodi)->with('success', 'Data berhasil diperbarui.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('kontakLokasi.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('kontakLokasi.index', $prodi)->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('kontakLokasi.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('kontakLokasi.index', $prodi)->with('error', 'Data gagal diperbarui!');
         }
     }
 
-    public function videoProfil()
+    public function videoProfil($prodi)
     {
         // ambil data (hanya nama_program_studi dan link embed video profil)
-        $profil = ProfilProgramStudi::with('updatedBy')->where('id', 1)->first([
-            'nama_program_studi', 
-            'link_embed_video_profil', 
-            'updated_by', 
-            'updated_at'
-        ]);
+        if ($prodi === 'pti') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first([
+                'nama_program_studi', 
+                'link_embed_video_profil', 
+                'updated_by', 
+                'updated_at'
+            ]);
+        } else if ($prodi === 'si') {
+            $profil = ProfilProgramStudi::with('updatedBy')->where('program_studi', 'SISTEM INFORMASI')->first([
+                'nama_program_studi', 
+                'link_embed_video_profil', 
+                'updated_by', 
+                'updated_at'
+            ]);
+        } else {
+            abort(404);
+        }
 
         // tampilkan halaman
         return view('admin.pages.profil.video-profil', [
             'icon' => 'fa-solid fa-landmark',
             'title' => 'Video Profil',
             'subtitle' => 'Video Profil Program Studi ' . $profil->nama_program_studi,
-            'active' => 'video-profil',
+            'active' => 'video-profil-' . $prodi,
+            'activeForm' => $prodi,
             'videoProfil' => $profil->link_embed_video_profil,
             'updatedBy' => $profil->updatedBy->name ?? null,
             'updatedAt' => $profil->updated_at
         ]);
     }
 
-    public function updateVideoProfil(Request $request)
+    public function updateVideoProfil(Request $request, $prodi)
     {
         // validasi request data yang dikirim
         $request->validate([
@@ -286,7 +403,13 @@ class ProfilProgramStudiController extends Controller
 
         try { // jika id ditemukan lakukan update
             // ambil data
-            $videoProfil = ProfilProgramStudi::findOrFail(1);
+            if ($prodi === 'pti') {
+                $videoProfil = ProfilProgramStudi::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')->first();
+            } else if ($prodi === 'si') {
+                $videoProfil = ProfilProgramStudi::where('program_studi', 'SISTEM INFORMASI')->first();
+            } else {
+                abort(404);
+            }
 
             // update data
             $videoProfil->update([
@@ -294,11 +417,11 @@ class ProfilProgramStudiController extends Controller
                 'updated_by' => auth()->user()->id
             ]);
 
-            return redirect()->route('videoProfil.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('videoProfil.index', $prodi)->with('success', 'Data berhasil diperbarui.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) { // jika id tidak ditemukan
-            return redirect()->route('videoProfil.index')->with('error', 'Data bermasalah. Data tidak ditemukan!');
+            return redirect()->route('videoProfil.index', $prodi)->with('error', 'Data bermasalah. Data tidak ditemukan!');
         } catch (\Exception $e) { // jika gagal menghapus data
-            return redirect()->route('videoProfil.index')->with('error', 'Data gagal diperbarui!');
+            return redirect()->route('videoProfil.index', $prodi)->with('error', 'Data gagal diperbarui!');
         }
     }
 }

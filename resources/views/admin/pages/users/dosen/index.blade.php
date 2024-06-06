@@ -63,7 +63,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -86,11 +86,20 @@
     <div class="container-fluid px-4">
         <div class="card">
             <div class="card-body overflow-hidden">
+                <div class="mb-3">
+                    <label for="program_studi" class="mb-1">Filter berdasarkan Program Studi:</label>
+                    <select name="program_studi" id="program_studi" class="form-control">
+                        <option value="">Semua Program Studi</option>
+                        <option value="SISTEM INFORMASI">Sistem Informasi</option>
+                        <option value="PEND. TEKNOLOGI INFORMASI">Pendidikan Teknologi Informasi</option>
+                    </select>
+                </div>
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Nama</th>
                             <th>NIP</th>
+                            <th>Nama</th>
+                            <th>Program Studi</th>
                             <th>JAFA</th>
                             <th>Jenis Kelamin</th>
                             <th>Tanggal Dibuat</th>
@@ -118,9 +127,11 @@
     <script>
         $(document).ready(function() {
             // initialize datatables
-            $('#myDataTables').DataTable({
+            var table = $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
+                    [2, 'asc'],
+                    [1, 'asc'],
                     [0, 'asc']
                 ],
                 language: {
@@ -128,33 +139,55 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('users.byDosen') }}",
-                columns: [{
-                        data: 'name'
+                ajax: {
+                    url: "{{ route('users.byDosen') }}",
+                    type: 'GET',
+                    data: function(d) {
+                        d.program_studi = $('#program_studi').val();
+                    }
+                },
+                columns: [
+                    { data: 'dosen.nip' },
+                    { 
+                        data: 'name', 
+                        render: function(data, type, row) {
+                            let roleName = '';
+                            let badge = '';
+                            switch (row.role_names) {
+                                case 'Kajur':
+                                    roleName = 'Kepala Jurusan Infomatika'; // Perbaikan nama role jika perlu
+                                    badge = '<span class="badge bg-indigo ms-1"><i class="fa-solid fa-shield fa-xs me-1"></i>' + roleName + '</span>';
+                                    break;
+                                case 'Kaprodi':
+                                    roleName = 'Kepala Program Studi ' + (row.dosen.program_studi === 'SISTEM INFORMASI' ? 'SI' : 'PTI'); // Menyesuaikan dengan program studi
+                                    badge = '<span class="badge bg-pink ms-1"><i class="fa-solid fa-shield fa-xs me-1"></i>' + roleName + '</span>';
+                                    break;
+                                default:
+                                    badge = '';
+                            }
+
+                            return data + badge;
+                        }
                     },
-                    {
-                        data: 'nip'
-                    },
-                    {
-                        data: 'dosen.jafa'
-                    },
-                    {
-                        data: 'dosen.jenis_kelamin'
-                    },
+                    { data: 'dosen.program_studi' },
+                    { data: 'dosen.jafa' },
+                    { data: 'dosen.jenis_kelamin' },
                     {
                         data: 'created_at',
                         render: function(data) {
-                            // with locale 'id'
-                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
-                                ' WITA';
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') + ' WITA';
                         }
                     },
                     {
                         data: 'aksi',
                         orderable: false,
                         searchable: false
-                    },
+                    }
                 ]
+            });
+
+            $('#program_studi').on('change', function() {
+                table.ajax.reload();
             });
 
             // toast konfigurasi
@@ -193,6 +226,11 @@
                 })
             @endif
 
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
+            });
+
             // confirm delete with swal
             $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
@@ -229,5 +267,61 @@
                 });
             });
         });
+
+        function setChangeRole(userId, role) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: `Anda akan mengubah role user ini menjadi ${role}.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, ubah role!',
+                confirmButtonColor: '#00ac69',
+                cancelButtonText: 'Batal',
+                cancelButtonColor: '#6c757d',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const token = "{{ csrf_token() }}";
+                    let url = "{{ route('users.changeRole', ':userId') }}"; // Sesuaikan URL endpoint sesuai dengan rute Anda
+                    url = url.replace(':userId', userId);
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            role: role,
+                            _token: token
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                Swal.fire(
+                                    'Berhasil!',
+                                    'Role user telah diubah.',
+                                    'success'
+                                ).then(() => {
+                                    // Refresh datatables
+                                    $('#myDataTables').DataTable().ajax.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    data.error || 'Terjadi kesalahan saat mengubah role.',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat mengubah role.',
+                                'error'
+                            );
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            });
+
+            return false;
+        }
     </script>
 @endpush

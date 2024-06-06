@@ -62,11 +62,16 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
                         @include('admin.pages.users.filter-berdasarkan')
+                        <a class="btn btn-sm btn-light text-primary" data-bs-toggle="modal"
+                        data-bs-target="#modalImportMahasiswa" href="javascript:void(0);" role="button">
+                            <i class="fa-solid fa-file-import me-1"></i>
+                            Import Data
+                        </a>
                         <a class="btn btn-sm btn-light text-primary" href="{{ route('users.createMahasiswa') }}">
                             <i class="fa-solid fa-plus me-1"></i>
                             Tambah Mahasiswa
@@ -81,11 +86,19 @@
     <div class="container-fluid px-4">
         <div class="card">
             <div class="card-body overflow-hidden">
+                <div class="mb-3">
+                    <label for="program_studi" class="mb-1">Filter berdasarkan Program Studi:</label>
+                    <select name="program_studi" id="program_studi" class="form-control">
+                        <option value="">Semua Program Studi</option>
+                        <option value="SISTEM INFORMASI">Sistem Informasi</option>
+                        <option value="PEND. TEKNOLOGI INFORMASI">Pendidikan Teknologi Informasi</option>
+                    </select>
+                </div>
                 <table id="myDataTables" class="table table-bordered dt-responsive wrap" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Nama</th>
                             <th>NIM</th>
+                            <th>Nama</th>
                             <th>Program Studi</th>
                             <th>Angkatan</th>
                             <th>Tanggal Dibuat</th>
@@ -95,7 +108,38 @@
                     <tbody>
                     </tbody>
                 </table>
-            </div>
+            </div>            
+        </div>
+    </div>
+
+    <!--- modal import data --->
+    <div class="modal fade" id="modalImportMahasiswa" tabindex="-1" role="dialog"
+        aria-labelledby="examplemModalImportMahasiswaTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <form id="formImport" method="POST" enctype="multipart/form-data" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="examplemModalImportMahasiswaTitle">Import Data Mahasiswa</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h6 class="fw-bolder">Contoh Data CSV</h6>
+                        <img src="{{ asset('assets/admin/img/contoh-data-csv.png') }}" alt="contoh-data-csv"
+                            class="img-fluid border border-2 border-danger">
+                    </div>
+                    <p class="mb-1 text-sm">Silahkan pilih file CSV yang akan diimport.</p>
+                    <input id="file" type="file" class="form-control" name="file" accept=".csv,text/csv">
+                    <span id="pesan-error" class="text-xs text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Tutup</button>
+                    <button id="submit-btn" class="btn btn-primary" type="button">
+                        Import Sekarang
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection
@@ -113,43 +157,50 @@
     <script>
         $(document).ready(function() {
             // inisialisasi datatables
-            $('#myDataTables').DataTable({
+            var table = $('#myDataTables').DataTable({
                 responsive: true,
                 order: [
-                    [1, 'asc']
+                    [2, 'asc'],
+                    [0, 'asc']
                 ],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/id.json'
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('users.byMahasiswa') }}",
-                columns: [{
-                        data: 'name'
+                ajax: {
+                    url: "{{ route('users.byMahasiswa') }}",
+                    data: function(d) {
+                        d.program_studi = $('#program_studi').val();
                     },
-                    {
-                        data: 'nim'
-                    },
-                    {
-                        data: 'mahasiswa.program_studi'
-                    },
-                    {
-                        data: 'mahasiswa.angkatan'
-                    },
+                    dataSrc: function(json) {
+                        if (!json.data) {
+                            return [];
+                        }
+                        return json.data;
+                    }
+                },
+                columns: [
+                    { data: 'mahasiswa.nim' },
+                    { data: 'name' },
+                    { data: 'mahasiswa.program_studi' },
+                    { data: 'mahasiswa.angkatan' },
                     {
                         data: 'created_at',
                         render: function(data) {
-                            // menggunakan locale 'id'
-                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') +
-                                ' WITA';
+                            return moment(data).locale('id').format('dddd, D MMMM YYYY HH:mm') + ' WITA';
                         }
                     },
                     {
                         data: 'aksi',
                         orderable: false,
                         searchable: false
-                    },
+                    }
                 ]
+            });
+
+            $('#program_studi').on('change', function() {
+                table.ajax.reload();
             });
 
             // toast konfigurasi
@@ -188,6 +239,11 @@
                 })
             @endif
 
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
+            });
+
             // konfirmasi tombol hapus menggunakan swal
             $('body').on('click', '.tombol-hapus', function(e) {
                 e.preventDefault();
@@ -222,6 +278,67 @@
                             return 'Mohon diisi dengan benar!';
                         }
                     },
+                });
+            });
+
+            // klik tombol 'import mahasiswa'
+            $('#submit-btn').on('click', function(e) {
+                e.preventDefault();
+
+                // Disable the button and show loading text
+                const button = $(this);
+                button.prop('disabled', true);
+                const originalText = button.html();
+                button.html('Processing... <i class="fas fa-spinner fa-spin"></i>');
+
+                const formData = new FormData($('#formImport')[0]);
+
+                // Debug: Check if file is appended correctly
+                if (!formData.has('file') || !formData.get('file').size) {
+                    $('#pesan-error').text('File tidak ditemukan. Silahkan pilih file yang akan diimport.');
+                    button.prop('disabled', false);
+                    button.html(originalText);
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('users.importMahasiswa') }}",
+                    data: formData,
+                    processData: false, // Don't process the data
+                    contentType: false, // Set content type to false
+                    success: function(data) {
+                        if (data.error) {
+                            $('#pesan-error').text(data.error.join(', '));
+                        } else {
+                            $('#file').val('');
+                            $('#formImport')[0].reset();
+
+                            // Close modal
+                            $('#modalImportMahasiswa').modal('hide');
+
+                            // Display success message
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: data.success
+                            });
+
+                            // Refresh datatables
+                            $('#myDataTables').DataTable().ajax.reload();
+
+                            // Clear error message
+                            $('#pesan-error').text('');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#pesan-error').text('Error: ' + error);
+                    },
+                    complete: function() {
+                        // Re-enable the button and restore original text
+                        button.prop('disabled', false);
+                        button.html(originalText);
+                    }
                 });
             });
         });

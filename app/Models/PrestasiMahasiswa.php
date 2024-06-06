@@ -13,6 +13,7 @@ class PrestasiMahasiswa extends Model
 
     protected $fillable = [
         'nama_mahasiswa',
+        'program_studi',
         'predikat',
         'tingkat',
         'tahun',

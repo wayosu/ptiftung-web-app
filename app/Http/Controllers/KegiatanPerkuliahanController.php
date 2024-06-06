@@ -58,6 +58,7 @@ class KegiatanPerkuliahanController extends Controller
             'judul' => 'required|unique:kegiatan_perkuliahans,judul',
             'deskripsi' => 'required',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'program_studi' => 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI'
         ], [
             'judul.required' => 'Judul harus diisi.',
             'judul.unique' => 'Judul sudah ada.',
@@ -66,6 +67,8 @@ class KegiatanPerkuliahanController extends Controller
             'thumbnail.image' => 'File harus berupa gambar.',
             'thumbnail.mimes' => 'File harus berupa jpg, jpeg, png.',
             'thumbnail.max' => 'Ukuran file maksimal 2 MB.',
+            'program_studi.required' => 'Program Studi harus dipilih.',
+            'program_studi.in' => 'Program Studi tidak valid.'
         ]);
 
         try { // jika sukses menambahkan data
@@ -85,6 +88,7 @@ class KegiatanPerkuliahanController extends Controller
                     'deskripsi' => $request->deskripsi,
                     'thumbnail' => $nameFile,
                     'link_video' => $request->link_video,
+                    'program_studi' => $request->program_studi,
                     'created_by' => auth()->user()->id,
                 ]);
 
@@ -144,6 +148,7 @@ class KegiatanPerkuliahanController extends Controller
             'judul' => 'required|unique:kegiatan_perkuliahans,judul,' . $id,
             'deskripsi' => 'required',
             'thumbnail' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'program_studi' => 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI'
         ], [
             'judul.required' => 'Judul harus diisi.',
             'judul.unique' => 'Judul sudah ada.',
@@ -151,6 +156,8 @@ class KegiatanPerkuliahanController extends Controller
             'thumbnail.image' => 'File harus berupa gambar.',
             'thumbnail.mimes' => 'File harus berupa jpg, jpeg, png.',
             'thumbnail.max' => 'Ukuran file maksimal 2 MB.',
+            'program_studi.required' => 'Program Studi harus dipilih.',
+            'program_studi.in' => 'Program Studi tidak valid.'
         ]);
 
         try { // jika sukses update data
@@ -177,6 +184,7 @@ class KegiatanPerkuliahanController extends Controller
                     'deskripsi' => $request->deskripsi,
                     'thumbnail' => $nameFile,
                     'link_video' => $request->link_video,
+                    'program_studi' => $request->program_studi,
                     'created_by' => auth()->user()->id,
                 ];
             } else {
@@ -185,6 +193,7 @@ class KegiatanPerkuliahanController extends Controller
                     'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
                     'link_video' => $request->link_video,
+                    'program_studi' => $request->program_studi,
                     'created_by' => auth()->user()->id,
                 ];
             }

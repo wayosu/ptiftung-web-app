@@ -6,15 +6,17 @@
         <!-- Additional required wrapper -->
         <div class="swiper-wrapper">
             <!-- Slides -->
-            <div class="swiper-slide">
-                <img src="{{ asset('assets/frontpage/img/slide1.jpg') }}" alt="banner" class="w-full h-full object-cover">
-            </div>
-            <div class="swiper-slide">
-                <img src="{{ asset('assets/frontpage/img/slide2.jpg') }}" alt="banner" class="w-full h-full object-cover">
-            </div>
-            <div class="swiper-slide">
-                <img src="{{ asset('assets/frontpage/img/slide3.jpg') }}" alt="banner" class="w-full h-full object-cover">
-            </div>
+            @if (isset($banners) && count($banners) > 0)
+                @foreach ($banners as $banner)                    
+                    <div class="swiper-slide">
+                        <img src="{{ asset('storage/konten/banner/' . $banner) }}" alt="banner" class="w-full h-full object-cover">
+                    </div>
+                @endforeach
+            @else
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/admin/img/no-image-placeholder.png') }}" alt="banner" class="w-full h-[80vh] object-cover">
+                </div>
+            @endif
         </div>
     </div>
     <!-- End Slider -->
@@ -26,9 +28,7 @@
                 <div class="w-full max-w-5xl mx-auto text-center">
                     <p class="text-xl md:text-2xl font-body font-normal text-light-100">
                         <span class="uppercase font-semibold">Visi Keilmuan</span>
-                        "Mengimplementasikan dan Mengembangkan Teknologi Informasi dalam Bidang Pendidikan berbasis
-                        Transformasi
-                        Digital yang Unggul dan Inovatif"
+                        "{{ htmlspecialchars(trim(strip_tags($visiKeilmuan ?? ''))) }}"
                     </p>
                 </div>
                 <div class="flex flex-row flex-wrap w-full mx-auto items-center justify-center gap-6 md:gap-20">
@@ -71,9 +71,9 @@
     <!-- Start Sambutan Ketua Program Studi -->
     <section id="sambutan-ketua" class="relative overflow-hidden">
         {{-- start pattern --}}
-        <div class="absolute top-0 end-0 lg:start-0 z-[0] opacity-50 lg:opacity-100">
+        {{-- <div class="absolute top-0 end-0 lg:start-0 z-[0] opacity-50 lg:opacity-100">
             <img src="{{ asset('assets/frontpage/img/square-pattern.png') }}" alt="pattern-png" class="w-[60px]">
-        </div>
+        </div> --}}
         {{-- end pattern --}}
         <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <div class="md:flex md:gap-10 lg:gap-16 md:items-center">
@@ -126,7 +126,7 @@
                             </div>
                         </footer>
 
-                        <div class="mt-8 lg:mt-14">
+                        {{-- <div class="mt-8 lg:mt-14">
                             <a class="py-1 px-1 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-navy-900 text-white hover:bg-blue-800 disabled:opacity-50 disabled:pointer-events-none transition-all"
                                 href="#">
                                 <span class="rounded-lg py-2 px-4 text-light-100 font-body">
@@ -134,7 +134,7 @@
                                     <i class="ri-arrow-right-line ms-2"></i>
                                 </span>
                             </a>
-                        </div>
+                        </div> --}}
                     </blockquote>
                     <!-- End Blockquote -->
                 </div>
@@ -150,15 +150,14 @@
             <img src="{{ asset('assets/frontpage/img/square-pattern.png') }}" alt="pattern-png" class="w-[60px]">
         </div> --}}
 
-        <div
+        {{-- <div
             class="absolute -top-32 -start-20 z-[0] size-48 bg-gradient-to-r from-yellow-900 to-gray-100 p-px rounded-full">
             <div class="bg-gray-100 size-2 rounded-full"></div>
-        </div>
-
-        <div
+        </div> --}}
+        {{-- <div
             class="absolute -bottom-32 -end-20 z-[0] size-48 bg-gradient-to-r from-navy-900 to-gray-100 p-px rounded-full rotate-180">
             <div class="bg-gray-100 size-2 rounded-full"></div>
-        </div>
+        </div> --}}
         {{-- end pattern --}}
         <div class="relative z-10 max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <!-- Grid -->
@@ -243,9 +242,9 @@
     <!-- Start Video Profil -->
     <section id="video-profil" class="relative">
         {{-- start pattern --}}
-        <div class="absolute bottom-0 start-0 z-[0] opacity-50 lg:opacity-100">
+        {{-- <div class="absolute bottom-0 start-0 z-[0] opacity-50 lg:opacity-100">
             <img src="{{ asset('assets/frontpage/img/square-pattern.png') }}" alt="pattern-png" class="w-[60px]">
-        </div>
+        </div> --}}
         {{-- end pattern --}}
         <div class="relative overflow-hidden py-10">
             <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mb-6 lg:mb-14">
@@ -264,7 +263,7 @@
 
             <div class="relative max-w-5xl mx-auto">
                 <div class="w-full object-cover h-[280px] sm:h-[480px] bg-no-repeat bg-center bg-cover rounded-xl">
-                    <iframe src="https://www.youtube.com/embed/ltZpXtVHEm4"
+                    <iframe src="{{ $videoProfil ?? '' }}"
                         class="w-full h-full rounded-none xl:rounded-xl" title="YouTube video player" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen></iframe>
@@ -287,9 +286,9 @@
     <!-- Start Berita -->
     <section id="berita" class="relative bg-gray-100 overflow-hidden">
         {{-- start pattern --}}
-        <div class="absolute bottom-0 end-0 z-[0] rotate-180 opacity-50 lg:opacity-100">
+        {{-- <div class="absolute bottom-0 end-0 z-[0] rotate-180 opacity-50 lg:opacity-100">
             <img src="{{ asset('assets/frontpage/img/square-pattern.png') }}" alt="pattern-png" class="w-[60px]">
-        </div>
+        </div> --}}
         {{-- end pattern --}}
 
         <div class="relative max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto z-10">
@@ -319,91 +318,43 @@
             <!-- End Title -->
 
             <!-- Grid -->
-            <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Card -->
-                <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
-                    href="#">
-                    <div class="w-[50%] sm:w-[20%] lg:w-auto lg:aspect-w-16 lg:aspect-h-11">
-                        <img class="w-full h-full object-cover rounded-r-none lg:rounded-xl"
-                            src="{{ asset('assets/frontpage/img/foto2.jpg') }}" alt="Image Description">
-                    </div>
-                    <div class="flex flex-col p-3 lg:p-0 lg:mt-6 w-full lg:w-auto">
-                        <div>
-                            <h3
-                                class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
-                                Selamat dan Sukses Dr. Arip Mulyanto, S.Kom, M.Kom atas Promosi Doktor...
-                            </h3>
-                            <p class="hidden lg:block lg:mb-0 lg:mt-5 font-body text-gray-600">
-                                At Wake, our mission has always been focused on bringing openness.
-                            </p>
-                        </div>
-
-                        <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
-                            <i class="ri-calendar-line text-gray-600 text-sm"></i>
-                            <div>
-                                <h5 class="text-sm font-body text-gray-600">10 Januari 2021</h5>
+            @if (isset($beritas) && count($beritas) > 0)
+                <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
+                    @foreach ($beritas as $berita)
+                        <!-- Card -->
+                        <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
+                            href="#">
+                            <div class="w-[50%] sm:w-[20%] lg:w-auto lg:aspect-w-16 lg:aspect-h-11">
+                                <img class="w-full h-full object-cover rounded-r-none lg:rounded-xl"
+                                    src="{{ asset('storage/konten/berita/' . $berita->thumbnail ?? '') }}" alt="{{ $berita->judul ?? 'img' . '-Thumbnail' }}">
                             </div>
-                        </div>
-                    </div>
-                </a>
-                <!-- End Card -->
-
-                <!-- Card -->
-                <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
-                    href="#">
-                    <div class="w-[50%] sm:w-[20%] lg:w-auto lg:aspect-w-16 lg:aspect-h-11">
-                        <img class="w-full h-full object-cover rounded-r-none lg:rounded-xl"
-                            src="{{ asset('assets/frontpage/img/foto1.jpg') }}" alt="Image Description">
-                    </div>
-                    <div class="flex flex-col p-3 lg:p-0 lg:mt-6 w-full lg:w-auto">
-                        <div>
-                            <h3
-                                class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
-                                Selamat dan Sukses Dr. Moh. Hidayat Koniyo, ST., M.Kom atas Promosi Doktor...
-                            </h3>
-                            <p class="hidden lg:block lg:mb-0 lg:mt-5 font-body text-gray-600">
-                                At Wake, our mission has always been focused on bringing openness.
-                            </p>
-                        </div>
-
-                        <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
-                            <i class="ri-calendar-line text-gray-600 text-sm"></i>
-                            <div>
-                                <h5 class="text-sm font-body text-gray-600">10 Januari 2021</h5>
+                            <div class="flex flex-col p-3 lg:p-0 lg:mt-6 w-full lg:w-auto">
+                                <div>
+                                    <h3
+                                        class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($berita->judul ?? ''), 40, ' ...') }}
+                                    </h3>
+                                    <p class="hidden lg:block lg:mb-0 lg:mt-5 font-body text-gray-600">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($berita->deskripsi ?? ''), 135, ' ...') }}
+                                    </p>
+                                </div>
+        
+                                <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
+                                    <i class="ri-calendar-line text-gray-600 text-sm"></i>
+                                    <div>
+                                        <h5 class="text-sm font-body text-gray-600">
+                                            {{ \Carbon\Carbon::parse($berita->created_at)->locale('id')->isoFormat('DD MMMM YYYY') }}
+                                        </h5>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </a>
-                <!-- End Card -->
-
-                <!-- Card -->
-                <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
-                    href="#">
-                    <div class="w-[50%] sm:w-[20%] lg:w-auto lg:aspect-w-16 lg:aspect-h-11">
-                        <img class="w-full h-full object-cover rounded-r-none lg:rounded-xl"
-                            src="{{ asset('assets/frontpage/img/foto3.png') }}" alt="Image Description">
-                    </div>
-                    <div class="flex flex-col p-3 lg:p-0 lg:mt-6 w-full lg:w-auto">
-                        <div>
-                            <h3
-                                class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
-                                Dua Mahasiswa PTI Belajar AI for Jobs Melalui Studi Independen di Orbit...
-                            </h3>
-                            <p class="hidden lg:block lg:mb-0 lg:mt-5 font-body text-gray-600">
-                                At Wake, our mission has always been focused on bringing openness.
-                            </p>
-                        </div>
-
-                        <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
-                            <i class="ri-calendar-line text-gray-600 text-sm"></i>
-                            <div>
-                                <h5 class="text-sm font-body text-gray-600">10 Januari 2021</h5>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <!-- End Card -->
-            </div>
+                        </a>
+                        <!-- End Card -->
+                    @endforeach
+                </div>
+            @else
+                <p class="text-center text-gray-600 border rounded p-3">Tidak ada berita.</p>
+            @endif
             <!-- End Grid -->
 
             <!-- Card -->
@@ -426,7 +377,7 @@
     <!-- Start Mahasiswa dan Alumni -->
     <section id="mahasiswa-dan-alumni" class="relative bg-navy-900 overflow-hidden">
         {{-- start pattern --}}
-        <div class="absolute bottom-1 lg:top-1/2 -start-32 z-[0] opacity-20">
+        {{-- <div class="absolute bottom-1 lg:top-1/2 -start-32 z-[0] opacity-20">
             <img src="{{ asset('assets/frontpage/img/circle-pattern.png') }}" alt="pattern-png" class="w-[200px]">
         </div>
         <div class="absolute bottom-1/3 end-0 lg:top-1/4 lg:start-0 z-[0] opacity-20">
@@ -434,7 +385,7 @@
         </div>
         <div class="absolute hidden lg:block lg:top-3/4 start-14 z-[0] opacity-20">
             <img src="{{ asset('assets/frontpage/img/circle-pattern.png') }}" alt="pattern-png" class="w-[130px]">
-        </div>
+        </div> --}}
         {{-- end pattern --}}
 
         <div
@@ -484,9 +435,9 @@
     <!-- Start Agenda -->
     <section id="agenda" class="relative bg-gray-100 overflow-hidden">
         {{-- start pattern --}}
-        <div class="absolute -top-0.5 -start-0.5 z-[0] rotate-180 opacity-50 lg:opacity-100">
+        {{-- <div class="absolute -top-0.5 -start-0.5 z-[0] rotate-180 opacity-50 lg:opacity-100">
             <img src="{{ asset('assets/frontpage/img/square-pattern-2.png') }}" alt="pattern-png" class="w-[60px]">
-        </div>
+        </div> --}}
         {{-- end pattern --}}
 
         <div class="relative max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto z-10">
@@ -517,79 +468,39 @@
             <!-- End Title -->
 
             <!-- Grid -->
-            <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Card -->
-                <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
-                    href="#">
-                    <div class="flex flex-col p-3 lg:p-0 w-full lg:w-auto">
-                        <div>
-                            <h3
-                                class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
-                                Selamat dan Sukses Dr. Arip Mulyanto, S.Kom, M.Kom atas Promosi Doktor...
-                            </h3>
-                            <p class="mb-0 mt-3 lg:mt-5 font-body text-gray-600">
-                                At Wake, our mission has always been focused on bringing openness.
-                            </p>
-                        </div>
+            @if (isset($agendas) && count($agendas) > 0)
+                <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
+                    @foreach ($agendas as $agenda)
+                        <!-- Card -->
+                        <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
+                            href="#">
+                            <div class="flex flex-col p-3 lg:p-0 w-full lg:w-auto">
+                                <div>
+                                    <h3
+                                        class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($agenda->judul ?? ''), 40, ' ...') }}
+                                    </h3>
+                                    <p class="mb-0 mt-3 lg:mt-5 font-body text-gray-600">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($agenda->deskripsi ?? ''), 135, ' ...') }}
+                                    </p>
+                                </div>
 
-                        <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
-                            <i class="ri-calendar-line text-gray-600 text-sm"></i>
-                            <div>
-                                <h5 class="text-sm font-body text-gray-600">10 Januari 2021</h5>
+                                <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
+                                    <i class="ri-calendar-line text-gray-600 text-sm"></i>
+                                    <div>
+                                        <h5 class="text-sm font-body text-gray-600">
+                                            {{ \Carbon\Carbon::parse($agenda->created_at)->locale('id')->isoFormat('DD MMMM YYYY') }}
+                                        </h5>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </a>
-                <!-- End Card -->
-
-                <!-- Card -->
-                <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
-                    href="#">
-                    <div class="flex flex-col p-3 lg:p-0 w-full lg:w-auto">
-                        <div>
-                            <h3
-                                class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
-                                Selamat dan Sukses Dr. Moh. Hidayat Koniyo, ST., M.Kom atas Promosi Doktor...
-                            </h3>
-                            <p class="mb-0 mt-3 lg:mt-5 font-body text-gray-600">
-                                At Wake, our mission has always been focused on bringing openness.
-                            </p>
-                        </div>
-
-                        <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
-                            <i class="ri-calendar-line text-gray-600 text-sm"></i>
-                            <div>
-                                <h5 class="text-sm font-body text-gray-600">10 Januari 2021</h5>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <!-- End Card -->
-
-                <!-- Card -->
-                <a class="group flex flex-row lg:flex-col h-full bg-light-100 border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-0 lg:p-5 overflow-hidden"
-                    href="#">
-                    <div class="flex flex-col p-3 lg:p-0 w-full lg:w-auto">
-                        <div>
-                            <h3
-                                class="text-base lg:text-xl font-display font-semibold text-gray-800 group-hover:text-blue-800 transition-all">
-                                Dua Mahasiswa PTI Belajar AI for Jobs Melalui Studi Independen di Orbit...
-                            </h3>
-                            <p class="mb-0 mt-3 lg:mt-5 font-body text-gray-600">
-                                At Wake, our mission has always been focused on bringing openness.
-                            </p>
-                        </div>
-
-                        <div class="mt-3 flex items-center gap-x-2 border-t pt-2 lg:mt-6">
-                            <i class="ri-calendar-line text-gray-600 text-sm"></i>
-                            <div>
-                                <h5 class="text-sm font-body text-gray-600">10 Januari 2021</h5>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <!-- End Card -->
-            </div>
+                        </a>
+                        <!-- End Card -->                    
+                    @endforeach
+                </div>
+            @else
+                <p class="text-center text-gray-600 border rounded p-3">Tidak ada agenda.</p>
+            @endif
             <!-- End Grid -->
 
             <!-- Card -->
@@ -612,9 +523,9 @@
     <!-- Start FAQ -->
     <section id="faq" class="relative overflow-hidden">
         {{-- start pattern --}}
-        <div class="absolute bottom-0 end-0 z-[0] rotate-180 opacity-50 lg:opacity-100">
+        {{-- <div class="absolute bottom-0 end-0 z-[0] rotate-180 opacity-50 lg:opacity-100">
             <img src="{{ asset('assets/frontpage/img/square-pattern.png') }}" alt="pattern-png" class="w-[60px]">
-        </div>
+        </div> --}}
         {{-- end pattern --}}
         <!-- FAQ -->
         <div class="relative z-10 max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto bg-light-100">

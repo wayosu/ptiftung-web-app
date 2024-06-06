@@ -82,7 +82,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input class="form-control @error('tahun') is-invalid @enderror" name="tahun" id="tahunField"
-                                type="text" placeholder="{{ $penelitian->tahun ?? 'Masukkan tahun' }}"
+                                type="number" placeholder="{{ $penelitian->tahun ?? 'Masukkan tahun' }}"
                                 autocomplete="off" />
                             @if (isset($penelitian))
                                 <input type="hidden" name="tahun_lama" value="{{ $penelitian->tahun ?? '' }}">
@@ -91,24 +91,26 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="small mb-1" for="dosenField">
-                                Dosen
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select name="dosen_id" id="dosenField"
-                                class="form-select select2 @error('dosen_id') is-invalid @enderror">
-                                <option></option>
-                                @foreach ($namaDosen as $item)
-                                    <option value="{{ $item['id'] }}"
-                                        {{ old('dosen_id', $penelitian->dosen_id ?? '') == $item['id'] ? 'selected' : '' }}>
-                                        {{ $item['name'] }}</option>
-                                @endforeach
-                            </select>
-                            @error('dosen_id')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @if (Auth::user()->memilikiPeran('Superadmin') || Auth::user()->memilikiPeran('Admin') || Auth::user()->memilikiPeran('Kajur') || Auth::user()->memilikiperan('Kaprodi'))
+                            <div class="mb-3">
+                                <label class="small mb-1" for="dosenField">
+                                    Dosen
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select name="dosen_id" id="dosenField"
+                                    class="form-select select2 @error('dosen_id') is-invalid @enderror">
+                                    <option></option>
+                                    @foreach ($namaDosen as $item)
+                                        <option value="{{ $item['id'] }}"
+                                            {{ old('dosen_id', $penelitian->dosen_id ?? '') == $item['id'] ? 'selected' : '' }}>
+                                            {{ $item['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('dosen_id')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <div class="mb-3">
                             <label class="small mb-1" for="jabatanField">
                                 Jabatan

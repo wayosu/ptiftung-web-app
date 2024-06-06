@@ -7,15 +7,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class BeasiswaController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+
+    private function checkDosen()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Dosen');
+    }
+
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $beasiswas = Beasiswa::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $beasiswas = Beasiswa::with('createdBy')->orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                $beasiswas = Beasiswa::where('created_by', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $beasiswas = $beasiswas->transform(function ($item) {
@@ -81,7 +104,7 @@ class BeasiswaController extends Controller
                     'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
-                    'created_by' => auth()->user()->id,
+                    'created_by' => Auth::user()->id,
                 ]);
 
                 return redirect()->route('beasiswa.index')->with('success', 'Data berhasil ditambahkan.');
@@ -96,8 +119,13 @@ class BeasiswaController extends Controller
     public function edit($id)
     {
         try { // jika id ditemukan
-             // ambil data dari model Beasiswa berdasarkan id
-            $beasiswa = Beasiswa::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                // ambil data dari model Beasiswa berdasarkan id
+                $beasiswa = Beasiswa::findOrFail($id);
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                // ambil data dari model Beasiswa berdasarkan id dan created_by
+                $beasiswa = Beasiswa::where('id', $id)->where('created_by', Auth::user()->id)->firstOrFail();
+            }
 
             // tampilkan halaman
             return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.beasiswa.form', [
@@ -130,8 +158,13 @@ class BeasiswaController extends Controller
         ]);
 
         try { // jika data valid
-            // ambil data dari model Beasiswa berdasarkan id
-            $beasiswa = Beasiswa::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                // ambil data dari model Beasiswa berdasarkan id
+                $beasiswa = Beasiswa::findOrFail($id);
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                // ambil data dari model Beasiswa berdasarkan id dan created_by
+                $beasiswa = Beasiswa::where('id', $id)->where('created_by', Auth::user()->id)->firstOrFail();
+            }
 
             if ($request->hasFile('gambar')) {
                 // cek apakah ada file yang lama
@@ -152,14 +185,14 @@ class BeasiswaController extends Controller
                     'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
-                    'updated_by' => auth()->user()->id,
+                    'updated_by' => Auth::user()->id,
                 ];
             } else {
                 $data = [
                     'judul' => $request->judul,
                     'slug' => Str::slug($request->judul),
                     'deskripsi' => $request->deskripsi,
-                    'updated_by' => auth()->user()->id,
+                    'updated_by' => Auth::user()->id,
                 ];
             }
 
@@ -176,8 +209,13 @@ class BeasiswaController extends Controller
     public function destroy($id)
     {
         try { // jika id ditemukan lakukan proses delete
-            // ambil data dari model Beasiswa berdasarkan id
-            $beasiswa = Beasiswa::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                // ambil data dari model Beasiswa berdasarkan id
+                $beasiswa = Beasiswa::findOrFail($id);
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                // ambil data dari model Beasiswa berdasarkan id dan created_by
+                $beasiswa = Beasiswa::where('id', $id)->where('created_by', Auth::user()->id)->firstOrFail();
+            }
 
             // hapus file dari storage/penyimpanan
             if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/beasiswa/' . $beasiswa->gambar)) {

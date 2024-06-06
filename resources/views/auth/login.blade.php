@@ -48,7 +48,7 @@
                                             <form method="POST" action="{{ route('login') }}">
                                                 @csrf
 
-                                                <div class="mb-3">
+                                                {{-- <div class="mb-3">
                                                     <label class="small mb-1" for="fieldJenisPengguna">
                                                         Jenis Pengguna
                                                     </label>
@@ -73,7 +73,7 @@
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
-                                                </div>
+                                                </div> --}}
                                                 <div class="mb-3">
                                                     <label class="small mb-1" for="fieldIdPengguna">
                                                         ID Pengguna <sup>1</sup>
@@ -85,7 +85,7 @@
                                                         value="{{ old('id_pengguna') }}" required />
                                                     <span class="d-block text-xs text-muted mt-1">
                                                         <sup>1</sup>
-                                                        Isi dengan NIM untuk Mahasiswa & NIP untuk Dosen
+                                                        Gunakan Email atau NIM untuk mahasiswa dan NIP untuk dosen.
                                                     </span>
                                                     @error('id_pengguna')
                                                         <span class="invalid-feedback" role="alert">

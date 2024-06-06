@@ -18,6 +18,12 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BidangKepakaranSeeder::class,
             ProfilProgramStudiSeeder::class,
+            PenelitianSeeder::class,
+            PengabdianMasyarakatSeeder::class,
+            PublikasiSeeder::class,
+            DokumenKebijakanSeeder::class,
+            DokumenLainnyaSeeder::class,
+            DataDukungAkreditasiSeeder::class,
         ]);
     }
 }

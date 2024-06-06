@@ -17,6 +17,7 @@ class KegiatanPerkuliahan extends Model
         'deskripsi',
         'thumbnail',
         'link_video',
+        'program_studi',
         'created_by',
         'updated_by',
     ];

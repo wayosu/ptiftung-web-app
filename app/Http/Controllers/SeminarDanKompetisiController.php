@@ -7,15 +7,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class SeminarDanKompetisiController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+
+    private function checkDosen()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Dosen');
+    }
+
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $seminarDanKompetisis = SeminarDanKompetisi::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $seminarDanKompetisis = SeminarDanKompetisi::with('createdBy')->orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                $seminarDanKompetisis = SeminarDanKompetisi::where('created_by', auth()->user()->id)->orderBy('created_at', 'desc')->get();
+            }
 
             // transformasi data ke bentuk array
             $seminarDanKompetisis = $seminarDanKompetisis->transform(function ($item) {
@@ -96,8 +119,13 @@ class SeminarDanKompetisiController extends Controller
     public function edit($id)
     {
         try { // jika id ditemukan
-             // ambil data dari model SeminarDanKompetisi berdasarkan id
-            $seminarDanKompetisi = SeminarDanKompetisi::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                // ambil data dari model SeminarDanKompetisi berdasarkan id
+                $seminarDanKompetisi = SeminarDanKompetisi::findOrFail($id);
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                // ambil data dari model SeminarDanKompetisi berdasarkan id dan created_by
+                $seminarDanKompetisi = SeminarDanKompetisi::where('id', $id)->where('created_by', auth()->user()->id)->firstOrFail();
+            }
 
             // tampilkan halaman
             return view('admin.pages.mahasiswa-dan-alumni.peluang-mahasiswa.seminar-dan-kompetisi.form', [
@@ -130,8 +158,13 @@ class SeminarDanKompetisiController extends Controller
         ]);
 
         try { // jika data valid
-            // ambil data dari model SeminarDanKompetisi berdasarkan id
-            $seminarDanKompetisi = SeminarDanKompetisi::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                // ambil data dari model SeminarDanKompetisi berdasarkan id
+                $seminarDanKompetisi = SeminarDanKompetisi::findOrFail($id);
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                // ambil data dari model SeminarDanKompetisi berdasarkan id dan created_by
+                $seminarDanKompetisi = SeminarDanKompetisi::where('id', $id)->where('created_by', auth()->user()->id)->firstOrFail();
+            }
 
             if ($request->hasFile('gambar')) {
                 // cek apakah ada file yang lama
@@ -176,8 +209,13 @@ class SeminarDanKompetisiController extends Controller
     public function destroy($id)
     {
         try { // jika id ditemukan lakukan proses delete
-            // ambil data dari model SeminarDanKompetisi berdasarkan id
-            $seminarDanKompetisi = SeminarDanKompetisi::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                // ambil data dari model SeminarDanKompetisi berdasarkan id
+                $seminarDanKompetisi = SeminarDanKompetisi::findOrFail($id);
+            } else if ($this->checkKaprodi() || $this->checkDosen()) {
+                // ambil data dari model SeminarDanKompetisi berdasarkan id dan created_by
+                $seminarDanKompetisi = SeminarDanKompetisi::where('id', $id)->where('created_by', auth()->user()->id)->firstOrFail();
+            }
 
             // hapus file dari storage/penyimpanan
             if (Storage::exists('mahasiswa-dan-alumni/peluang-mahasiswa/seminar-dan-kompetisi/' . $seminarDanKompetisi->gambar)) {

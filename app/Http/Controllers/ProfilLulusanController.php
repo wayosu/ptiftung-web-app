@@ -4,17 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfilLulusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class ProfilLulusanController extends Controller
 {
+    private function checkSuperadminAdminKajur()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Superadmin') || $userAuth->memilikiperan('Admin') || $userAuth->	memilikiperan('Kajur'); 
+    }
+
+    private function checkKaprodi()
+    {
+        $userAuth = Auth::user();
+        return $userAuth->memilikiperan('Kaprodi');
+    }
+    
     public function index(Request $request)
     {
         // jika ada request ajax
         if ($request->ajax()) {
             // ambil data
-            $profilLulusans = ProfilLulusan::with('createdBy')->orderBy('created_at', 'desc')->get();
+            if ($this->checkSuperadminAdminKajur()) {
+                $profilLulusans = ProfilLulusan::with('createdBy')->orderBy('created_at', 'desc')->get();
+            } else if ($this->checkKaprodi()) {
+                $profilLulusans = ProfilLulusan::with('createdBy')
+                    ->where('program_studi', Auth::user()->dosen->program_studi)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            }
 
             // transformasi data ke bentuk array
             $profilLulusans = $profilLulusans->transform(function ($item) {
@@ -51,13 +71,15 @@ class ProfilLulusanController extends Controller
 
     public function store(Request $request)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'judul' => 'required',
             'subjudul' => 'required',
             'deskripsi' => 'required',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
+        ];
+    
+        $validationMessages = [
             'judul.required' => 'Judul harus diisi!',
             'subjudul.required' => 'Subjudul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
@@ -65,7 +87,23 @@ class ProfilLulusanController extends Controller
             'gambar.image' => 'File harus berupa gambar!',
             'gambar.mimes' => 'File harus berupa jpeg, png, jpg!',
             'gambar.max' => 'File tidak boleh lebih dari 2 MB!',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('profilLulusan.index')->with('error', 'Data gagal ditambahkan!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika data valid
             if ($request->hasFile('gambar')) {
@@ -82,7 +120,8 @@ class ProfilLulusanController extends Controller
                     'subjudul' => $request->subjudul,
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
-                    'created_by' => auth()->user()->id,
+                    'program_studi' => $program_studi,
+                    'created_by' => Auth::user()->id,
                 ]);
 
                 return redirect()->route('profilLulusan.index')->with('success', 'Data berhasil ditambahkan.');
@@ -97,8 +136,12 @@ class ProfilLulusanController extends Controller
     public function edit($id)
     {
         try { // jika id ditemukan
-             // ambil data dari model ProfilLulusan berdasarkan id
-            $profilLulusan = ProfilLulusan::findOrFail($id);
+            // ambil data dari model ProfilLulusan berdasarkan id
+            if ($this->checkSuperadminAdminKajur()) {
+                $profilLulusan = ProfilLulusan::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $profilLulusan = ProfilLulusan::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // tampilkan halaman
             return view('admin.pages.akademik.profil-lulusan.form', [
@@ -117,24 +160,46 @@ class ProfilLulusanController extends Controller
 
     public function update(Request $request, $id)
     {
-        // validasi data yang dikirim
-        $request->validate([
+        // Validasi data yang dikirim
+        $validationRules = [
             'judul' => 'required',
             'subjudul' => 'required',
             'deskripsi' => 'required',
             'gambar' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
+        ];
+    
+        $validationMessages = [
             'judul.required' => 'Judul harus diisi!',
             'subjudul.required' => 'Subjudul harus diisi!',
             'deskripsi.required' => 'Deskripsi harus diisi!',
             'gambar.image' => 'File harus berupa gambar!',
             'gambar.mimes' => 'File harus berupa jpeg, png, jpg!',
             'gambar.max' => 'File tidak boleh lebih dari 2 MB!',
-        ]);
+        ];
+    
+        if ($this->checkSuperadminAdminKajur()) {
+            $validationRules['program_studi'] = 'required|in:SISTEM INFORMASI,PEND. TEKNOLOGI INFORMASI';
+            $validationMessages['program_studi.required'] = 'Program Studi harus dipilih!';
+            $validationMessages['program_studi.in'] = 'Program Studi tidak valid!';
+        }
+    
+        $request->validate($validationRules, $validationMessages);
+
+        if ($this->checkSuperadminAdminKajur()) {
+            $program_studi = $request->program_studi;
+        } else if ($this->checkKaprodi()) {
+            $program_studi = Auth::user()->dosen->program_studi;
+        } else {
+            return redirect()->route('profilLulusan.index')->with('error', 'Data gagal diperbarui!. Anda tidak mempunyai hak akses.');
+        }
 
         try { // jika data valid
             // ambil data dari model ProfilLulusan berdasarkan id
-            $profilLulusan = ProfilLulusan::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $profilLulusan = ProfilLulusan::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $profilLulusan = ProfilLulusan::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             if ($request->hasFile('gambar')) {
                 // cek apakah ada file yang lama
@@ -155,14 +220,16 @@ class ProfilLulusanController extends Controller
                     'subjudul' => $request->subjudul,
                     'deskripsi' => $request->deskripsi,
                     'gambar' => $nameFile,
-                    'updated_by' => auth()->user()->id,
+                    'program_studi' => $request->program_studi,
+                    'updated_by' => Auth::user()->id,
                 ];
             } else {
                 $data = [
                     'judul' => $request->judul,
                     'subjudul' => $request->subjudul,
                     'deskripsi' => $request->deskripsi,
-                    'updated_by' => auth()->user()->id,
+                    'program_studi' => $request->program_studi,
+                    'updated_by' => Auth::user()->id,
                 ];
             }
 
@@ -180,7 +247,11 @@ class ProfilLulusanController extends Controller
     {
         try { // jika id ditemukan lakukan proses delete
             // ambil data dari model ProfilLulusan berdasarkan id
-            $profilLulusan = ProfilLulusan::findOrFail($id);
+            if ($this->checkSuperadminAdminKajur()) {
+                $profilLulusan = ProfilLulusan::findOrFail($id);
+            } else if ($this->checkKaprodi()) {
+                $profilLulusan = ProfilLulusan::where('program_studi', Auth::user()->dosen->program_studi)->findOrFail($id);
+            }
 
             // hapus file dari storage/penyimpanan
             if (Storage::exists('akademik/profil-lulusan/' . $profilLulusan->gambar)) {

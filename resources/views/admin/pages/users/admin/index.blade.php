@@ -63,7 +63,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="{{ request()->fullUrl() }}" role="button">
+                        <a id="btnSegarkanDatatables" class="btn btn-sm btn-light text-primary" href="javascript:void(0)" role="button">
                             <i class="fa-solid fa-arrows-rotate me-1"></i>
                             Segarkan
                         </a>
@@ -124,7 +124,19 @@
                 serverSide: true,
                 ajax: "{{ route('users.byAdmin') }}",
                 columns: [{
-                        data: 'name'
+                        data: 'name',
+                        render: function(data, type, row) {
+                            let badgeHakIstimewa = '';
+                            let hakIstimewa = row.hak_istimewa;
+                            if (hakIstimewa === 'super-admin') {
+                                badgeHakIstimewa =
+                                    `<span class="badge text-xs bg-primary">
+                                        <i class="fas fa-shield"></i>
+                                        Super Admin
+                                    </span>`;
+                            }
+                            return data + ' ' + badgeHakIstimewa;
+                        }
                     },
                     {
                         data: 'email'
@@ -180,6 +192,11 @@
                     text: '{{ Session::get('error') }}'
                 })
             @endif
+
+            // refresh datatables on click #btnSegarkanDatatables
+            $('#btnSegarkanDatatables').on('click', function() {
+                $('#myDataTables').DataTable().ajax.reload();
+            });
 
             // confirm delete with swal
             $('body').on('click', '.tombol-hapus', function(e) {

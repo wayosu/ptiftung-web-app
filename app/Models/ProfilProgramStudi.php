@@ -14,6 +14,7 @@ class ProfilProgramStudi extends Model
     protected $fillable = [
         'nama_program_studi',
         'nama_dasbor',
+        'program_studi',
         'logo',
         'link_embed_video_profil',
         'sejarah',

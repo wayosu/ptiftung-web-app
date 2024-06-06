@@ -101,7 +101,7 @@
                         </div>
                     @endif
                     <div class="card-body overflow-hidden">
-                        <form id="formUpdate" action="{{ route('visiKeilmuanTujuanStrategi.update') }}" method="POST">
+                        <form id="formUpdate" action="{{ route('visiKeilmuanTujuanStrategi.update', $activeForm) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">

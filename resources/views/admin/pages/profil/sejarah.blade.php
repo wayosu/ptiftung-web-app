@@ -101,7 +101,7 @@
                         </div>
                     @endif
                     <div class="card-body overflow-hidden">
-                        <form id="formUpdate" action="{{ route('sejarah.update') }}" method="POST">
+                        <form id="formUpdate" action="{{ route('sejarah.update', $activeForm) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <textarea id="summernote" name="sejarah" class="form-control @error('sejarah') is-invalid @enderror">{{ old('sejarah', $sejarah ?? '') }}</textarea>
