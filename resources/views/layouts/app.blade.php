@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ isset($title) ? $title.' | Program Studi Pendidikan Teknologi Informasi Universitas Negeri Gorontalo' : 'Program Studi Pendidikan Teknologi Informasi Universitas Negeri Gorontalo' }} ">
+    <meta name="description" content="{{ isset($title) ? $title.' - Program Studi Pendidikan Teknologi Informasi Universitas Negeri Gorontalo' : 'Program Studi Pendidikan Teknologi Informasi Universitas Negeri Gorontalo' }} ">
     <meta name="author" content="DEV PTI INFORMATIKA FT UNG">
 
     <!-- CSRF Token -->
@@ -16,16 +16,16 @@
     <title>{{ isset($title) ? $title.' - Program Studi Pendidikan Teknologi Informasi Universitas Negeri Gorontalo' : 'Program Studi Pendidikan Teknologi Informasi Universitas Negeri Gorontalo' }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin="anonymous" />
     <link
         href="https://fonts.bunny.net/css?family=oswald:200,300,400,500,600,700|source-sans-pro:200,300,400,600,700,900"
-        rel="stylesheet" />
+        rel="stylesheet" crossorigin="anonymous" />
 
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.min.css" crossorigin="anonymous" />
 
     <!-- Swiper -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" crossorigin="anonymous" />
 
     @vite('resources/css/app.css')
 

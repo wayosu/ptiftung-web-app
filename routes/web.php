@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\FrontPage\BerandaController::class, 'index'])->name('beranda');
 
+// Profil Route
 Route::group(['as' => 'profil.'], function () {
     Route::get('/sejarah', [App\Http\Controllers\FrontPage\ProfilController::class, 'sejarah'])->name('sejarah');
     Route::get('/visi-tujuan-strategi', [App\Http\Controllers\FrontPage\ProfilController::class, 'visiTujuanStrategi'])->name('visiTujuanStrategi');
@@ -24,11 +25,19 @@ Route::group(['as' => 'profil.'], function () {
     Route::get('/dosen/{slug}/{kategori}', [App\Http\Controllers\FrontPage\ProfilController::class, 'penelitianDanPkm'])->name('penelitianDosen');
 });
 
+// Fasilitas Route
 Route::group(['prefix' => 'fasilitas', 'as' => 'fasilitas.'], function () {
     Route::get('/', [App\Http\Controllers\FrontPage\ProfilController::class, 'fasilitas'])->name('index');
     Route::get('/sarana', [App\Http\Controllers\FrontPage\ProfilController::class, 'sarana'])->name('sarana.index');
+    Route::get('/sarana/{slug}', [App\Http\Controllers\FrontPage\ProfilController::class, 'saranaDetail'])->name('sarana.detail');
     Route::get('/prasarana', [App\Http\Controllers\FrontPage\ProfilController::class, 'prasarana'])->name('prasarana.index');
+    Route::get('/prasarana/{slug}', [App\Http\Controllers\FrontPage\ProfilController::class, 'prasaranaDetail'])->name('prasarana.detail');
     Route::get('/sistem-informasi', [App\Http\Controllers\FrontPage\ProfilController::class, 'sistemInformasi'])->name('sistemInformasi.index');
+});
+
+// Akademik Route
+Route::group(['as' => 'akademik.'], function () {
+    Route::get('/profil-lulusan', [App\Http\Controllers\FrontPage\AkademikController::class, 'profilLulusan'])->name('profilLulusan');
 });
 
 Auth::routes(['register' => false]);

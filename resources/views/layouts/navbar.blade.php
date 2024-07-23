@@ -94,7 +94,7 @@
                     <div
                         class="hs-dropdown-menu rounded-lg transition-[opacity,margin] duration-[0.1ms] xl:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 xl:w-48 hidden z-10 bg-light-100 xl:shadow-md py-2 px-3 xl:px-2 before:absolute top-full xl:border before:-top-5 before:start-0 before:w-full before:h-5">
                         <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                            href="#">
+                            href="{{ route('akademik.profilLulusan') }}">
                             Profil Lulusan
                         </a>
                         <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
@@ -321,19 +321,19 @@
                 <div
                     class="hs-dropdown-menu rounded-lg transition-[opacity,margin] duration-[0.1ms] hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-light-100 py-2 px-3 before:absolute top-full before:-top-5 before:start-0 before:w-full before:h-5">
                     <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                        href="#">
+                        href="{{ route('profil.sejarah') }}">
                         Sejarah PTI
                     </a>
                     <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                        href="#">
+                        href="{{ route('profil.visiTujuanStrategi') }}">
                         Visi, Tujuan dan Strategi
                     </a>
                     <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                        href="#">
+                        href="{{ route('profil.strukturOrganisasi') }}">
                         Struktur Organisasi
                     </a>
                     <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                        href="#">
+                        href="{{ route('profil.dosen') }}">
                         Dosen
                     </a>
 
@@ -349,24 +349,19 @@
                         <div
                             class="hs-dropdown-menu rounded-lg transition-[opacity,margin] duration-[0.1ms] hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-light-100 p-2 before:absolute before:-end-5 before:top-0 before:h-full before:w-5 top-0 end-full !mx-[10px]">
                             <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                                href="#">
+                                href="{{ route('fasilitas.sarana.index') }}">
                                 Sarana
                             </a>
                             <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                                href="#">
+                                href="{{ route('fasilitas.prasarana.index') }}">
                                 Prasarana
                             </a>
                             <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                                href="#">
+                                href="{{ route('fasilitas.sistemInformasi.index') }}">
                                 Sistem Informasi
                             </a>
                         </div>
                     </div>
-
-                    <a class="flex items-center gap-x-3.5 rounded-lg py-2 px-3 font-body text-sm text-gray-800 hover:bg-gray-200 focus:ring-2 focus:ring-gray-200"
-                        href="#">
-                        Kontak dan Lokasi
-                    </a>
                 </div>
             </div>
 

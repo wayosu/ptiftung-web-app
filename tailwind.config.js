@@ -5,7 +5,10 @@ export default {
         "./resources/**/*.js",
         "node_modules/preline/dist/*.js",
     ],
-    plugins: [require("preline/plugin")],
+    plugins: [
+        require("preline/plugin"),
+        require("@tailwindcss/forms"),
+    ],
     theme: {
         colors: {
             navy: {

@@ -145,20 +145,6 @@
 
     <!-- Start Program -->
     <section id="program" class="relative bg-gray-100 overflow-hidden">
-        {{-- start pattern --}}
-        {{-- <div class="absolute bottom-0 end-0 z-[0] rotate-180 opacity-50 lg:opacity-100">
-            <img src="{{ asset('assets/frontpage/img/square-pattern.png') }}" alt="pattern-png" class="w-[60px]">
-        </div> --}}
-
-        {{-- <div
-            class="absolute -top-32 -start-20 z-[0] size-48 bg-gradient-to-r from-yellow-900 to-gray-100 p-px rounded-full">
-            <div class="bg-gray-100 size-2 rounded-full"></div>
-        </div> --}}
-        {{-- <div
-            class="absolute -bottom-32 -end-20 z-[0] size-48 bg-gradient-to-r from-navy-900 to-gray-100 p-px rounded-full rotate-180">
-            <div class="bg-gray-100 size-2 rounded-full"></div>
-        </div> --}}
-        {{-- end pattern --}}
         <div class="relative z-10 max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <!-- Grid -->
             <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -188,7 +174,7 @@
 
                 <!-- Card -->
                 <a class="group flex flex-col bg-light-100 border shadow-sm rounded-xl hover:shadow-md transition"
-                    href="#">
+                    href="{{ route('fasilitas.index') }}">
                     <div class="p-4 md:p-5">
                         <div class="flex flex-row lg:flex-col items-start lg:items-center gap-0 lg:gap-4">
                             <div

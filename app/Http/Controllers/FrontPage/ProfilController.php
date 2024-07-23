@@ -138,8 +138,89 @@ class ProfilController extends Controller
     }
 
     public function sarana()
+    {        
+        return view('pages.profil.fasilitas.sarana.index', [
+            'title' => 'Sarana'
+        ]);
+    }
+
+    public function saranaSearch(Request $request)
     {
-        return view('pages.profil.fasilitas.sarana.index');
+        try {
+            $query = $request->input('query');
+            $perPage = 12; // Jumlah item per halaman
+            
+            // Cek apakah ada query pencarian
+            if ($query) {
+                $sarana = \App\Models\Sarana::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+                    ->where('keterangan', 'like', '%' . $query . '%')
+                    ->orderBy('keterangan', 'asc')
+                    ->paginate($perPage);
+            } else {
+                // Jika tidak ada query, ambil semua data
+                $sarana = \App\Models\Sarana::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+                    ->orderBy('keterangan', 'asc')
+                    ->paginate($perPage);
+            }
+    
+            // Transformasi data ke bentuk array
+            $saranaData = $sarana->getCollection()->transform(function ($item) {
+                return [
+                    'id' => $item->id,  // Tambahkan ID untuk keperluan key di Alpine.js
+                    'keterangan' => $item->keterangan,
+                    'slug' => $item->slug
+                ];
+            });
+
+            return response()->json([
+                'data' => $saranaData,
+                'current_page' => $sarana->currentPage(),
+                'last_page' => $sarana->lastPage(),
+                'total' => $sarana->total()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan pada server'], 500);
+        }
+    }    
+
+    public function saranaDetail($slug)
+    {
+        $sarana = \App\Models\Sarana::with('saranaImages')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        // Transformasi data sarana ke bentuk array
+        $saranaData = [
+            'id' => $sarana->id,  // Tambahkan ID untuk keperluan key di Alpine.js
+            'keterangan' => $sarana->keterangan,
+            'slug' => $sarana->slug,
+        ];
+        
+        return view('pages.profil.fasilitas.sarana.detail', [
+            'title' => $saranaData['keterangan'] . ' - Sarana',
+            'subtitle' => $saranaData['keterangan'],
+            'sarana' => $saranaData
+        ]);
+    }
+
+    public function saranaImages($slug)
+    {
+        try {
+            $sarana = \App\Models\Sarana::with('saranaImages')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+                ->where('slug', $slug)
+                ->firstOrFail();
+    
+            $saranaImages = $sarana->saranaImages->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'gambar' => $item->gambar
+                ];
+            });
+    
+            return response()->json($saranaImages);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan pada server'], 500);
+        }
     }
 
     public function prasarana()
@@ -147,8 +228,100 @@ class ProfilController extends Controller
         return view('pages.profil.fasilitas.prasarana.index');
     }
 
+    public function prasaranaSearch(Request $request)
+    {
+        try {
+            $query = $request->input('query');
+            $perPage = 12; // Jumlah item per halaman
+            
+            // Cek apakah ada query pencarian
+            if ($query) {
+                $prasarana = \App\Models\Prasarana::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+                    ->where('keterangan', 'like', '%' . $query . '%')
+                    ->orderBy('keterangan', 'asc')
+                    ->paginate($perPage);
+            } else {
+                // Jika tidak ada query, ambil semua data
+                $prasarana = \App\Models\Prasarana::where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+                    ->orderBy('keterangan', 'asc')
+                    ->paginate($perPage);
+            }
+    
+            // Transformasi data ke bentuk array
+            $prasaranaData = $prasarana->getCollection()->transform(function ($item) {
+                return [
+                    'id' => $item->id,  // Tambahkan ID untuk keperluan key di Alpine.js
+                    'keterangan' => $item->keterangan,
+                    'slug' => $item->slug
+                ];
+            });
+
+            return response()->json([
+                'data' => $prasaranaData,
+                'current_page' => $prasarana->currentPage(),
+                'last_page' => $prasarana->lastPage(),
+                'total' => $prasarana->total()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan pada server'], 500);
+        }
+    }    
+
+    public function prasaranaDetail($slug)
+    {
+        $prasarana = \App\Models\Prasarana::with('prasaranaImages')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        // Transformasi data sarana ke bentuk array
+        $prasaranaData = [
+            'id' => $prasarana->id,  // Tambahkan ID untuk keperluan key di Alpine.js
+            'keterangan' => $prasarana->keterangan,
+            'slug' => $prasarana->slug,
+        ];
+        
+        return view('pages.profil.fasilitas.sarana.detail', [
+            'title' => $prasaranaData['keterangan'] . ' - Sarana',
+            'subtitle' => $prasaranaData['keterangan'],
+            'sarana' => $prasaranaData
+        ]);
+    }
+
+    public function prasaranaImages($slug)
+    {
+        try {
+            $prasarana = \App\Models\Prasarana::with('prasaranaImages')->where('program_studi', 'PEND. TEKNOLOGI INFORMASI')
+                ->where('slug', $slug)
+                ->firstOrFail();
+    
+            $prasaranaImages = $prasarana->prasaranaImages->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'gambar' => $item->gambar
+                ];
+            });
+    
+            return response()->json($prasaranaImages);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan pada server'], 500);
+        }
+    }
+
     public function sistemInformasi()
     {
-        return view('pages.profil.fasilitas.sistem-informasi');
+        $sistemInformasis = \App\Models\SistemInformasi::orderBy('created_at', 'asc')->get(['sistem_informasi', 'link']);
+
+        // transformasi data ke bentuk array
+        $sistemInformasis = $sistemInformasis->transform(function ($item) {
+            return [
+                'sistem_informasi' => $item->sistem_informasi,
+                'link' => $item->link
+            ];
+        });
+        
+        return view('pages.profil.fasilitas.sistem-informasi', [
+            'title' => 'Tautan Sistem Informasi',
+            'datas' => $sistemInformasis
+        ]);
     }
 }

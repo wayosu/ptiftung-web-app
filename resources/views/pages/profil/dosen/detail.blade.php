@@ -9,7 +9,7 @@
         <div class="relative max-w-[85rem] w-full mx-auto">
             <div class="absolute bottom-0 start-0 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
                 <h2 class="text-light-100 text-2xl lg:text-3xl font-display font-bold">
-                    <span class="text-xl lg:text-2xl uppercase">Dosen</span>
+                    <a href="{{ route('profil.dosen') }}" class="text-xl lg:text-2xl uppercase">Dosen</a>
                     <br>
                     <span class="font-body font-normal uppercase">
                         {{ $dosen['name'] ?? '-' }}
